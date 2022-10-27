@@ -1,9 +1,6 @@
-// ignore_for_file: prefer_typing_uninitialized_variables
-
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final supabase = Supabase.instance.client;
@@ -12,7 +9,7 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -25,7 +22,9 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       await supabase.auth.signOut();
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 
@@ -34,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         body: Column(
       children: [
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         ElevatedButton(
           child: const Text(
             "Set Theme",
@@ -44,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
             AdaptiveTheme.of(context).toggleThemeMode();
           },
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         ElevatedButton(
           child: const Text(
             "Sign out",

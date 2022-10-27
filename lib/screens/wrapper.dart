@@ -17,18 +17,18 @@ class Wrapper extends StatefulWidget {
 
 class _WrapperState extends State<Wrapper> {
   late final StreamSubscription<AuthState> _authSubscription;
-  User? _user;
+  User? user;
 
   @override
   void initState() {
     _authSubscription = supabase.auth.onAuthStateChange.listen((data) {
-      final AuthChangeEvent event = data.event;
+      //final AuthChangeEvent event = data.event;
       final Session? session = data.session;
       setState(() {
         if (kDebugMode) {
           print('User auth change event occured');
         }
-        _user = session?.user;
+        user = session?.user;
       });
     });
     super.initState();
@@ -42,7 +42,8 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   Widget build(BuildContext context) {
-    if (_user != null) {
+    final User? user = supabase.auth.currentUser;
+    if (user != null) {
       if (kDebugMode) {
         print('Navigating to HomeScreen');
       }
@@ -51,6 +52,6 @@ class _WrapperState extends State<Wrapper> {
         print('Navigating to LoginScreen');
       }
     }
-    return _user != null ? const HomeScreen() : const SignInScreen();
+    return user != null ? const HomeScreen() : const SignInScreen();
   }
 }

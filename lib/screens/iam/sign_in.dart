@@ -14,7 +14,7 @@ class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
 
   @override
-  _SignInScreenState createState() => _SignInScreenState();
+  State<SignInScreen> createState() => _SignInScreenState();
 }
 
 class _SignInScreenState extends State<SignInScreen> {
@@ -30,7 +30,9 @@ class _SignInScreenState extends State<SignInScreen> {
     try {
       await supabase.auth.signInWithPassword(email: email, password: password);
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 
@@ -195,7 +197,7 @@ class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);
 
   @override
-  _ForgotPasswordState createState() => _ForgotPasswordState();
+  State<ForgotPassword> createState() => _ForgotPasswordState();
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
@@ -212,7 +214,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         redirectTo: kIsWeb ? null : 'io.supabase.flutter://reset-callback/',
       );
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 
@@ -233,9 +237,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           style: TextStyle(
                               fontSize: 25.0, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 20.0),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(resetPasswordRequestSuccess ?? ''),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       TextFormField(
                           decoration: const InputDecoration(hintText: "Email"),
                           textAlign: TextAlign.left,
@@ -266,7 +270,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               setState(() => loading = false);
                               setState(() => resetPasswordRequestSuccess =
                                   'Reset email sent, please check your email');
-                              Timer(Duration(seconds: 3), () {
+                              Timer(const Duration(seconds: 3), () {
                                 Navigator.of(context).pop();
                               });
                             } else {
