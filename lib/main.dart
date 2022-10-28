@@ -4,13 +4,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-
-  print(dotenv.env['SUPABASE_URL']);
-
   // Initiate Supabase
   await Supabase.initialize(
       url: dotenv.env['SUPABASE_URL']!, anonKey: dotenv.env['SUPABASE_KEY']!);
@@ -28,16 +26,21 @@ class StarterApp extends StatefulWidget {
 class _StarterAppState extends State<StarterApp> {
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      theme: ThemeData(
+    return AdaptiveTheme(
+      light: ThemeData(
         brightness: Brightness.light,
-        primarySwatch: Colors.grey,
+        primarySwatch: Colors.blueGrey,
       ),
-      darkTheme: ThemeData(
-        brightness: Brightness.light,
-        primarySwatch: Colors.grey,
+      dark: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.blueGrey,
       ),
-      home: const Scaffold(body: Wrapper()),
+      initial: AdaptiveThemeMode.light,
+      builder: (theme, darkTheme) => GetMaterialApp(
+        theme: theme,
+        darkTheme: darkTheme,
+        home: const Wrapper(),
+      ),
     );
   }
 }
