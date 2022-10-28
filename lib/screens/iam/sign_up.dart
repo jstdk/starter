@@ -1,9 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 import '../../utils/loading.dart';
-import '../wrapper.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Initiate Supabase
@@ -22,15 +22,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String? error;
   String? email;
   String? password;
-
   bool obscureText = true;
+  String? signupSuccess;
 
   // Sign up user with email and password
   Future signUpUsingEmailAndPassword({email, password}) async {
     try {
-      final response =
-          await supabase.auth.signUp(email: email, password: password);
-      return response.user;
+      await supabase.auth.signUp(email: email, password: password);
+      setState(() => {
+            loading = false,
+            error = '',
+            signupSuccess =
+                'Welcome! We sent you an email. Please confirm your email address to sign in'
+          });
+      Timer(const Duration(seconds: 5), () {
+        Navigator.pop(context);
+      });
     } catch (e) {
       setState(() => {loading = false, error = 'Something went wrong'});
       if (kDebugMode) {
@@ -56,7 +63,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   icon: const Icon(Icons.chevron_left),
                   color: Colors.white,
                   onPressed: () {
-                    Get.offAll(const Wrapper());
+                    Navigator.pop(context);
                   }),
               elevation: 0.0,
               centerTitle: true,
@@ -69,8 +76,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   key: formKeyForm,
                   child: Column(
                     children: <Widget>[
-                      const SizedBox(height: 20.0),
-                      const Text('Welcome',
+                      const SizedBox(height: 40.0),
+                      const Text('Sign up',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 25.0, fontWeight: FontWeight.bold)),
@@ -116,7 +123,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(height: 20.0),
                       Text(error ?? '',
                           style: const TextStyle(color: Colors.red)),
-                      const SizedBox(height: 40.0),
+                      Text(signupSuccess ?? ''),
+                      SizedBox(height: signupSuccess != null ? 40.0 : 10.0),
                       SizedBox(
                         width: 300,
                         child: ElevatedButton(

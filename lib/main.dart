@@ -2,7 +2,6 @@ import './screens/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:async';
-import 'package:get/get.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 
@@ -36,7 +35,7 @@ class _StarterAppState extends State<StarterApp> {
         primarySwatch: Colors.grey,
       ),
       initial: AdaptiveThemeMode.light,
-      builder: (theme, darkTheme) => GetMaterialApp(
+      builder: (theme, darkTheme) => MaterialApp(
         theme: theme,
         darkTheme: darkTheme,
         home: const Wrapper(),

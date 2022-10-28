@@ -2,12 +2,12 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 import '../../utils/loading.dart';
 import 'sign_up.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+// Initiate Supabase
 final supabase = Supabase.instance.client;
 
 class SignInScreen extends StatefulWidget {
@@ -60,12 +60,12 @@ class _SignInScreenState extends State<SignInScreen> {
                   key: formKeyForm,
                   child: Column(
                     children: <Widget>[
-                      const SizedBox(height: 20.0),
-                      const Text('Welcome',
+                      const SizedBox(height: 40.0),
+                      const Text('Sign in',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 25.0, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 5.0),
+                      const SizedBox(height: 20.0),
                       TextFormField(
                           decoration: const InputDecoration(hintText: "Email"),
                           textAlign: TextAlign.left,
@@ -143,7 +143,11 @@ class _SignInScreenState extends State<SignInScreen> {
                       GestureDetector(
                         child: const Text("Sign-up using email"),
                         onTap: () {
-                          Get.to(const SignUpScreen());
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignUpScreen()),
+                          );
                         },
                       ),
                       const SizedBox(height: 10.0),
@@ -271,7 +275,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               setState(() => resetPasswordRequestSuccess =
                                   'Reset email sent, please check your email');
                               Timer(const Duration(seconds: 3), () {
-                                Get.back();
+                                Navigator.pop(context);
                               });
                             } else {
                               setState(() {
