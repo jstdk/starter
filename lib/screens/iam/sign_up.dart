@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import '../../utils/loading.dart';
 import '../wrapper.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+// Initiate Supabase
 final supabase = Supabase.instance.client;
 
 class SignUpScreen extends StatefulWidget {
@@ -15,14 +17,14 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final _formKeyForm = GlobalKey<FormState>();
+  final formKeyForm = GlobalKey<FormState>();
   bool loading = false;
   String? error;
 
   String? email;
   String? password;
 
-  bool _obscureText = true;
+  bool obscureText = true;
 
   // Sign up user with email and password
   Future signUpUsingEmailAndPassword({email, password}) async {
@@ -31,6 +33,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           await supabase.auth.signUp(email: email, password: password);
       return response.user;
     } catch (e) {
+      setState(() => {loading = false, error = 'Something went wrong'});
       if (kDebugMode) {
         print(e);
       }
@@ -39,7 +42,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _toggle() {
     setState(() {
-      _obscureText = !_obscureText;
+      obscureText = !obscureText;
     });
   }
 
@@ -54,7 +57,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   icon: const Icon(Icons.chevron_left),
                   color: Colors.white,
                   onPressed: () {
-                    //Get.offAll(const Authorization());
+                    Get.offAll(const Wrapper());
                   }),
               elevation: 0.0,
               centerTitle: true,
@@ -64,7 +67,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             body: Padding(
               padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
               child: Form(
-                  key: _formKeyForm,
+                  key: formKeyForm,
                   child: Column(
                     children: <Widget>[
                       const SizedBox(height: 20.0),
@@ -80,7 +83,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           validator: (String? value) {
                             //print(value.length);
                             return (value != null && value.length < 2)
-                                ? 'Please provide a valid number.'
+                                ? 'Please provide a valid email address.'
                                 : null;
                           },
                           onChanged: (val) {
@@ -88,13 +91,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             //_showConfirmDialog(context);
                           }),
                       TextFormField(
-                          obscureText: _obscureText,
+                          obscureText: obscureText,
                           decoration: InputDecoration(
                             hintText: "Password",
                             suffixIcon: InkWell(
                               onTap: _toggle,
                               child: Icon(
-                                _obscureText
+                                obscureText
                                     ? FontAwesomeIcons.eye
                                     : FontAwesomeIcons.eyeSlash,
                                 size: 20.0,
@@ -111,7 +114,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           onChanged: (val) {
                             setState(() => password = val);
                           }),
-                      const SizedBox(height: 10.0),
+                      const SizedBox(height: 20.0),
+                      Text(error ?? '',
+                          style: const TextStyle(color: Colors.red)),
+                      const SizedBox(height: 40.0),
                       SizedBox(
                         width: 300,
                         child: ElevatedButton(
@@ -122,36 +128,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 fontWeight: FontWeight.bold),
                           ),
                           onPressed: () async {
-                            if (_formKeyForm.currentState!.validate()) {
+                            if (formKeyForm.currentState!.validate()) {
                               setState(() => loading = true);
                               signUpUsingEmailAndPassword(
-                                      email: email, password: password)
-                                  .then((result) {
-                                if (result != null) {
-                                  setState(() => loading = true);
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const Wrapper()));
-                                } else {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    content: Text(
-                                      result,
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    backgroundColor: Colors.grey[800],
-                                  ));
-                                }
-                              });
+                                  email: email, password: password);
                             } else {
                               setState(() {
                                 loading = false;
-                                error = 'Unable to send a SMS login code.';
+                                error = 'Something went wrong.';
                               });
                             }
                           },

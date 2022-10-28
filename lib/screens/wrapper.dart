@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:starter/screens/iam/sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import 'private/home.dart';
 
 final supabase = Supabase.instance.client;

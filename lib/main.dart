@@ -3,14 +3,16 @@ import './screens/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:async';
+import 'package:get/get.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
 
+  // Initiate Supabase
   await Supabase.initialize(
-      url: 'https://dfymjnonymnyxvsobdmk.supabase.co',
-      anonKey:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmeW1qbm9ueW1ueXh2c29iZG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjQ2OTI1OTYsImV4cCI6MTk4MDI2ODU5Nn0.Nesx82ZmTvBu5N3aP6gYasbcpIiknQ9q5cctQ0rudjo');
+      url: dotenv.env['SUPABASE_URL']!, anonKey: dotenv.env['SUPABASE_KEY']!);
 
   runApp(const StarterApp());
 }
@@ -35,7 +37,7 @@ class _StarterAppState extends State<StarterApp> {
         primarySwatch: Colors.grey,
       ),
       initial: AdaptiveThemeMode.light,
-      builder: (theme, darkTheme) => MaterialApp(
+      builder: (theme, darkTheme) => GetMaterialApp(
           theme: theme,
           darkTheme: darkTheme,
           home: const Scaffold(body: Wrapper())),

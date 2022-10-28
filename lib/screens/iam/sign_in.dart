@@ -1,8 +1,8 @@
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import '../../utils/loading.dart';
 import 'sign_up.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -18,18 +18,18 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final _formKeyForm = GlobalKey<FormState>();
+  final formKeyForm = GlobalKey<FormState>();
   bool loading = false;
   String? error;
-
   String? email;
   String? password;
-  bool _obscureText = true;
+  bool obscureText = true;
 
   Future<void> signInUsingEmailAndPassword(email, password) async {
     try {
       await supabase.auth.signInWithPassword(email: email, password: password);
     } catch (e) {
+      setState(() => {loading = false, error = 'Invalid email or password'});
       if (kDebugMode) {
         print(e);
       }
@@ -38,7 +38,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void _toggle() {
     setState(() {
-      _obscureText = !_obscureText;
+      obscureText = !obscureText;
     });
   }
 
@@ -57,7 +57,7 @@ class _SignInScreenState extends State<SignInScreen> {
             body: Padding(
               padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
               child: Form(
-                  key: _formKeyForm,
+                  key: formKeyForm,
                   child: Column(
                     children: <Widget>[
                       const SizedBox(height: 20.0),
@@ -80,13 +80,13 @@ class _SignInScreenState extends State<SignInScreen> {
                             setState(() => email = val);
                           }),
                       TextFormField(
-                          obscureText: _obscureText,
+                          obscureText: obscureText,
                           decoration: InputDecoration(
                             hintText: "Password",
                             suffixIcon: InkWell(
                               onTap: _toggle,
                               child: Icon(
-                                _obscureText
+                                obscureText
                                     ? FontAwesomeIcons.eye
                                     : FontAwesomeIcons.eyeSlash,
                                 size: 20.0,
@@ -104,6 +104,9 @@ class _SignInScreenState extends State<SignInScreen> {
                             setState(() => password = val);
                           }),
                       const SizedBox(height: 20.0),
+                      Text(error ?? '',
+                          style: const TextStyle(color: Colors.red)),
+                      const SizedBox(height: 40.0),
                       GestureDetector(
                           child: const Text("I forgot my password"),
                           onTap: () {
@@ -113,7 +116,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 builder: (context) => const SizedBox(
                                     height: 300, child: ForgotPassword()));
                           }),
-                      const SizedBox(height: 10.0),
+                      const SizedBox(height: 20.0),
                       SizedBox(
                         width: 300,
                         child: ElevatedButton(
@@ -124,7 +127,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 fontWeight: FontWeight.bold),
                           ),
                           onPressed: () async {
-                            if (_formKeyForm.currentState!.validate()) {
+                            if (formKeyForm.currentState!.validate()) {
                               setState(() => loading = true);
                               signInUsingEmailAndPassword(email, password);
                             } else {
@@ -136,14 +139,11 @@ class _SignInScreenState extends State<SignInScreen> {
                           },
                         ),
                       ),
-                      const SizedBox(height: 15.0),
+                      const SizedBox(height: 40.0),
                       GestureDetector(
                         child: const Text("Sign-up using email"),
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const SignUpScreen()));
+                          Get.to(const SignUpScreen());
                         },
                       ),
                       const SizedBox(height: 10.0),
@@ -271,7 +271,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               setState(() => resetPasswordRequestSuccess =
                                   'Reset email sent, please check your email');
                               Timer(const Duration(seconds: 3), () {
-                                Navigator.of(context).pop();
+                                Get.back();
                               });
                             } else {
                               setState(() {
