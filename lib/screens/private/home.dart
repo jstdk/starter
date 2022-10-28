@@ -35,6 +35,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          // leading: IconButton(
+          //     icon: const Icon(FontAwesomeIcons.bars),
+          //     onPressed: () async {
+          //       openDrawer();
+          //     }),
           centerTitle: true,
           actions: [
             ValueListenableBuilder(
@@ -52,10 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           AdaptiveTheme.of(context).setLight();
                         });
               },
-            ),
-            IconButton(
-              icon: Icon(FontAwesomeIcons.stop),
-              onPressed: () => signOut(),
             ),
           ],
         ),
@@ -100,6 +101,40 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             )
           ],
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                ),
+                child: Text('Settings'),
+              ),
+              ListTile(
+                title: const Text('Item 1'),
+                onTap: () {
+                  // Update the state of the app.
+                  // ...
+                },
+              ),
+              ListTile(
+                title: const Text('Item 2'),
+                onTap: () {
+                  // Update the state of the app.
+                  // ...
+                },
+              ),
+              SizedBox(height: 50),
+              ListTile(
+                title: const Text('Sign out'),
+                onTap: () {
+                  signOut();
+                },
+              ),
+            ],
+          ),
         ));
   }
 }

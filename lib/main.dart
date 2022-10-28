@@ -29,11 +29,11 @@ class _StarterAppState extends State<StarterApp> {
     return AdaptiveTheme(
       light: ThemeData(
         brightness: Brightness.light,
-        primarySwatch: Colors.blueGrey,
+        primarySwatch: Colors.grey,
       ),
       dark: ThemeData(
         brightness: Brightness.dark,
-        primarySwatch: Colors.blueGrey,
+        primarySwatch: Colors.grey,
       ),
       initial: AdaptiveThemeMode.light,
       builder: (theme, darkTheme) => GetMaterialApp(
