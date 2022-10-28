@@ -20,7 +20,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final formKeyForm = GlobalKey<FormState>();
   bool loading = false;
   String? error;
-
   String? email;
   String? password;
 
