@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -16,8 +18,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _stream = supabase.from('entries').stream(primaryKey: ['id']);
-
   Future<void> signOut() async {
     try {
       await supabase.auth.signOut();
@@ -28,20 +28,33 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  // Persist the stream in a local variable to prevent refetching upon rebuilds
+  final data = supabase.from('entries').stream(primaryKey: ['id']);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
           actions: [
-            IconButton(
-              icon: Icon(FontAwesomeIcons.sun),
-              onPressed: () async {
-                AdaptiveTheme.of(context).toggleThemeMode();
+            ValueListenableBuilder(
+              valueListenable: AdaptiveTheme.of(context).modeChangeNotifier,
+              builder: (_, mode, child) {
+                return mode != AdaptiveThemeMode.dark
+                    ? IconButton(
+                        icon: const Icon(FontAwesomeIcons.moon),
+                        onPressed: () async {
+                          AdaptiveTheme.of(context).setDark();
+                        })
+                    : IconButton(
+                        icon: const Icon(FontAwesomeIcons.sun),
+                        onPressed: () async {
+                          AdaptiveTheme.of(context).setLight();
+                        });
               },
             ),
             IconButton(
-              icon: Icon(FontAwesomeIcons.close),
+              icon: Icon(FontAwesomeIcons.stop),
               onPressed: () => signOut(),
             ),
           ],
@@ -50,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const SizedBox(height: 20),
             StreamBuilder(
-              stream: _stream,
+              stream: data,
               builder: (
                 context,
                 snapshot,
@@ -62,13 +75,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (snapshot.hasError) {
                     return const Text('Error');
                   } else if (snapshot.hasData) {
-                    return ListTile(
-                      title: Text(snapshot.data.toString()),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () {},
-                      ),
-                    );
+                    return ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemCount: snapshot.data!.length,
+                        // display each item of the product list
+                        itemBuilder: (context, index) {
+                          //return Text(snapshot.data![index]['entry']);
+                          return Card(
+                              // In many cases, the key isn't mandatory
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 15),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Text(snapshot.data![index]['entry']),
+                              ));
+                        });
                   } else {
                     return const Text('Empty data');
                   }
