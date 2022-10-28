@@ -1,6 +1,6 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final supabase = Supabase.instance.client;
@@ -40,7 +40,10 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
           onPressed: () async {
-            AdaptiveTheme.of(context).toggleThemeMode();
+            Get.changeTheme(Get.isDarkMode
+                ? ThemeData.light()
+                : ThemeData
+                    .dark()); //AdaptiveTheme.of(context).toggleThemeMode();
           },
         ),
         const SizedBox(height: 20),

@@ -1,4 +1,3 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import './screens/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -9,6 +8,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
+
+  print(dotenv.env['SUPABASE_URL']);
 
   // Initiate Supabase
   await Supabase.initialize(
@@ -27,23 +28,16 @@ class StarterApp extends StatefulWidget {
 class _StarterAppState extends State<StarterApp> {
   @override
   Widget build(BuildContext context) {
-    return AdaptiveTheme(
-      light: ThemeData(
+    return GetMaterialApp(
+      theme: ThemeData(
         brightness: Brightness.light,
         primarySwatch: Colors.grey,
       ),
-      dark: ThemeData(
-        brightness: Brightness.dark,
+      darkTheme: ThemeData(
+        brightness: Brightness.light,
         primarySwatch: Colors.grey,
       ),
-      initial: AdaptiveThemeMode.light,
-      builder: (theme, darkTheme) => GetMaterialApp(
-          theme: theme,
-          darkTheme: darkTheme,
-          home: const Scaffold(body: Wrapper())),
+      home: const Scaffold(body: Wrapper()),
     );
-    //}
   }
-  //)
-
 }
