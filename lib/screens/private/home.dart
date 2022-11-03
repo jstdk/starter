@@ -1,10 +1,8 @@
-import 'dart:convert';
-
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter/material.dart';
 
 import '../../utils/loading.dart';
 
@@ -28,18 +26,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Persist the stream in a local variable to prevent refetching upon rebuilds
   final data = supabase.from('entries').stream(primaryKey: ['id']);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          // leading: IconButton(
-          //     icon: const Icon(FontAwesomeIcons.bars),
-          //     onPressed: () async {
-          //       openDrawer();
-          //     }),
           centerTitle: true,
           actions: [
             ValueListenableBuilder(
@@ -76,22 +68,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (snapshot.hasError) {
                     return const Text('Error');
                   } else if (snapshot.hasData) {
-                    return ListView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        itemCount: snapshot.data!.length,
-                        // display each item of the product list
-                        itemBuilder: (context, index) {
-                          //return Text(snapshot.data![index]['entry']);
-                          return Card(
-                              // In many cases, the key isn't mandatory
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 15),
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Text(snapshot.data![index]['entry']),
-                              ));
-                        });
+                    return Row(
+                      children: [
+                        ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            itemCount: snapshot.data!.length,
+                            // display each item of the product list
+                            itemBuilder: (context, index) {
+                              //return Text(snapshot.data![index]['entry']);
+                              return Card(
+                                  // In many cases, the key isn't mandatory
+                                  margin: const EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 15),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Text(snapshot.data![index]['entry']),
+                                  ));
+                            }),
+                      ],
+                    );
                   } else {
                     return const Text('Empty data');
                   }
@@ -126,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   // ...
                 },
               ),
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
               ListTile(
                 title: const Text('Sign out'),
                 onTap: () {
