@@ -12,14 +12,14 @@ import '../../utils/loading.dart';
 // Initiate Supabase
 final supabase = Supabase.instance.client;
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({Key? key}) : super(key: key);
+class AuthenticationScreen extends StatefulWidget {
+  const AuthenticationScreen({Key? key}) : super(key: key);
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  State<AuthenticationScreen> createState() => _AuthenticationScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _AuthenticationScreenState extends State<AuthenticationScreen> {
   final formKeyForm = GlobalKey<FormState>();
   bool loading = false;
   String? error;

@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'public/sign_in.dart';
+import 'public/authentication.dart';
 import 'private/home.dart';
 
 final supabase = Supabase.instance.client;
@@ -50,9 +50,9 @@ class _WrapperState extends State<Wrapper> {
       }
     } else {
       if (kDebugMode) {
-        print('Navigating to LoginScreen');
+        print('Navigating to AuthenticationScreen');
       }
     }
-    return user != null ? const HomeScreen() : const SignInScreen();
+    return user != null ? const HomeScreen() : const AuthenticationScreen();
   }
 }
