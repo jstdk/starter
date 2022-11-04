@@ -16,7 +16,7 @@ const RESOURCES = {
 "assets/packages/font_awesome_flutter/lib/fonts/fa-solid-900.ttf": "26f5af2d93473531f82ef5060f9c6d45",
 "assets/fonts/MaterialIcons-Regular.otf": "95db9098c58fd6db106f1116bae85a0b",
 "assets/shaders/ink_sparkle.frag": "2be36ba589546bfd35aa33440544c022",
-"assets/AssetManifest.json": "1119b5bf8dc60018b5c806305ee0fd08",
+"assets/AssetManifest.json": "801125fca546f506babac9af4ec061ba",
 "assets/FontManifest.json": "5a32d4310a6f5d9a6b651e75ba0d7372",
 "assets/NOTICES": "8f720840d5838161b10b5fe51e5264dc",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
@@ -25,8 +25,8 @@ const RESOURCES = {
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
 "manifest.json": "8258fe49a3892e2102d9c75d6e5ee12e",
-"index.html": "75cd8c017f6a4c16a312ca3f0215dce6",
-"/": "75cd8c017f6a4c16a312ca3f0215dce6"
+"index.html": "f1d23d8cf90bcaac5f2f52b57741cb7e",
+"/": "f1d23d8cf90bcaac5f2f52b57741cb7e"
 };
 
 // The application shell files that are downloaded before a service worker can
