@@ -2,6 +2,7 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../utils/loading.dart';
@@ -52,31 +53,35 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        body: Column(
-          children: [
-            const SizedBox(height: 20),
-            StreamBuilder(
-              stream: data,
-              builder: (
-                context,
-                snapshot,
-              ) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Loading();
-                } else if (snapshot.connectionState == ConnectionState.active ||
-                    snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasError) {
-                    return const Text('Error');
-                  } else if (snapshot.hasData) {
-                    return Row(
-                      children: [
-                        ListView.builder(
+        body: StreamBuilder(
+          stream: data,
+          builder: (
+            context,
+            snapshot,
+          ) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Loading();
+            } else if (snapshot.connectionState == ConnectionState.active ||
+                snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasError) {
+                return const Text('Error');
+              } else if (snapshot.hasData) {
+                return ResponsiveRowColumn(
+                    layout: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
+                        ? ResponsiveRowColumnType.COLUMN
+                        : ResponsiveRowColumnType.ROW,
+                    rowMainAxisAlignment: MainAxisAlignment.center,
+                    rowPadding: const EdgeInsets.all(10),
+                    columnPadding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
+                    children: [
+                      ResponsiveRowColumnItem(
+                        rowFlex: 1,
+                        child: ListView.builder(
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
                             itemCount: snapshot.data!.length,
                             // display each item of the product list
                             itemBuilder: (context, index) {
-                              //return Text(snapshot.data![index]['entry']);
                               return Card(
                                   // In many cases, the key isn't mandatory
                                   margin: const EdgeInsets.symmetric(
@@ -86,17 +91,32 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Text(snapshot.data![index]['entry']),
                                   ));
                             }),
-                      ],
-                    );
-                  } else {
-                    return const Text('Empty data');
-                  }
-                } else {
-                  return Text('State: ${snapshot.connectionState}');
-                }
-              },
-            )
-          ],
+                      ),
+                      ResponsiveRowColumnItem(
+                          rowFlex: 1,
+                          child: ResponsiveVisibility(
+                            hiddenWhen: const [
+                              Condition.smallerThan(name: TABLET)
+                            ],
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: const [
+                                Text('YEAHHHHH'),
+                                SizedBox(
+                                  width: 300,
+                                )
+                              ],
+                            ),
+                          )),
+                    ]);
+              } else {
+                return const Text('Empty data');
+              }
+            } else {
+              return Text('State: ${snapshot.connectionState}');
+            }
+          },
         ),
         drawer: Drawer(
           child: ListView(

@@ -68,7 +68,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
+                      children: const [
                         Text('YEAHHHHH'),
                         SizedBox(
                           width: 300,
@@ -87,7 +87,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           child: Column(
                             children: <Widget>[
                               const SizedBox(height: 40.0),
-                              const Text('Sign in',
+                              const Text('Sign In',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 25.0,
