@@ -8,7 +8,6 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../utils/loading.dart';
-import 'sign_up.dart';
 
 // Initiate Supabase
 final supabase = Supabase.instance.client;
@@ -26,7 +25,9 @@ class _SignInScreenState extends State<SignInScreen> {
   String? error;
   String? email;
   String? password;
+  String? signupSuccess;
   bool obscureText = true;
+  bool signup = false;
 
   final double breakpoint = 800;
   final int paneProportion = 70;
@@ -36,6 +37,24 @@ class _SignInScreenState extends State<SignInScreen> {
       await supabase.auth.signInWithPassword(email: email, password: password);
     } catch (e) {
       setState(() => {loading = false, error = 'Invalid email or password'});
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
+  // Sign up user with email and password
+  Future signUpUsingEmailAndPassword({email, password}) async {
+    try {
+      await supabase.auth.signUp(email: email, password: password);
+      setState(() => {
+            loading = false,
+            error = '',
+            signupSuccess =
+                'Welcome! We sent you an email. Please confirm your email address to sign in'
+          });
+    } catch (e) {
+      setState(() => {loading = false, error = 'Something went wrong'});
       if (kDebugMode) {
         print(e);
       }
@@ -148,37 +167,58 @@ class _SignInScreenState extends State<SignInScreen> {
                               const SizedBox(height: 20.0),
                               SizedBox(
                                 width: 300,
-                                child: ElevatedButton(
-                                  child: const Text(
-                                    "Sign-In",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  onPressed: () async {
-                                    if (formKeyForm.currentState!.validate()) {
-                                      setState(() => loading = true);
-                                      signInUsingEmailAndPassword(
-                                          email, password);
-                                    } else {
-                                      setState(() {
-                                        loading = false;
-                                        error = 'Something went wrong.';
-                                      });
-                                    }
-                                  },
-                                ),
+                                child: signup == false
+                                    ? ElevatedButton(
+                                        child: const Text(
+                                          "Sign-In",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        onPressed: () async {
+                                          if (formKeyForm.currentState!
+                                              .validate()) {
+                                            setState(() => loading = true);
+                                            signInUsingEmailAndPassword(
+                                                email, password);
+                                          } else {
+                                            setState(() {
+                                              loading = false;
+                                              error = 'Something went wrong.';
+                                            });
+                                          }
+                                        },
+                                      )
+                                    : ElevatedButton(
+                                        child: const Text(
+                                          "Sign-Up",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        onPressed: () async {
+                                          if (formKeyForm.currentState!
+                                              .validate()) {
+                                            setState(() => loading = true);
+                                            signUpUsingEmailAndPassword(
+                                                email: email,
+                                                password: password);
+                                          } else {
+                                            setState(() {
+                                              loading = false;
+                                              error = 'Something went wrong.';
+                                            });
+                                          }
+                                        },
+                                      ),
                               ),
                               const SizedBox(height: 40.0),
                               GestureDetector(
                                 child: const Text("Sign-up using email"),
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SignUpScreen()),
-                                  );
+                                  setState(() {
+                                    signup = true;
+                                  });
                                 },
                               ),
                               //const SizedBox(height: 10.0),
