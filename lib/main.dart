@@ -10,8 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import './screens/wrapper.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
+  //WidgetsFlutterBinding.ensureInitialized();
   //SharedPreferences.setMockInitialValues({});
 
   // Load dotenv
