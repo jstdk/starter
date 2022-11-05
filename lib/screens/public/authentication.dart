@@ -88,7 +88,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: const [
-                        Text('YEAH'),
+                        Text('YEAH!'),
                         SizedBox(
                           width: 300,
                         )
