@@ -83,12 +83,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               ResponsiveRowColumnItem(
                   rowFlex: 1,
                   child: ResponsiveVisibility(
-                    hiddenWhen: [Condition.smallerThan(name: TABLET)],
+                    hiddenWhen: const [Condition.smallerThan(name: TABLET)],
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: const [
-                        Text('YEAHHHHH'),
+                        Text('YEAH'),
                         SizedBox(
                           width: 300,
                         )
