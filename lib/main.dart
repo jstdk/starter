@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:dotenv/dotenv.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:responsive_framework/utils/scroll_behavior.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -10,15 +10,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import './screens/wrapper.dart';
 
 Future<void> main() async {
-  //WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   //SharedPreferences.setMockInitialValues({});
-
-  // Load dotenv
-  var env = DotEnv(includePlatformEnvironment: true)..load();
+  await dotenv.load(fileName: ".env");
 
   // Initiate Supabase
+
   await Supabase.initialize(
-      url: env['SUPABASE_URL']!, anonKey: env['SUPABASE_KEY']!);
+      url: dotenv.env['SUPABASE_URL']!, anonKey: dotenv.env['SUPABASE_KEY']!);
 
   runApp(const StarterApp());
 }
