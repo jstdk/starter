@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:responsive_framework/utils/scroll_behavior.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './screens/wrapper.dart';
 import './utils/theme.dart';
@@ -14,18 +15,21 @@ import './utils/local_authentication.dart';
 import './screens/public/local_authentication.dart';
 
 Future<void> main() async {
+  // Initial setup
   WidgetsFlutterBinding.ensureInitialized();
-  //SharedPreferences.setMockInitialValues({});
 
+  // Load .envv
   await dotenv.load(fileName: ".env");
 
-  // Initiate Supabase
+  // Initiate Supabase using .env
   await Supabase.initialize(
       url: dotenv.env['SUPABASE_URL']!, anonKey: dotenv.env['SUPABASE_KEY']!);
 
+  // Run the app
   runApp(const StarterApp());
 }
 
+// App class
 class StarterApp extends StatefulWidget {
   const StarterApp({Key? key}) : super(key: key);
 
@@ -43,7 +47,8 @@ class _StarterAppState extends State<StarterApp> {
         ],
         child: Consumer<ThemeUtil>(builder: (context, ThemeUtil theme, child) {
           if (kDebugMode) {
-            print('The theme is dark: $theme.darkTheme.toString()');
+            String themeStatus = theme.darkTheme.toString();
+            print('Dark theme is activated: $themeStatus');
           }
           if (defaultTargetPlatform == TargetPlatform.iOS ||
               defaultTargetPlatform == TargetPlatform.android) {
@@ -69,8 +74,10 @@ class _StarterAppState extends State<StarterApp> {
                     (context, LocalAuthenticationUtil localAuthentication,
                         child) {
                   if (kDebugMode) {
+                    String localAuthenticationStatus =
+                        localAuthentication.biometrics.toString();
                     print(
-                        'Starting app, local authentication status: $localAuthentication.biometrics.toString()');
+                        'Starting app, local authentication status: $localAuthenticationStatus');
                   }
                   if (localAuthentication.biometrics == true) {
                     return const LocalAuthenticationScreen();

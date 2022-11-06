@@ -17,17 +17,16 @@ class Wrapper extends StatefulWidget {
 }
 
 class _WrapperState extends State<Wrapper> {
-  late final StreamSubscription<AuthState> _authSubscription;
+  late final StreamSubscription<AuthState> authSubscription;
   User? user;
 
   @override
   void initState() {
-    _authSubscription = supabase.auth.onAuthStateChange.listen((data) {
-      //final AuthChangeEvent event = data.event;
+    authSubscription = supabase.auth.onAuthStateChange.listen((data) {
       final Session? session = data.session;
       setState(() {
         if (kDebugMode) {
-          print('User auth change event occured');
+          print('User auth change event occured.');
         }
         user = session?.user;
       });
@@ -37,7 +36,7 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   void dispose() {
-    _authSubscription.cancel();
+    authSubscription.cancel();
     super.dispose();
   }
 
