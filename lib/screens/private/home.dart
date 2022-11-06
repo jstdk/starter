@@ -1,11 +1,13 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:provider/provider.dart';
 
 import '../../utils/loading.dart';
+import '../../utils/theme.dart';
+import '../../utils/local_authentication.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -34,24 +36,24 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          actions: [
-            ValueListenableBuilder(
-              valueListenable: AdaptiveTheme.of(context).modeChangeNotifier,
-              builder: (_, mode, child) {
-                return mode != AdaptiveThemeMode.dark
-                    ? IconButton(
-                        icon: const Icon(FontAwesomeIcons.moon),
-                        onPressed: () async {
-                          AdaptiveTheme.of(context).setDark();
-                        })
-                    : IconButton(
-                        icon: const Icon(FontAwesomeIcons.sun),
-                        onPressed: () async {
-                          AdaptiveTheme.of(context).setLight();
-                        });
-              },
-            ),
-          ],
+          //actions: [
+          //  ValueListenableBuilder(
+          //    valueListenable: AdaptiveTheme.of(context).modeChangeNotifier,
+          //    builder: (_, mode, child) {
+          //      return mode != AdaptiveThemeMode.dark
+          //          ? IconButton(
+          //              icon: const Icon(FontAwesomeIcons.moon),
+          //              onPressed: () async {
+          //                AdaptiveTheme.of(context).setDark();
+          //              })
+          //          : IconButton(
+          //              icon: const Icon(FontAwesomeIcons.sun),
+          //              onPressed: () async {
+          //                AdaptiveTheme.of(context).setLight();
+          //              });
+          //    },
+          //  ),
+          //],
         ),
         body: StreamBuilder(
           stream: data,
@@ -79,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: ListView.builder(
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
-                            itemCount: snapshot.data!.length,
+                            itemCount: (snapshot.data as List).length,
                             // display each item of the product list
                             itemBuilder: (context, index) {
                               return Card(
@@ -88,7 +90,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       vertical: 5, horizontal: 15),
                                   child: Padding(
                                     padding: const EdgeInsets.all(10),
-                                    child: Text(snapshot.data![index]['entry']),
+                                    child: Text((snapshot.data as List)[index]
+                                        ['entry']),
                                   ));
                             }),
                       ),
@@ -141,6 +144,37 @@ class _HomeScreenState extends State<HomeScreen> {
                   // Update the state of the app.
                   // ...
                 },
+              ),
+              Consumer<ThemeUtil>(
+                builder: (context, theme, child) => SwitchListTile(
+                  title: const Text(
+                    "Dark Mode",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  onChanged: (value) {
+                    theme.toggleTheme();
+                  },
+                  value: theme.darkTheme,
+                ),
+              ),
+              defaultTargetPlatform == TargetPlatform.iOS ||
+                      defaultTargetPlatform == TargetPlatform.android
+                  ? Consumer<LocalAuthenticationUtil>(
+                      builder: (context, localAuthentication, child) =>
+                          SwitchListTile(
+                        title: const Text(
+                          "Biometric Unlock",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        onChanged: (value) {
+                          localAuthentication.toggleBiometrics();
+                        },
+                        value: localAuthentication.biometrics,
+                      ),
+                    )
+                  : Container(),
+              const Divider(
+                color: Colors.white,
               ),
               const SizedBox(height: 50),
               ListTile(

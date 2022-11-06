@@ -29,11 +29,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   bool obscureText = true;
   bool signup = false;
 
-  final double breakpoint = 800;
-  final int paneProportion = 70;
-
   Future<void> signInUsingEmailAndPassword(email, password) async {
     try {
+      if (kDebugMode) {
+        print('Trying to sign in');
+      }
       await supabase.auth.signInWithPassword(email: email, password: password);
     } catch (e) {
       setState(() => {loading = false, error = 'Invalid email or password'});
@@ -46,6 +46,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   // Sign up user with email and password
   Future signUpUsingEmailAndPassword({email, password}) async {
     try {
+      if (kDebugMode) {
+        print('Trying to sign up');
+      }
       await supabase.auth.signUp(email: email, password: password);
       setState(() => {
             loading = false,
