@@ -7,11 +7,14 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:responsive_framework/utils/scroll_behavior.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import './screens/wrapper.dart';
-import './utils/theme.dart';
-import './utils/local_authentication.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+import './screens/bouncer.dart';
+import './services/theme.dart';
+import './services/local_authentication.dart';
+import './services/internationalization.dart';
+import './services/localization.dart';
 import './screens/public/local_authentication.dart';
 
 Future<void> main() async {
@@ -30,82 +33,56 @@ Future<void> main() async {
 }
 
 // App class
-class StarterApp extends StatefulWidget {
+class StarterApp extends StatelessWidget {
   const StarterApp({Key? key}) : super(key: key);
-
-  @override
-  State<StarterApp> createState() => _StarterAppState();
-}
-
-class _StarterAppState extends State<StarterApp> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => ThemeUtil()),
-          ChangeNotifierProvider(create: (_) => LocalAuthenticationUtil()),
+          ChangeNotifierProvider(create: (_) => ThemeService()),
+          ChangeNotifierProvider(create: (_) => LocalAuthenticationService()),
+          ChangeNotifierProvider(create: (_) => InternationalizationService()),
         ],
-        child: Consumer<ThemeUtil>(builder: (context, ThemeUtil theme, child) {
-          if (kDebugMode) {
-            String themeStatus = theme.darkTheme.toString();
-            print('Dark theme is activated: $themeStatus');
-          }
-          if (defaultTargetPlatform == TargetPlatform.iOS ||
-              defaultTargetPlatform == TargetPlatform.android) {
-            return MaterialApp(
-                theme: theme.darkTheme == true ? dark : light,
-                builder: (context, child) => ResponsiveWrapper.builder(
-                        BouncingScrollWrapper.builder(context, child!),
-                        maxWidth: 1200,
-                        minWidth: 450,
-                        defaultScale: true,
-                        breakpoints: [
-                          const ResponsiveBreakpoint.resize(450, name: MOBILE),
-                          const ResponsiveBreakpoint.autoScale(800,
-                              name: TABLET),
-                          const ResponsiveBreakpoint.autoScale(1000,
-                              name: TABLET),
-                          const ResponsiveBreakpoint.resize(1200,
-                              name: DESKTOP),
-                          const ResponsiveBreakpoint.autoScale(2460,
-                              name: "4K"),
-                        ]),
-                home: Scaffold(body: Consumer<LocalAuthenticationUtil>(builder:
-                    (context, LocalAuthenticationUtil localAuthentication,
-                        child) {
-                  if (kDebugMode) {
-                    String localAuthenticationStatus =
-                        localAuthentication.biometrics.toString();
-                    print(
-                        'Starting app, local authentication status: $localAuthenticationStatus');
-                  }
-                  if (localAuthentication.biometrics == true) {
-                    return const LocalAuthenticationScreen();
-                  } else {
-                    return const Wrapper();
-                  }
-                })));
-          } else {
-            return MaterialApp(
-                theme: theme.darkTheme == true ? dark : light,
-                builder: (context, child) => ResponsiveWrapper.builder(
-                        BouncingScrollWrapper.builder(context, child!),
-                        maxWidth: 1200,
-                        minWidth: 450,
-                        defaultScale: true,
-                        breakpoints: [
-                          const ResponsiveBreakpoint.resize(450, name: MOBILE),
-                          const ResponsiveBreakpoint.autoScale(800,
-                              name: TABLET),
-                          const ResponsiveBreakpoint.autoScale(1000,
-                              name: TABLET),
-                          const ResponsiveBreakpoint.resize(1200,
-                              name: DESKTOP),
-                          const ResponsiveBreakpoint.autoScale(2460,
-                              name: "4K"),
-                        ]),
-                home: const Wrapper());
-          }
+        child: Consumer3<ThemeService, InternationalizationService,
+                LocalAuthenticationService>(
+            builder: (context,
+                ThemeService theme,
+                InternationalizationService internationalization,
+                LocalAuthenticationService localAuthentication,
+                child) {
+          return MaterialApp(
+              theme: theme.darkTheme == true ? dark : light,
+              locale: internationalization.locale,
+              supportedLocales: const [
+                Locale('en', 'US'),
+                Locale('nl', ''),
+              ],
+              localizationsDelegates: const [
+                LocalizationService.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              builder: (context, child) => ResponsiveWrapper.builder(
+                      BouncingScrollWrapper.builder(context, child!),
+                      maxWidth: 1200,
+                      minWidth: 450,
+                      defaultScale: true,
+                      breakpoints: [
+                        const ResponsiveBreakpoint.resize(450, name: MOBILE),
+                        const ResponsiveBreakpoint.autoScale(800, name: TABLET),
+                        const ResponsiveBreakpoint.autoScale(1000,
+                            name: TABLET),
+                        const ResponsiveBreakpoint.resize(1200, name: DESKTOP),
+                        const ResponsiveBreakpoint.autoScale(2460, name: "4K"),
+                      ]),
+              home: Scaffold(
+                  body: (defaultTargetPlatform == TargetPlatform.iOS ||
+                          defaultTargetPlatform == TargetPlatform.android)
+                      ? localAuthentication.biometrics == true
+                          ? const LocalAuthenticationScreen()
+                          : const Bouncer()
+                      : const Bouncer()));
         }));
   }
 }

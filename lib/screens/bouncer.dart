@@ -9,24 +9,25 @@ import 'private/home.dart';
 
 final supabase = Supabase.instance.client;
 
-class Wrapper extends StatefulWidget {
-  const Wrapper({Key? key}) : super(key: key);
+class Bouncer extends StatefulWidget {
+  const Bouncer({Key? key}) : super(key: key);
 
   @override
-  State<Wrapper> createState() => _WrapperState();
+  State<Bouncer> createState() => _BouncerState();
 }
 
-class _WrapperState extends State<Wrapper> {
-  late final StreamSubscription<AuthState> authSubscription;
+class _BouncerState extends State<Bouncer> {
+  late final StreamSubscription<AuthState> _authSubscription;
   User? user;
 
   @override
   void initState() {
-    authSubscription = supabase.auth.onAuthStateChange.listen((data) {
+    _authSubscription = supabase.auth.onAuthStateChange.listen((data) {
+      //final AuthChangeEvent event = data.event;
       final Session? session = data.session;
       setState(() {
         if (kDebugMode) {
-          print('User auth change event occured.');
+          print('User auth change event occured. Session: $session');
         }
         user = session?.user;
       });
@@ -36,7 +37,7 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   void dispose() {
-    authSubscription.cancel();
+    _authSubscription.cancel();
     super.dispose();
   }
 

@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../../utils/local_authentication.dart';
-import '../../screens/wrapper.dart';
-import '../../utils/loading.dart';
+import '../../services/local_authentication.dart';
+import '../../screens/bouncer.dart';
 
 class LocalAuthenticationScreen extends StatefulWidget {
   const LocalAuthenticationScreen({Key? key}) : super(key: key);
@@ -15,8 +14,8 @@ class LocalAuthenticationScreen extends StatefulWidget {
 class _LocalAuthenticationScreenState extends State<LocalAuthenticationScreen> {
   bool hasAuthenticated = false;
 
-  Future<dynamic> getData() async {
-    final isAvailable = LocalAuthenticationUtil().checkBiometrics;
+  Future<dynamic> checkBiometrics() async {
+    final isAvailable = LocalAuthenticationService().checkBiometrics();
     return isAvailable;
   }
 
@@ -32,27 +31,26 @@ class _LocalAuthenticationScreenState extends State<LocalAuthenticationScreen> {
             return Center(
               child: Text(
                 '${snapshot.error} occurred',
-                style: TextStyle(fontSize: 18),
+                style: const TextStyle(fontSize: 18),
               ),
             );
-
-            // if we got our data
           } else if (snapshot.hasData) {
-            // Extracting data from snapshot object
-            String message = hasAuthenticated.toString();
-            print(message);
+            String localAuthenticationStatus = hasAuthenticated.toString();
+            if (kDebugMode) {
+              print('Local authentication status $localAuthenticationStatus');
+            }
 
             if (hasAuthenticated == true) {
               if (kDebugMode) {
                 print('The user is already authenticated using biometrics');
               }
-              return const Wrapper();
+              return const Bouncer();
             } else {
               if (kDebugMode) {
                 print('The user is not yet authenticated using biometrics');
               }
               if (snapshot.data == true) {
-                LocalAuthenticationUtil().authenticate().then((result) =>
+                LocalAuthenticationService().authenticate().then((result) =>
                     setState(() => result == true
                         ? hasAuthenticated = true
                         : hasAuthenticated = false));
@@ -60,7 +58,7 @@ class _LocalAuthenticationScreenState extends State<LocalAuthenticationScreen> {
                   if (kDebugMode) {
                     print('The user is now authenticated using biometrics');
                   }
-                  return const Wrapper();
+                  return const Bouncer();
                 } else {
                   if (kDebugMode) {
                     print(
@@ -71,14 +69,14 @@ class _LocalAuthenticationScreenState extends State<LocalAuthenticationScreen> {
                 }
               } else {
                 print('User can NOT use local auth');
-                return Wrapper();
+                return const Bouncer();
               }
             }
           }
         }
-        return const Loading();
+        return const CircularProgressIndicator();
       },
-      future: getData(),
+      future: checkBiometrics(),
     ));
   }
 }

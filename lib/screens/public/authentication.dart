@@ -7,8 +7,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../utils/loading.dart';
-
 // Initiate Supabase
 final supabase = Supabase.instance.client;
 
@@ -73,7 +71,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const Loading()
+        ? const CircularProgressIndicator()
         : Scaffold(
             body: ResponsiveRowColumn(
             layout: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
@@ -303,7 +301,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const Loading()
+        ? const CircularProgressIndicator()
         : Scaffold(
             body: Padding(
               padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),

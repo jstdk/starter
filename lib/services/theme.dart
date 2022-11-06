@@ -12,13 +12,13 @@ ThemeData dark = ThemeData(
   primarySwatch: Colors.indigo,
 );
 
-class ThemeUtil extends ChangeNotifier {
+class ThemeService extends ChangeNotifier {
   final String key = "theme";
   late bool _darkTheme;
 
   bool get darkTheme => _darkTheme;
 
-  ThemeUtil() {
+  ThemeService() {
     _darkTheme = false;
     loadFromPrefs();
   }
