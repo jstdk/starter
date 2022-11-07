@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -13,14 +14,12 @@ class LocalizationService {
     return Localizations.of<LocalizationService>(context, LocalizationService);
   }
 
-  // Static member to have a simple access to the delegate from the MaterialApp
   static const LocalizationsDelegate<LocalizationService> delegate =
       _LocalizationsServiceDelegate();
 
   late Map<String, String> _localizedStrings;
 
   Future<bool> load() async {
-    // Load the language JSON file from the "lang" folder
     String jsonString =
         await rootBundle.loadString('i18n/${locale.languageCode}.json');
     Map<String, dynamic> jsonMap = json.decode(jsonString);
@@ -29,10 +28,12 @@ class LocalizationService {
       return MapEntry(key, value.toString());
     });
 
+    if (kDebugMode) {
+      print('Language files for locale $locale loaded from JSON');
+    }
     return true;
   }
 
-  // This method will be called from every widget which needs a localized text
   String? translate(String key) {
     return _localizedStrings[key];
   }

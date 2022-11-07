@@ -4,7 +4,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalAuthenticationService extends ChangeNotifier {
-  final LocalAuthentication auth = LocalAuthentication();
+  final LocalAuthentication localAuthentication = LocalAuthentication();
 
   final String key = "biometrics";
   late bool _biometrics;
@@ -14,7 +14,7 @@ class LocalAuthenticationService extends ChangeNotifier {
   Future checkBiometrics() async {
     late bool canCheckBiometrics;
     try {
-      canCheckBiometrics = await auth.canCheckBiometrics;
+      canCheckBiometrics = await localAuthentication.canCheckBiometrics;
       if (canCheckBiometrics == true) {
         return true;
       } else {
@@ -31,7 +31,7 @@ class LocalAuthenticationService extends ChangeNotifier {
   Future authenticate() async {
     bool authenticated = false;
     try {
-      authenticated = await auth.authenticate(
+      authenticated = await localAuthentication.authenticate(
           localizedReason: 'Let OS determine authentication method');
       //useErrorDialogs: true,
       //stickyAuth: true);
@@ -61,12 +61,18 @@ class LocalAuthenticationService extends ChangeNotifier {
   loadFromPrefs() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     _biometrics = pref.getBool(key) ?? true;
+    if (kDebugMode) {
+      print('Biometrics loaded from storage. Biometrics is: $_biometrics');
+    }
     notifyListeners();
   }
 
   saveToPrefs() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     await pref.setBool(key, _biometrics);
+    if (kDebugMode) {
+      print('Biometrics saved to storage. Biometrics is: $_biometrics');
+    }
     notifyListeners();
   }
 }

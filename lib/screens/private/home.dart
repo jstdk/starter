@@ -34,15 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Initial Selected Value
-    String dropdownvalue = 'en';
-
-    // List of items in our dropdown menu
-    var items = [
-      'en',
-      'nl',
-    ];
-
     return Scaffold(
         appBar: AppBar(
           title: Text(LocalizationService.of(context)!.translate('title')!),
@@ -172,24 +163,31 @@ class _HomeScreenState extends State<HomeScreen> {
                     )
                   : Container(),
               Consumer<InternationalizationService>(
-                  builder: (context, internationalization, child) =>
-                      DropdownButton(
-                        value: dropdownvalue,
-                        icon: const Icon(Icons.keyboard_arrow_down),
-                        items: items.map((String items) {
-                          return DropdownMenuItem(
-                            value: items,
-                            child: Text(items),
+                builder: (context, internationalization, child) => Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 20, 5),
+                    child: Row(children: [
+                      Text(
+                          LocalizationService.of(context)!
+                              .translate('language_label')!,
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const Spacer(),
+                      DropdownButton<String>(
+                        underline: Container(color: Colors.transparent),
+                        value: internationalization.selectedItem,
+                        onChanged: (String? newValue) {
+                          internationalization
+                              .changeLanguage(Locale(newValue!));
+                        },
+                        items: internationalization.languages
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
                           );
                         }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            dropdownvalue = newValue!;
-                            internationalization
-                                .changeLanguage(Locale(newValue));
-                          });
-                        },
-                      )),
+                      )
+                    ])),
+              ),
               const Divider(
                 color: Colors.white,
               ),

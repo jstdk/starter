@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
@@ -31,12 +32,18 @@ class ThemeService extends ChangeNotifier {
   loadFromPrefs() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     _darkTheme = pref.getBool(key) ?? true;
+    if (kDebugMode) {
+      print('Theme loaded from storage. DarkTheme is: $_darkTheme');
+    }
     notifyListeners();
   }
 
   saveToPrefs() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     await pref.setBool(key, _darkTheme);
+    if (kDebugMode) {
+      print('Theme saved in storage. DarkTheme is: $_darkTheme');
+    }
     notifyListeners();
   }
 }
