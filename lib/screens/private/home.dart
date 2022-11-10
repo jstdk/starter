@@ -14,6 +14,8 @@ import '../../models/message.dart';
 import '../../models/profile.dart';
 import '../../screens/private/profile.dart';
 
+import 'dart:async';
+
 final supabase = Supabase.instance.client;
 
 class HomeScreen extends StatefulWidget {
@@ -24,8 +26,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late final Stream<List<Message>> messages;
-  late Profile profile;
+  late final Stream<List<MessageModel>> messages;
+  late ProfileModel profile;
 
   Future<void> signOut() async {
     try {
@@ -39,22 +41,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    final uid = supabase.auth.currentUser!.id;
-    final email = supabase.auth.currentUser!.email;
-    loadProfile(uid, email!);
+    loadProfile(
+        supabase.auth.currentUser!.id, supabase.auth.currentUser!.email!);
     messages = supabase
         .from('messages')
         .stream(primaryKey: ['id'])
-        .order('created_at')
-        .map((maps) =>
-            maps.map((map) => Message.fromMap(map: map, uid: uid)).toList());
+        .order('created')
+        .map((maps) => maps
+            .map((map) => MessageModel.fromMap(
+                map: map, uid: supabase.auth.currentUser!.id))
+            .toList());
     super.initState();
   }
 
   Future loadProfile(String uid, String email) async {
-    final profileRaw =
-        await supabase.from('profiles').select().eq('id', uid).single();
-    profile = Profile.fromMap(map: profileRaw, emailFromAuth: email);
+    profile = ProfileModel.fromMap(
+        map: await supabase.from('profiles').select().eq('id', uid).single(),
+        emailFromAuth: email);
   }
 
   @override
@@ -91,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: StreamBuilder<List<Message>>(
+      body: StreamBuilder<List<MessageModel>>(
         stream: messages,
         builder: (
           context,
@@ -102,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
           } else if (snapshot.connectionState == ConnectionState.active ||
               snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasError) {
-              return const Text('Error');
+              return Text(snapshot.error.toString());
             } else if (snapshot.hasData) {
               final messages = snapshot.data!;
               return ResponsiveRowColumn(
@@ -120,7 +123,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           shrinkWrap: true,
                           scrollDirection: Axis.vertical,
                           itemCount: messages.length,
-                          // display each item of the product list
                           itemBuilder: (context, index) {
                             final message = messages[index];
                             return Card(
@@ -129,9 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     vertical: 5, horizontal: 15),
                                 child: Padding(
                                   padding: const EdgeInsets.all(10),
-                                  child: Text(message.content +
-                                      ' from ' +
-                                      message.profileId),
+                                  child: Text(message.content!),
                                 ));
                           }),
                     ),

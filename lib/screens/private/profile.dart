@@ -13,7 +13,7 @@ import '../../models/profile.dart';
 final supabase = Supabase.instance.client;
 
 class ProfileScreen extends StatefulWidget {
-  final Profile? profile;
+  final ProfileModel? profile;
   const ProfileScreen({Key? key, this.profile}) : super(key: key);
 
   @override
@@ -48,6 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         : Scaffold(
             appBar: AppBar(
               title: Text('My profile'),
+              centerTitle: true,
             ),
             body: ResponsiveRowColumn(
               layout: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
@@ -91,6 +92,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 const SizedBox(height: 20.0),
                                 TextFormField(
                                     decoration: const InputDecoration(
+                                        border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        labelText: "Email",
+                                        labelStyle: TextStyle(
+                                          fontSize: 15,
+                                        ), //label style
+                                        prefixIcon:
+                                            Icon(FontAwesomeIcons.envelope),
                                         hintText: "email"),
                                     textAlign: TextAlign.left,
                                     initialValue: widget.profile!.email,
@@ -104,12 +114,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     onChanged: (val) {
                                       setState(() => email = val);
                                     }),
-                                const SizedBox(height: 20.0),
+                                const SizedBox(height: 20),
                                 Text(error ?? '',
                                     style: const TextStyle(color: Colors.red)),
-                                const SizedBox(height: 40.0),
                                 TextFormField(
                                     decoration: const InputDecoration(
+                                        border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        labelText: "Name",
+                                        labelStyle: TextStyle(
+                                          fontSize: 15,
+                                        ), //label style
+                                        prefixIcon:
+                                            Icon(FontAwesomeIcons.person),
                                         hintText: "Full name"),
                                     textAlign: TextAlign.left,
                                     initialValue: widget.profile!.fullName,

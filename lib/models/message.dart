@@ -1,33 +1,28 @@
-class Message {
-  Message({
-    required this.id,
-    required this.profileId,
-    required this.content,
-    required this.createdAt,
-    required this.isMine,
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+final supabase = Supabase.instance.client;
+
+class MessageModel {
+  MessageModel({
+    this.id,
+    this.profileId,
+    this.content,
+    //this.created,
+    this.isMine,
   });
 
-  /// ID of the message
-  final String id;
+  final String? id;
+  final String? profileId;
+  final String? content;
+  //final DateTime? created;
+  final bool? isMine;
 
-  /// ID of the user who posted the message
-  final String profileId;
-
-  /// Text content of the message
-  final String content;
-
-  /// Date and time when the message was created
-  final DateTime createdAt;
-
-  /// Whether the message is sent by the user or not.
-  final bool isMine;
-
-  Message.fromMap({
+  MessageModel.fromMap({
     required Map<String, dynamic> map,
     required String uid,
   })  : id = map['id'],
         profileId = map['profile_id'],
         content = map['content'],
-        createdAt = DateTime.parse(map['created_at']),
+        //createdAt = DateTime.parse(map['created']),
         isMine = uid == map['profile_id'];
 }

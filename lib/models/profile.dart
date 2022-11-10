@@ -1,5 +1,5 @@
-class Profile {
-  Profile({required this.id, required this.fullName, required this.email
+class ProfileModel {
+  ProfileModel({required this.id, required this.fullName, required this.email
       //required this.created,
       //required this.modified
       });
@@ -10,7 +10,7 @@ class Profile {
   //final DateTime? created;
   //final DateTime? modified;
 
-  Profile.fromMap(
+  ProfileModel.fromMap(
       {required Map<String, dynamic> map, required String emailFromAuth})
       : id = map['id'],
         fullName = map['full_name'],
