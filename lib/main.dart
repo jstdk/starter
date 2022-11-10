@@ -10,7 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import './screens/bouncer.dart';
+import './screens/root.dart';
 import './services/theme.dart';
 import './services/local_authentication.dart';
 import './services/internationalization.dart';
@@ -25,6 +25,7 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
 
   // Initiate Supabase using .env
+  HiveLocalStorage.encryptionKey = dotenv.env["SUPABASE_SECURE_KEY"];
   await Supabase.initialize(
       url: dotenv.env['SUPABASE_URL']!, anonKey: dotenv.env['SUPABASE_KEY']!);
 
@@ -81,8 +82,8 @@ class StarterApp extends StatelessWidget {
                           defaultTargetPlatform == TargetPlatform.android)
                       ? localAuthentication.biometrics == true
                           ? const LocalAuthenticationScreen()
-                          : const Bouncer()
-                      : const Bouncer()));
+                          : const Root()
+                      : const Root()));
         }));
   }
 }

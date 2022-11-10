@@ -9,25 +9,24 @@ import 'private/home.dart';
 
 final supabase = Supabase.instance.client;
 
-class Bouncer extends StatefulWidget {
-  const Bouncer({Key? key}) : super(key: key);
+class Root extends StatefulWidget {
+  const Root({Key? key}) : super(key: key);
 
   @override
-  State<Bouncer> createState() => _BouncerState();
+  State<Root> createState() => _RootState();
 }
 
-class _BouncerState extends State<Bouncer> {
+class _RootState extends State<Root> {
   late final StreamSubscription<AuthState> _authSubscription;
   User? user;
 
   @override
   void initState() {
     _authSubscription = supabase.auth.onAuthStateChange.listen((data) {
-      //final AuthChangeEvent event = data.event;
       final Session? session = data.session;
       setState(() {
         if (kDebugMode) {
-          print('User auth change event occured. Session: $session');
+          print('User auth change event occured');
         }
         user = session?.user;
       });
