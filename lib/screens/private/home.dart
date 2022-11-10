@@ -54,10 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future loadProfile(String uid, String email) async {
     final profileRaw =
         await supabase.from('profiles').select().eq('id', uid).single();
-
     profile = Profile.fromMap(map: profileRaw, emailFromAuth: email);
-
-    print(profile);
   }
 
   @override
