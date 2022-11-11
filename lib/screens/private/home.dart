@@ -13,8 +13,7 @@ import '../../services/localization.dart';
 import '../../models/message.dart';
 import '../../models/profile.dart';
 import '../../screens/private/profile.dart';
-
-import 'dart:async';
+import '../../utils/loading.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -101,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
           snapshot,
         ) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return const LoadingUtil();
           } else if (snapshot.connectionState == ConnectionState.active ||
               snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasError) {

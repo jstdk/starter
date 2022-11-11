@@ -1,13 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../models/profile.dart';
+import '../../screens/root.dart';
 
 // Initiate Supabase
 final supabase = Supabase.instance.client;
@@ -26,15 +24,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? error;
   String? email;
   String? fullName;
-  bool signup = false;
+  String? passwordCurrent;
+  String? passwordNew;
 
-  Future<void> updateProfile(email) async {
+  Future updateProfileProcedure(id, fullName, email) async {
     try {
       if (kDebugMode) {
         print('Trying to update profile');
       }
+      final data = await supabase
+          .from('profiles')
+          .update({'full_name': fullName}).match({'id': id});
+      return data;
     } catch (e) {
-      setState(() => {loading = false, error = 'Invalid email or password'});
+      setState(() => {loading = false, error = 'Something went wrong'});
       if (kDebugMode) {
         print(e);
       }
@@ -130,7 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             Icon(FontAwesomeIcons.person),
                                         hintText: "Full name"),
                                     textAlign: TextAlign.left,
-                                    initialValue: widget.profile!.fullName,
+                                    initialValue: widget.profile?.fullName,
                                     autofocus: true,
                                     validator: (String? value) {
                                       //print(value.length);
@@ -144,16 +147,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 const SizedBox(height: 20.0),
                                 Text(error ?? '',
                                     style: const TextStyle(color: Colors.red)),
-                                GestureDetector(
-                                    child: const Text("Reset my password"),
-                                    onTap: () {
-                                      showMaterialModalBottomSheet(
-                                          expand: false,
-                                          context: context,
-                                          builder: (context) => const SizedBox(
-                                              height: 300,
-                                              child: ResetPassword()));
-                                    }),
                                 const SizedBox(height: 20.0),
                                 SizedBox(
                                   width: 300,
@@ -165,10 +158,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                     onPressed: () async {
+                                      email = widget.profile?.email ?? email;
+                                      fullName =
+                                          widget.profile?.fullName ?? fullName;
+                                      //passwordNew = widget.profile?.password ?? password;
+
                                       if (formKeyForm.currentState!
                                           .validate()) {
                                         setState(() => loading = true);
-                                        updateProfile(email);
+                                        final response =
+                                            await updateProfileProcedure(
+                                                widget.profile?.id,
+                                                fullName,
+                                                email);
+                                        print(response);
+                                        if (response == null) {
+                                          setState(() => loading = false);
+                                          if (!mounted) return;
+                                          Navigator.of(context)
+                                              .pushAndRemoveUntil(
+                                                  MaterialPageRoute(
+                                                      builder:
+                                                          (context) =>
+                                                              const Root()),
+                                                  (Route<dynamic> route) =>
+                                                      false);
+                                        }
                                       } else {
                                         setState(() {
                                           loading = false;
@@ -184,101 +199,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ))
               ],
             ));
-  }
-}
-
-class ResetPassword extends StatefulWidget {
-  const ResetPassword({Key? key}) : super(key: key);
-
-  @override
-  State<ResetPassword> createState() => _ResetPasswordState();
-}
-
-class _ResetPasswordState extends State<ResetPassword> {
-  final _formKeyForm = GlobalKey<FormState>();
-  bool loading = false;
-  String error = '';
-  String? email;
-  String? resetPasswordRequestSuccess;
-
-  Future<void> resetPassword(email) async {
-    try {
-      await supabase.auth.resetPasswordForEmail(
-        email,
-        redirectTo: kIsWeb ? null : 'io.supabase.flutter://reset-callback/',
-      );
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return loading
-        ? const CircularProgressIndicator()
-        : Scaffold(
-            body: Padding(
-              padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
-              child: Form(
-                  key: _formKeyForm,
-                  child: Column(
-                    children: <Widget>[
-                      const SizedBox(height: 30.0),
-                      const Text('Reset your password',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 25.0, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 20.0),
-                      const SizedBox(height: 10),
-                      Text(resetPasswordRequestSuccess ?? ''),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                          decoration: const InputDecoration(hintText: "Email"),
-                          textAlign: TextAlign.left,
-                          autofocus: true,
-                          validator: (String? value) {
-                            //print(value.length);
-                            return (value != null && value.length < 2)
-                                ? 'Please provide a valid email.'
-                                : null;
-                          },
-                          onChanged: (val) {
-                            setState(() => email = val);
-                          }),
-                      const SizedBox(height: 20.0),
-                      SizedBox(
-                        width: 300,
-                        child: ElevatedButton(
-                          child: const Text(
-                            "Reset password",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          onPressed: () async {
-                            if (_formKeyForm.currentState!.validate()) {
-                              setState(() => loading = true);
-                              resetPassword(email);
-                              setState(() => loading = false);
-                              setState(() => resetPasswordRequestSuccess =
-                                  'Reset email sent, please check your email');
-                              Timer(const Duration(seconds: 3), () {
-                                Navigator.pop(context);
-                              });
-                            } else {
-                              setState(() {
-                                loading = false;
-                                error = 'Something went wrong.';
-                              });
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  )),
-            ),
-          );
   }
 }

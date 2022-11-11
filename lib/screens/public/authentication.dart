@@ -7,6 +7,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../utils/loading.dart';
+
 // Initiate Supabase
 final supabase = Supabase.instance.client;
 
@@ -62,6 +64,24 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     }
   }
 
+  Future<void> signInUsingGoogle() async {
+    try {
+      if (kDebugMode) {
+        print('Trying to sign in');
+      }
+      await supabase.auth.signInWithOAuth(
+        Provider.google,
+        redirectTo:
+            kIsWeb ? null : 'io.supabase.flutterquickstart://login-callback/',
+      );
+    } catch (e) {
+      setState(() => {loading = false, error = 'Invalid email or password'});
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
   void _toggle() {
     setState(() {
       obscureText = !obscureText;
@@ -71,7 +91,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const CircularProgressIndicator()
+        ? const LoadingUtil()
         : Scaffold(
             body: ResponsiveRowColumn(
             layout: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
@@ -222,46 +242,45 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                   });
                                 },
                               ),
-                              //const SizedBox(height: 10.0),
-                              // Row(
-                              //   children: [
-                              //   (kIsWeb && Platform.isIOS)
-                              //       ? const Spacer()
-                              //       : Container(),
-                              //   IconButton(
-                              //       icon:
-                              //           const FaIcon(FontAwesomeIcons.facebookSquare),
-                              //       onPressed: () {
-                              //         setState(() => loading = true);
-                              //         UserService()
-                              //             .signInWithFacebook()
-                              //             .then((result) {});
-                              //       }),
-                              //   const Spacer(),
-                              //   IconButton(
-                              //       icon: const FaIcon(FontAwesomeIcons.google),
-                              //       onPressed: () {
-                              //         setState(() => loading = true);
-                              //         UserService()
-                              //             .signInWithGoogle()
-                              //             .then((result) {});
-                              //       }),
-                              //   (Platform.isIOS) ? const Spacer() : Container(),
-                              //   (kIsWeb || Platform.isIOS)
-                              //       ? IconButton(
-                              //           icon: const FaIcon(FontAwesomeIcons.apple),
-                              //           onPressed: () {
-                              //             setState(() => loading = true);
-                              //             UserService()
-                              //                 .signInWithApple()
-                              //                 .then((result) {});
-                              //           })
-                              //       : Container(),
-                              //   (kIsWeb && Platform.isIOS)
-                              //       ? const Spacer()
-                              //       : Container(),
-                              //   ],
-                              // ),
+                              const SizedBox(height: 10.0),
+                              Row(
+                                children: [
+                                  //   (kIsWeb && Platform.isIOS)
+                                  //       ? const Spacer()
+                                  //       : Container(),
+                                  //   IconButton(
+                                  //       icon:
+                                  //           const FaIcon(FontAwesomeIcons.facebookSquare),
+                                  //       onPressed: () {
+                                  //         setState(() => loading = true);
+                                  //         UserService()
+                                  //             .signInWithFacebook()
+                                  //             .then((result) {});
+                                  //       }),
+                                  //   const Spacer(),
+                                  IconButton(
+                                      icon:
+                                          const FaIcon(FontAwesomeIcons.google),
+                                      onPressed: () {
+                                        setState(() => loading = true);
+                                        signInUsingGoogle();
+                                      }),
+                                  //   (Platform.isIOS) ? const Spacer() : Container(),
+                                  //   (kIsWeb || Platform.isIOS)
+                                  //       ? IconButton(
+                                  //           icon: const FaIcon(FontAwesomeIcons.apple),
+                                  //           onPressed: () {
+                                  //             setState(() => loading = true);
+                                  //             UserService()
+                                  //                 .signInWithApple()
+                                  //                 .then((result) {});
+                                  //           })
+                                  //       : Container(),
+                                  //   (kIsWeb && Platform.isIOS)
+                                  //       ? const Spacer()
+                                  //       : Container(),
+                                ],
+                              ),
                             ],
                           )),
                     ],
@@ -301,7 +320,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const CircularProgressIndicator()
+        ? const LoadingUtil()
         : Scaffold(
             body: Padding(
               padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
