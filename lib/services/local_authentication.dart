@@ -13,9 +13,11 @@ class LocalAuthenticationService extends ChangeNotifier {
 
   Future checkBiometrics() async {
     late bool canCheckBiometrics;
+
     try {
       canCheckBiometrics = await localAuthentication.canCheckBiometrics;
-      if (canCheckBiometrics == true) {
+      final isDeviceSupported = await localAuthentication.isDeviceSupported();
+      if (canCheckBiometrics == true && isDeviceSupported == true) {
         return true;
       } else {
         return false;

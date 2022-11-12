@@ -71,8 +71,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       }
       await supabase.auth.signInWithOAuth(
         Provider.google,
-        redirectTo:
-            kIsWeb ? null : 'io.supabase.flutterquickstart://login-callback/',
+        redirectTo: kIsWeb ? null : 'io.supabase.starter://login-callback/',
       );
     } catch (e) {
       setState(() => {loading = false, error = 'Invalid email or password'});
