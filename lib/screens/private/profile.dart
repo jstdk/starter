@@ -46,6 +46,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(supabase.auth);
+
     return loading
         ? const CircularProgressIndicator()
         : Scaffold(
@@ -53,151 +55,156 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: Text('My profile'),
               centerTitle: true,
             ),
-            body: ResponsiveRowColumn(
-              layout: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
-                  ? ResponsiveRowColumnType.COLUMN
-                  : ResponsiveRowColumnType.ROW,
-              rowMainAxisAlignment: MainAxisAlignment.center,
-              rowPadding: const EdgeInsets.all(50),
-              columnPadding: const EdgeInsets.all(50),
-              children: [
-                ResponsiveRowColumnItem(
-                    rowFlex: 1,
-                    child: ResponsiveVisibility(
-                      hiddenWhen: const [Condition.smallerThan(name: TABLET)],
+            body: SingleChildScrollView(
+              child: ResponsiveRowColumn(
+                layout: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
+                    ? ResponsiveRowColumnType.COLUMN
+                    : ResponsiveRowColumnType.ROW,
+                rowMainAxisAlignment: MainAxisAlignment.center,
+                rowPadding: const EdgeInsets.all(50),
+                columnPadding: const EdgeInsets.all(50),
+                children: [
+                  ResponsiveRowColumnItem(
+                      rowFlex: 1,
+                      child: ResponsiveVisibility(
+                        hiddenWhen: const [Condition.smallerThan(name: TABLET)],
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: const [
+                            Text('SomeProfileStuff'),
+                            SizedBox(
+                              width: 300,
+                            )
+                          ],
+                        ),
+                      )),
+                  ResponsiveRowColumnItem(
+                      rowFlex: 1,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        children: const [
-                          Text('SomeProfileStuff'),
-                          SizedBox(
-                            width: 300,
-                          )
-                        ],
-                      ),
-                    )),
-                ResponsiveRowColumnItem(
-                    rowFlex: 1,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Form(
-                            key: formKeyForm,
-                            child: Column(
-                              children: <Widget>[
-                                const SizedBox(height: 40.0),
-                                const Text('My Profile',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 25.0,
-                                        fontWeight: FontWeight.bold)),
-                                const SizedBox(height: 20.0),
-                                TextFormField(
-                                    decoration: const InputDecoration(
-                                        border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10))),
-                                        labelText: "Email",
-                                        labelStyle: TextStyle(
-                                          fontSize: 15,
-                                        ), //label style
-                                        prefixIcon:
-                                            Icon(FontAwesomeIcons.envelope),
-                                        hintText: "email"),
-                                    textAlign: TextAlign.left,
-                                    initialValue: widget.profile!.email,
-                                    autofocus: true,
-                                    validator: (String? value) {
-                                      //print(value.length);
-                                      return (value != null && value.length < 2)
-                                          ? 'Please provide a valid email.'
-                                          : null;
-                                    },
-                                    onChanged: (val) {
-                                      setState(() => email = val);
-                                    }),
-                                const SizedBox(height: 20),
-                                Text(error ?? '',
-                                    style: const TextStyle(color: Colors.red)),
-                                TextFormField(
-                                    decoration: const InputDecoration(
-                                        border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10))),
-                                        labelText: "Name",
-                                        labelStyle: TextStyle(
-                                          fontSize: 15,
-                                        ), //label style
-                                        prefixIcon:
-                                            Icon(FontAwesomeIcons.person),
-                                        hintText: "Full name"),
-                                    textAlign: TextAlign.left,
-                                    initialValue: widget.profile?.fullName,
-                                    autofocus: true,
-                                    validator: (String? value) {
-                                      //print(value.length);
-                                      return (value != null && value.length < 2)
-                                          ? 'Please provide a valid name.'
-                                          : null;
-                                    },
-                                    onChanged: (val) {
-                                      setState(() => fullName = val);
-                                    }),
-                                const SizedBox(height: 20.0),
-                                Text(error ?? '',
-                                    style: const TextStyle(color: Colors.red)),
-                                const SizedBox(height: 20.0),
-                                SizedBox(
-                                  width: 300,
-                                  child: ElevatedButton(
-                                    child: const Text(
-                                      "Update profile",
+                        children: [
+                          Form(
+                              key: formKeyForm,
+                              child: Column(
+                                children: <Widget>[
+                                  const SizedBox(height: 40.0),
+                                  const Text('My Profile',
+                                      textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    onPressed: () async {
-                                      email = widget.profile?.email ?? email;
-                                      fullName =
-                                          widget.profile?.fullName ?? fullName;
-                                      //passwordNew = widget.profile?.password ?? password;
+                                          fontSize: 25.0,
+                                          fontWeight: FontWeight.bold)),
+                                  const SizedBox(height: 20.0),
+                                  TextFormField(
+                                      decoration: const InputDecoration(
+                                          border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5))),
+                                          labelText: "Email",
+                                          labelStyle: TextStyle(
+                                            fontSize: 15,
+                                          ), //label style
+                                          prefixIcon:
+                                              Icon(FontAwesomeIcons.envelope),
+                                          hintText: "email"),
+                                      textAlign: TextAlign.left,
+                                      initialValue: widget.profile!.email,
+                                      autofocus: true,
+                                      validator: (String? value) {
+                                        //print(value.length);
+                                        return (value != null &&
+                                                value.length < 2)
+                                            ? 'Please provide a valid email.'
+                                            : null;
+                                      },
+                                      onChanged: (val) {
+                                        setState(() => email = val);
+                                      }),
+                                  const SizedBox(height: 20),
+                                  Text(error ?? '',
+                                      style:
+                                          const TextStyle(color: Colors.red)),
+                                  TextFormField(
+                                      decoration: const InputDecoration(
+                                          border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5))),
+                                          labelText: "Name",
+                                          labelStyle: TextStyle(
+                                            fontSize: 15,
+                                          ), //label style
+                                          prefixIcon:
+                                              Icon(FontAwesomeIcons.person),
+                                          hintText: "Full name"),
+                                      textAlign: TextAlign.left,
+                                      initialValue: widget.profile?.fullName,
+                                      autofocus: true,
+                                      validator: (String? value) {
+                                        //print(value.length);
+                                        return (value != null &&
+                                                value.length < 2)
+                                            ? 'Please provide a valid name.'
+                                            : null;
+                                      },
+                                      onChanged: (val) {
+                                        setState(() => fullName = val);
+                                      }),
+                                  const SizedBox(height: 20.0),
+                                  Text(error ?? '',
+                                      style:
+                                          const TextStyle(color: Colors.red)),
+                                  const SizedBox(height: 20.0),
+                                  SizedBox(
+                                    width: 300,
+                                    child: ElevatedButton(
+                                      child: const Text(
+                                        "Update profile",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      onPressed: () async {
+                                        email = widget.profile?.email ?? email;
+                                        fullName = widget.profile?.fullName ??
+                                            fullName;
+                                        //passwordNew = widget.profile?.password ?? password;
 
-                                      if (formKeyForm.currentState!
-                                          .validate()) {
-                                        setState(() => loading = true);
-                                        final response =
-                                            await updateProfileProcedure(
-                                                widget.profile?.id,
-                                                fullName,
-                                                email);
-                                        print(response);
-                                        if (response == null) {
-                                          setState(() => loading = false);
-                                          if (!mounted) return;
-                                          Navigator.of(context)
-                                              .pushAndRemoveUntil(
-                                                  MaterialPageRoute(
-                                                      builder:
-                                                          (context) =>
-                                                              const Root()),
-                                                  (Route<dynamic> route) =>
-                                                      false);
+                                        if (formKeyForm.currentState!
+                                            .validate()) {
+                                          setState(() => loading = true);
+                                          final response =
+                                              await updateProfileProcedure(
+                                                  widget.profile?.id,
+                                                  fullName,
+                                                  email);
+                                          print(response);
+                                          if (response == null) {
+                                            setState(() => loading = false);
+                                            if (!mounted) return;
+                                            Navigator.of(context)
+                                                .pushAndRemoveUntil(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const Root()),
+                                                    (Route<dynamic> route) =>
+                                                        false);
+                                          }
+                                        } else {
+                                          setState(() {
+                                            loading = false;
+                                            error = 'Something went wrong.';
+                                          });
                                         }
-                                      } else {
-                                        setState(() {
-                                          loading = false;
-                                          error = 'Something went wrong.';
-                                        });
-                                      }
-                                    },
+                                      },
+                                    ),
                                   ),
-                                ),
-                              ],
-                            )),
-                      ],
-                    ))
-              ],
+                                ],
+                              )),
+                        ],
+                      ))
+                ],
+              ),
             ));
   }
 }

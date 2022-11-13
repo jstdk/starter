@@ -17,6 +17,7 @@ import './services/internationalization.dart';
 import './services/localization.dart';
 import './screens/public/local_authentication.dart';
 
+// * Initialize app
 Future<void> main() async {
   // Initial setup
   WidgetsFlutterBinding.ensureInitialized();
