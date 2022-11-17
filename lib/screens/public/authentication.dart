@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -89,6 +88,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         email,
         redirectTo: kIsWeb ? null : 'io.supabase.flutter://reset-callback/',
       );
+      setState(() {
+        loading = false;
+        resetPasswordRequestSuccess =
+            'Reset email sent, please check your email';
+      });
+      Timer(const Duration(seconds: 3), () {
+        setState(() {
+          reset = false;
+        });
+      });
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -341,12 +350,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   if (formKey.currentState!.validate()) {
                     setState(() => loading = true);
                     resetPassword(email);
-                    setState(() => loading = false);
-                    setState(() => resetPasswordRequestSuccess =
-                        'Reset email sent, please check your email');
-                    Timer(const Duration(seconds: 3), () {
-                      Navigator.pop(context);
-                    });
                   } else {
                     setState(() {
                       loading = false;

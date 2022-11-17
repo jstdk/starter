@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../models/profile.dart';
 import '../../screens/root.dart';
@@ -27,27 +30,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? passwordCurrent;
   String? passwordNew;
 
-  Future updateProfileProcedure(id, fullName, email) async {
+  XFile? avatarFile = null;
+  String? avatarPath = null;
+
+  Future updateProfile(id, fullName, email) async {
     try {
       if (kDebugMode) {
         print('Trying to update profile');
       }
-      final data = await supabase
-          .from('profiles')
-          .update({'full_name': fullName}).match({'id': id});
-      return data;
+      final data = await supabase.from('profiles').update(
+          {'full_name': fullName, 'avatar': '$id.png'}).match({'id': id});
+      final avatarFile = File('path/to/file');
+
+      final String path = await supabase.storage.from('avatars').upload(
+            'public/$id.png',
+            File(avatarPath!),
+            fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+          );
+      print(path);
     } catch (e) {
-      setState(() => {loading = false, error = 'Something went wrong'});
+      setState(() => {loading = false, error = 'Something went wrong'});
       if (kDebugMode) {
         print(e);
       }
     }
   }
 
+  final ImagePicker _picker = ImagePicker();
+
+  Future getAvatar() async {
+    // Pick an image
+    //final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    // Capture a photo
+    setState(() => {loading = true});
+
+    avatarFile = await _picker.pickImage(source: ImageSource.camera);
+
+    setState(() => {loading = false, avatarPath = avatarFile!.path});
+  }
+
   @override
   Widget build(BuildContext context) {
-    print(supabase.auth);
-
     return loading
         ? const CircularProgressIndicator()
         : Scaffold(
@@ -95,7 +118,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       style: TextStyle(
                                           fontSize: 25.0,
                                           fontWeight: FontWeight.bold)),
-                                  const SizedBox(height: 20.0),
+                                  const SizedBox(height: 40.0),
+                                  GestureDetector(
+                                    onTap: () async => {await getAvatar()},
+                                    child: SizedBox(
+                                        height: 120.0,
+                                        width: 120.0,
+                                        child: avatarPath != null
+                                            ? CircleAvatar(
+                                                backgroundImage: FileImage(
+                                                    File(avatarPath!)),
+                                              )
+                                            : const CircleAvatar(
+                                                backgroundImage: NetworkImage(
+                                                    'https://lh3.googleusercontent.com/a-/AAuE7mChgTiAe-N8ibcM3fB_qvGdl2vQ9jvjYv0iOOjB=s96-c'),
+                                              )),
+                                  ),
+                                  const SizedBox(height: 40.0),
                                   TextFormField(
                                       decoration: const InputDecoration(
                                           border: OutlineInputBorder(
@@ -156,13 +195,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           const TextStyle(color: Colors.red)),
                                   const SizedBox(height: 20.0),
                                   SizedBox(
-                                    width: 300,
+                                    width: double.infinity,
                                     child: ElevatedButton(
-                                      child: const Text(
-                                        "Update profile",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(15.0),
+                                        child: Text(
+                                          "Update profile",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
                                       ),
                                       onPressed: () async {
                                         email = widget.profile?.email ?? email;
@@ -173,11 +215,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         if (formKeyForm.currentState!
                                             .validate()) {
                                           setState(() => loading = true);
-                                          final response =
-                                              await updateProfileProcedure(
-                                                  widget.profile?.id,
-                                                  fullName,
-                                                  email);
+                                          final response = await updateProfile(
+                                              widget.profile?.id,
+                                              fullName,
+                                              email);
                                           print(response);
                                           if (response == null) {
                                             setState(() => loading = false);
