@@ -78,13 +78,15 @@ class StarterApp extends StatelessWidget {
                         const ResponsiveBreakpoint.resize(1200, name: DESKTOP),
                         const ResponsiveBreakpoint.autoScale(2460, name: "4K"),
                       ]),
-              home: Scaffold(
-                  body: (defaultTargetPlatform == TargetPlatform.iOS ||
-                          defaultTargetPlatform == TargetPlatform.android)
-                      ? localAuthentication.biometrics == true
-                          ? const LocalAuthenticationScreen()
-                          : const Root()
-                      : const Root()));
+              home: SafeArea(
+                child: Scaffold(
+                    body: (defaultTargetPlatform == TargetPlatform.iOS ||
+                            defaultTargetPlatform == TargetPlatform.android)
+                        ? localAuthentication.biometrics == true
+                            ? const LocalAuthenticationScreen()
+                            : const Root()
+                        : const Root()),
+              ));
         }));
   }
 }
