@@ -31,7 +31,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? passwordNew;
 
   XFile? avatarFile = null;
-  String? avatarPath = null;
+  String? avatarPathLocal = null;
+  String? avatarPathOnline = null;
 
   Future updateProfile(id, fullName, email) async {
     try {
@@ -40,11 +41,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
       final data = await supabase.from('profiles').update(
           {'full_name': fullName, 'avatar': '$id.png'}).match({'id': id});
-      final avatarFile = File('path/to/file');
 
       final String path = await supabase.storage.from('avatars').upload(
             'public/$id.png',
-            File(avatarPath!),
+            File(avatarPathLocal!),
             fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
           );
       print(path);
@@ -58,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   final ImagePicker _picker = ImagePicker();
 
-  Future getAvatar() async {
+  Future createAvatarToUpload() async {
     // Pick an image
     //final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     // Capture a photo
@@ -66,7 +66,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     avatarFile = await _picker.pickImage(source: ImageSource.camera);
 
-    setState(() => {loading = false, avatarPath = avatarFile!.path});
+    setState(() => {loading = false, avatarPathLocal = avatarFile!.path});
+  }
+
+  Future hasAvatarInProfile(id) async {
+    if (widget.profile?.avatar != null) {
+      final String tempAvatarPathOnline =
+          supabase.storage.from('avatars').getPublicUrl('$id.png');
+
+      setState(() => {avatarPathOnline = tempAvatarPathOnline});
+
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @override
@@ -120,19 +133,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           fontWeight: FontWeight.bold)),
                                   const SizedBox(height: 40.0),
                                   GestureDetector(
-                                    onTap: () async => {await getAvatar()},
+                                    onTap: () async =>
+                                        {await createAvatarToUpload()},
                                     child: SizedBox(
                                         height: 120.0,
                                         width: 120.0,
-                                        child: avatarPath != null
+                                        child: avatarPathLocal != null
                                             ? CircleAvatar(
                                                 backgroundImage: FileImage(
-                                                    File(avatarPath!)),
+                                                    File(avatarPathLocal!)),
                                               )
-                                            : const CircleAvatar(
-                                                backgroundImage: NetworkImage(
-                                                    'https://lh3.googleusercontent.com/a-/AAuE7mChgTiAe-N8ibcM3fB_qvGdl2vQ9jvjYv0iOOjB=s96-c'),
-                                              )),
+                                            // ignore: unrelated_type_equality_checks
+                                            : hasAvatarInProfile(
+                                                        widget.profile?.id) ==
+                                                    true
+                                                ? CircleAvatar(
+                                                    backgroundImage:
+                                                        NetworkImage(
+                                                            avatarPathOnline!),
+                                                  )
+                                                : const CircleAvatar(
+                                                    backgroundImage: NetworkImage(
+                                                        'https://lh3.googleusercontent.com/a-/AAuE7mChgTiAe-N8ibcM3fB_qvGdl2vQ9jvjYv0iOOjB=s96-c'),
+                                                  )),
                                   ),
                                   const SizedBox(height: 40.0),
                                   TextFormField(
