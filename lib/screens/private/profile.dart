@@ -43,14 +43,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (kDebugMode) {
         print('Trying to update profile');
       }
+      print(avatarPathLocal!);
+      final avatarFile = File(avatarPathLocal!);
+      final String path = await supabase.storage.from('avatars').upload(
+            'public/$id.jpg',
+            avatarFile,
+            fileOptions: const FileOptions(
+                contentType: 'image/jpeg', cacheControl: '3600', upsert: true),
+          );
       final data = await supabase.from('profiles').update(
           {'full_name': fullName, 'avatar': '$id.jpg'}).match({'id': id});
-
-      final String path = await supabase.storage.from('avatars').upload(
-            '$id.jpg',
-            File(avatarPathLocal!),
-            fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
-          );
     } catch (e) {
       setState(() => {loading = false, error = 'Something went wrong'});
       if (kDebugMode) {
@@ -74,20 +76,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future prepareAvatarOnLoad() async {
     print(widget.profile?.avatar);
-
     if (widget.profile?.avatar != '') {
       avatarPathOnline = await supabase.storage
-          .from('avatars')
+          .from('avatars/public')
           .createSignedUrl(widget.profile!.avatar, 60);
 
-      print(avatarPathOnline);
-
-      // final String avatarPathOnline =
-      //     supabase.storage.from('avatars').getPublicUrl('$id.jpg');
-      setState(() => {loading = false});
       return avatarPathOnline;
     } else {
-      setState(() => {loading = false});
       return emptyAvatar;
     }
   }
@@ -305,7 +300,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const CircularProgressIndicator()
+        ? const LoadingUtil()
         : Scaffold(
             appBar: AppBar(
               title: const Text(!kIsWeb ? 'My profile' : ''),

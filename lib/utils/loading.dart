@@ -7,8 +7,15 @@ class LoadingUtil extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const <Widget>[
-        Center(child: CircularProgressIndicator()),
+      children: <Widget>[
+        Center(
+            child: SizedBox(
+          height: 50.0,
+          width: 50.0,
+          child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).colorScheme.primary)),
+        )),
       ],
     );
   }
