@@ -172,16 +172,27 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Text('Settings'),
             ),
             const SizedBox(height: 20.0),
-            ListTile(
-              title: const Text('My profile'),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ProfileScreen(profile: profile),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
+              child: Row(children: [
+                const Text('My Profile',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(
+                    FontAwesomeIcons.circleChevronRight,
                   ),
-                );
-              },
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ProfileScreen(profile: profile),
+                      ),
+                    );
+                  },
+                ),
+              ]),
             ),
+            const SizedBox(height: 5.0),
             Consumer<ThemeService>(
               builder: (context, theme, child) => SwitchListTile(
                 title: const Text(
@@ -239,11 +250,21 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Colors.white,
             ),
             const SizedBox(height: 50),
-            ListTile(
-              title: const Text('Sign out'),
-              onTap: () {
-                signOut();
-              },
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
+              child: Row(children: [
+                const Text('Sign Out',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(
+                    FontAwesomeIcons.circleChevronRight,
+                  ),
+                  onPressed: () {
+                    signOut();
+                  },
+                ),
+              ]),
             ),
           ],
         ),
