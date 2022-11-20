@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../models/profile.dart';
@@ -178,7 +179,12 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
             Text(error ?? '', style: const TextStyle(color: Colors.red)),
             const SizedBox(height: 20.0),
             SizedBox(
-              width: double.infinity,
+              width: ResponsiveValue(context,
+                  defaultValue: 300.0,
+                  valueWhen: const [
+                    Condition.largerThan(name: MOBILE, value: 300.0),
+                    Condition.smallerThan(name: TABLET, value: double.infinity)
+                  ]).value,
               child: ElevatedButton(
                 child: const Padding(
                   padding: EdgeInsets.all(15.0),

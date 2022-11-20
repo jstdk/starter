@@ -117,19 +117,27 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         child: Column(
           children: <Widget>[
             const SizedBox(height: 10.0),
-            const Text('Get Started',
+            Text('Get Started',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold)),
+                style: TextStyle(
+                    fontSize: ResponsiveValue(context,
+                        defaultValue: 30.0,
+                        valueWhen: const [
+                          Condition.smallerThan(name: DESKTOP, value: 20.0),
+                          Condition.largerThan(name: TABLET, value: 30.0)
+                        ]).value,
+                    fontWeight: FontWeight.bold)),
             const SizedBox(height: 40.0),
             SizedBox(
-              width: double.infinity,
+              width: ResponsiveValue(context,
+                  defaultValue: 300.0,
+                  valueWhen: const [
+                    Condition.largerThan(name: MOBILE, value: 300.0),
+                    Condition.smallerThan(name: TABLET, value: double.infinity)
+                  ]).value,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    side: BorderSide(
-                      width: 2.0,
-                      color: Theme.of(context).colorScheme.primary,
-                    )),
+                    backgroundColor: Colors.transparent),
                 onPressed: () async {
                   signInUsingGoogle();
                 },
@@ -185,15 +193,18 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   ), //label style
                   prefixIcon: const Padding(
                     padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                    child: Icon(FontAwesomeIcons.envelope),
+                    child: Icon(FontAwesomeIcons.unlockKeyhole),
                   ),
-                  suffixIcon: InkWell(
-                    onTap: _toggle,
-                    child: Icon(
-                      obscureText
-                          ? FontAwesomeIcons.eye
-                          : FontAwesomeIcons.eyeSlash,
-                      size: 20.0,
+                  suffixIcon: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+                    child: InkWell(
+                      onTap: _toggle,
+                      child: Icon(
+                        obscureText
+                            ? FontAwesomeIcons.eye
+                            : FontAwesomeIcons.eyeSlash,
+                        size: 20.0,
+                      ),
                     ),
                   ),
                 ),
@@ -217,7 +228,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 }),
             const SizedBox(height: 20.0),
             SizedBox(
-              width: double.infinity,
+              width: ResponsiveValue(context,
+                  defaultValue: 300.0,
+                  valueWhen: const [
+                    Condition.largerThan(name: MOBILE, value: 300.0),
+                    Condition.smallerThan(name: TABLET, value: double.infinity)
+                  ]).value,
               child: signup == false
                   ? ElevatedButton(
                       child: const Padding(
@@ -268,14 +284,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             ]),
             const SizedBox(height: 30.0),
             SizedBox(
-              width: double.infinity,
+              width: ResponsiveValue(context,
+                  defaultValue: 300.0,
+                  valueWhen: const [
+                    Condition.largerThan(name: MOBILE, value: 300.0),
+                    Condition.smallerThan(name: TABLET, value: double.infinity)
+                  ]).value,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    side: BorderSide(
-                      width: 2.0,
-                      color: Theme.of(context).colorScheme.primary,
-                    )),
+                  backgroundColor: Colors.transparent,
+                ),
                 onPressed: () {
                   setState(() {
                     formKey.currentState!.reset();
@@ -308,7 +326,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold)),
             const SizedBox(height: 20.0),
-            const SizedBox(height: 10),
             Text(resetPasswordRequestSuccess ?? ''),
             const SizedBox(height: 10),
             TextFormField(
@@ -336,7 +353,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 }),
             const SizedBox(height: 20.0),
             SizedBox(
-              width: double.infinity,
+              width: ResponsiveValue(context,
+                  defaultValue: 300.0,
+                  valueWhen: const [
+                    Condition.largerThan(name: MOBILE, value: 300.0),
+                    Condition.smallerThan(name: TABLET, value: double.infinity)
+                  ]).value,
               child: ElevatedButton(
                 child: const Padding(
                   padding: EdgeInsets.all(15.0),
@@ -375,56 +397,62 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     return loading
         ? const LoadingUtil()
         : Scaffold(
+            appBar: AppBar(),
             resizeToAvoidBottomInset: false,
             body: SingleChildScrollView(
-              child: ResponsiveRowColumn(
-                layout: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
-                    ? ResponsiveRowColumnType.COLUMN
-                    : ResponsiveRowColumnType.ROW,
-                rowMainAxisAlignment: MainAxisAlignment.center,
-                rowPadding: const EdgeInsets.all(20),
-                columnPadding: const EdgeInsets.all(20),
+              child: Column(
                 children: [
-                  ResponsiveRowColumnItem(
-                      rowFlex: 1,
-                      child: ResponsiveVisibility(
-                        hiddenWhen: const [Condition.smallerThan(name: TABLET)],
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [
-                            Text('YEAH!'),
-                            SizedBox(
-                              width: 300,
-                            )
-                          ],
-                        ),
-                      )),
-                  ResponsiveRowColumnItem(
-                      rowFlex: 1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.all(15.0),
-                            padding: const EdgeInsets.all(3.0),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Theme.of(context).colorScheme.primary),
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(10),
-                              ), //BorderRadius.all
+                  const ResponsiveVisibility(
+                      visible: false,
+                      visibleWhen: [Condition.largerThan(name: MOBILE)],
+                      child: SizedBox(height: 50)),
+                  ResponsiveRowColumn(
+                    layout: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
+                        ? ResponsiveRowColumnType.COLUMN
+                        : ResponsiveRowColumnType.ROW,
+                    rowMainAxisAlignment: MainAxisAlignment.center,
+                    rowPadding: const EdgeInsets.all(80),
+                    columnPadding: const EdgeInsets.all(20),
+                    children: [
+                      ResponsiveRowColumnItem(
+                          rowFlex: 1,
+                          child: ResponsiveVisibility(
+                            hiddenWhen: const [
+                              Condition.smallerThan(name: TABLET)
+                            ],
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      10, 10, 100, 10),
+                                  child: Row(
+                                    children: [
+                                      Text('YEAH!'),
+                                      Spacer(),
+                                      Text('YEAH!'),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: reset == false
-                                  ? signInUpForm()
-                                  : resetPasswordForm(),
-                            ),
-                          ),
-                        ],
-                      ))
+                          )),
+                      ResponsiveRowColumnItem(
+                          rowFlex: 1,
+                          child: Column(
+                            children: [
+                              Card(
+                                color: Colors.grey[800],
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: reset == false
+                                      ? signInUpForm()
+                                      : resetPasswordForm(),
+                                ),
+                              ),
+                            ],
+                          ))
+                    ],
+                  ),
                 ],
               ),
             ));

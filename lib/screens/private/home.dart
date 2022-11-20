@@ -75,21 +75,43 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           },
         ),
-        title: Text(LocalizationService.of(context)!.translate('title')!),
+        title: ResponsiveVisibility(
+            visible: false,
+            visibleWhen: const [Condition.smallerThan(name: DESKTOP)],
+            child: Text(LocalizationService.of(context)!.translate('title')!)),
         centerTitle: true,
         actions: [
-          Builder(
-            builder: (context) {
-              return IconButton(
-                icon: const Icon(
-                  FontAwesomeIcons.gear,
-                  size: 20.0,
+          ResponsiveVisibility(
+            visible: false,
+            visibleWhen: const [Condition.largerThan(name: MOBILE)],
+            child: Builder(builder: (context) {
+              return TextButton(
+                child: const Text(
+                  "Settings",
+                  style: TextStyle(fontSize: 15, color: Colors.white),
                 ),
                 onPressed: () {
                   Scaffold.of(context).openEndDrawer();
                 },
               );
-            },
+            }),
+          ),
+          ResponsiveVisibility(
+            visible: false,
+            visibleWhen: const [Condition.smallerThan(name: TABLET)],
+            child: Builder(
+              builder: (context) {
+                return IconButton(
+                  icon: const Icon(
+                    FontAwesomeIcons.gear,
+                    size: 20.0,
+                  ),
+                  onPressed: () {
+                    Scaffold.of(context).openEndDrawer();
+                  },
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -112,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? ResponsiveRowColumnType.COLUMN
                       : ResponsiveRowColumnType.ROW,
                   rowMainAxisAlignment: MainAxisAlignment.center,
-                  rowPadding: const EdgeInsets.all(10),
+                  rowPadding: const EdgeInsets.all(20),
                   columnPadding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
                   children: [
                     ResponsiveRowColumnItem(

@@ -1,4 +1,5 @@
-import 'dart:io';
+import 'dart:async';
+import 'package:universal_io/io.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,8 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:responsive_framework/responsive_framework.dart';
+import 'package:responsive_framework/responsive_value.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../models/profile.dart';
@@ -103,42 +106,42 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold))
                 : Container(),
             const SizedBox(height: 40.0),
-            SizedBox(
-              height: 120.0,
-              width: 120.0,
-              child: Stack(
-                clipBehavior: Clip.none,
-                fit: StackFit.expand,
-                children: [
-                  avatarPathLocal != null
-                      ? CircleAvatar(
-                          backgroundImage: FileImage(File(avatarPathLocal!)),
-                        )
-                      // ignore: unrelated_type_equality_checks, unnecessary_null_comparison
-                      : avatarPath != null
-                          ? CircleAvatar(
-                              backgroundImage: NetworkImage(avatarPath),
-                            )
-                          : CircleAvatar(
-                              backgroundImage: NetworkImage(emptyAvatar),
-                            ),
-                  Positioned(
-                      bottom: 0,
-                      right: -25,
-                      child: RawMaterialButton(
-                        onPressed: () async => {await createAvatarToUpload()},
-                        elevation: 2.0,
-                        fillColor: Colors.white,
-                        padding: const EdgeInsets.all(8.0),
-                        shape: const CircleBorder(),
-                        child: Icon(
-                          FontAwesomeIcons.camera,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      )),
-                ],
-              ),
-            ),
+            // SizedBox(
+            //   height: 120.0,
+            //   width: 120.0,
+            //   child: Stack(
+            //     clipBehavior: Clip.none,
+            //     fit: StackFit.expand,
+            //     children: [
+            //       avatarPathLocal != null
+            //           ? CircleAvatar(
+            //               backgroundImage: FileImage(File(avatarPathLocal!)),
+            //             )
+            //           // ignore: unrelated_type_equality_checks, unnecessary_null_comparison
+            //           : avatarPath != null
+            //               ? CircleAvatar(
+            //                   backgroundImage: NetworkImage(avatarPath),
+            //                 )
+            //               : CircleAvatar(
+            //                   backgroundImage: NetworkImage(emptyAvatar),
+            //                 ),
+            //       Positioned(
+            //           bottom: 0,
+            //           right: -25,
+            //           child: RawMaterialButton(
+            //             onPressed: () async => {await createAvatarToUpload()},
+            //             elevation: 2.0,
+            //             fillColor: Colors.white,
+            //             padding: const EdgeInsets.all(8.0),
+            //             shape: const CircleBorder(),
+            //             child: Icon(
+            //               FontAwesomeIcons.camera,
+            //               color: Theme.of(context).colorScheme.primary,
+            //             ),
+            //           )),
+            //     ],
+            //   ),
+            // ),
             const SizedBox(height: 50.0),
             TextFormField(
                 decoration: const InputDecoration(
@@ -148,7 +151,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     labelStyle: TextStyle(
                       fontSize: 15,
                     ), //label style
-                    prefixIcon: Icon(FontAwesomeIcons.envelope),
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                      child: Icon(FontAwesomeIcons.envelope),
+                    ),
                     hintText: "email"),
                 textAlign: TextAlign.left,
                 initialValue: widget.profile!.email,
@@ -171,7 +177,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     labelStyle: TextStyle(
                       fontSize: 15,
                     ), //label style
-                    prefixIcon: Icon(FontAwesomeIcons.faceLaugh),
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                      child: Icon(FontAwesomeIcons.faceLaugh),
+                    ),
                     hintText: "Full name"),
                 textAlign: TextAlign.left,
                 initialValue: widget.profile?.fullName,
@@ -258,7 +267,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             // Text(error ?? '', style: const TextStyle(color: Colors.red)),
             const SizedBox(height: 20.0),
             SizedBox(
-              width: double.infinity,
+              width: ResponsiveValue(context,
+                  defaultValue: 300.0,
+                  valueWhen: const [
+                    Condition.largerThan(name: MOBILE, value: 300.0),
+                    Condition.smallerThan(name: TABLET, value: double.infinity)
+                  ]).value,
               child: ElevatedButton(
                 child: const Padding(
                   padding: EdgeInsets.all(15.0),
@@ -307,31 +321,33 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             body: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(30.0),
-                child: FutureBuilder(
-                  builder: (ctx, snapshot) {
-                    // Checking if future is resolved or not
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      // If we got an error
-                      if (snapshot.hasError) {
-                        return Center(
-                          child: Text(
-                            '${snapshot.error} occurred',
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                        );
+                child: Center(
+                  child: FutureBuilder(
+                    builder: (ctx, snapshot) {
+                      // Checking if future is resolved or not
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        // If we got an error
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              '${snapshot.error} occurred',
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          );
 
-                        // if we got our data
-                      } else if (snapshot.hasData) {
-                        // Extracting data from snapshot object
-                        final avatarPathFuture = snapshot.data as String;
-                        return profileForm(avatarPathFuture);
+                          // if we got our data
+                        } else if (snapshot.hasData) {
+                          // Extracting data from snapshot object
+                          final avatarPathFuture = snapshot.data as String;
+                          return profileForm(avatarPathFuture);
+                        }
                       }
-                    }
-                    return const Center(
-                      child: LoadingUtil(),
-                    );
-                  },
-                  future: prepareAvatarOnLoad(),
+                      return const Center(
+                        child: LoadingUtil(),
+                      );
+                    },
+                    future: prepareAvatarOnLoad(),
+                  ),
                 ),
               ),
             ),
