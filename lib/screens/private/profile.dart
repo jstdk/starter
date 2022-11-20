@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:starter/utils/loading.dart';
@@ -34,23 +35,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
   XFile? avatarFile;
   String? avatarPathLocal;
   String? avatarPathOnline;
-  String emptyAvatar =
-      "https://dfymjnonymnyxvsobdmk.supabase.co/storage/v1/object/public/avatars/emptyAvatar.jpg";
+  late String emptyAvatarPath;
 
   Future prepareAvatarOnLoad() async {
-    print(widget.profile?.avatar);
+    await dotenv.load(fileName: ".env");
+    emptyAvatarPath = dotenv.env["EMPTY_AVATAR_PATH"]!;
     if (widget.profile?.avatar != '') {
       avatarPathOnline = await supabase.storage
           .from('avatars/public')
           .createSignedUrl(widget.profile!.avatar, 60);
-
       return avatarPathOnline;
     } else {
-      return emptyAvatar;
+      return emptyAvatarPath;
     }
   }
 
-  profileOverview(avatarPath) {
+  profileOverview(avatarDownloadPath) {
     return Column(
       children: <Widget>[
         kIsWeb
@@ -62,12 +62,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         SizedBox(
           height: 120.0,
           width: 120.0,
-          child: avatarPath != null
+          child: avatarDownloadPath != null
               ? CircleAvatar(
-                  backgroundImage: NetworkImage(avatarPath),
+                  backgroundImage: NetworkImage(avatarDownloadPath),
                 )
               : CircleAvatar(
-                  backgroundImage: NetworkImage(emptyAvatar),
+                  backgroundImage: NetworkImage(emptyAvatarPath),
                 ),
         ),
         const SizedBox(height: 50.0),
@@ -91,8 +91,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 onPressed: () => {
                       Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            UpdateProfileScreen(profile: widget.profile),
+                        builder: (context) => UpdateProfileScreen(
+                            profile: widget.profile,
+                            avatarDownloadPath: avatarDownloadPath != null
+                                ? avatarDownloadPath
+                                : emptyAvatarPath),
                       ))
                     })),
         const SizedBox(height: 20),
@@ -146,8 +149,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           // if we got our data
                         } else if (snapshot.hasData) {
                           // Extracting data from snapshot object
-                          final avatarPathFuture = snapshot.data as String;
-                          return profileOverview(avatarPathFuture);
+                          final avatarDownloadPath = snapshot.data as String;
+                          return profileOverview(avatarDownloadPath);
                         }
                       }
                       return const Center(

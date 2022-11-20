@@ -158,6 +158,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             ]),
             const SizedBox(height: 30.0),
             TextFormField(
+                initialValue: 'joost@dekruijff.email',
                 decoration: const InputDecoration(
                     hintText: "Email",
                     border: OutlineInputBorder(
@@ -182,6 +183,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 }),
             const SizedBox(height: 15.0),
             TextFormField(
+                initialValue: '030809',
                 obscureText: obscureText,
                 decoration: InputDecoration(
                   hintText: "Password",

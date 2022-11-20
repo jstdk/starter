@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:ndialog/ndialog.dart';
 
 import '../../models/profile.dart';
 import '../../utils/loading.dart';
@@ -14,7 +15,9 @@ import '../root.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   final ProfileModel? profile;
-  const UpdateProfileScreen({Key? key, this.profile}) : super(key: key);
+  final String? avatarDownloadPath;
+  const UpdateProfileScreen({Key? key, this.profile, this.avatarDownloadPath})
+      : super(key: key);
 
   @override
   State<UpdateProfileScreen> createState() => _UpdateProfileScreenState();
@@ -64,30 +67,19 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   final ImagePicker _picker = ImagePicker();
 
-  Future createAvatarToUpload() async {
-    // Pick an image
-    //final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    // Capture a photo
+  Future createAvatarFromCamera() async {
     setState(() => {loading = true});
-
     avatarFile = await _picker.pickImage(source: ImageSource.camera);
-
     setState(() => {loading = false, avatarPathLocal = avatarFile!.path});
   }
 
-  Future prepareAvatarOnLoad() async {
-    if (widget.profile?.avatar != '') {
-      avatarPathOnline = await supabase.storage
-          .from('avatars/public')
-          .createSignedUrl(widget.profile!.avatar, 60);
-
-      return avatarPathOnline;
-    } else {
-      return emptyAvatar;
-    }
+  Future createAvatarFromGallery() async {
+    setState(() => {loading = true});
+    avatarFile = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() => {loading = false, avatarPathLocal = avatarFile!.path});
   }
 
-  profileForm(avatarPath) {
+  profileForm(context) {
     return Form(
         key: formKeyForm,
         child: Column(
@@ -110,24 +102,65 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       ? kIsWeb
                           ? CircleAvatar(
                               backgroundImage: NetworkImage(avatarPathLocal!))
-                          :
-                          //Container()
-                          CircleAvatar(
+                          : CircleAvatar(
                               backgroundImage: fileImage,
                             )
                       // ignore: unrelated_type_equality_checks, unnecessary_null_comparison
-                      : avatarPath != null
-                          ? CircleAvatar(
-                              backgroundImage: NetworkImage(avatarPath),
-                            )
-                          : CircleAvatar(
-                              backgroundImage: NetworkImage(emptyAvatar),
-                            ),
+                      : CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(widget.avatarDownloadPath!),
+                        ),
                   Positioned(
                       bottom: 0,
                       right: -25,
                       child: RawMaterialButton(
-                        onPressed: () async => {await createAvatarToUpload()},
+                        onPressed: () => {
+                          //await createAvatarToUpload()
+                          NAlertDialog(
+                            dialogStyle: DialogStyle(titleDivider: true),
+                            title:
+                                Center(child: Text("Create or pick an avatar")),
+                            content: Text('Camera options'),
+                            actions: <Widget>[
+                              !kIsWeb
+                                  ? Row(
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(
+                                            FontAwesomeIcons.camera,
+                                            size: 20.0,
+                                          ),
+                                          onPressed: () async {
+                                            await createAvatarFromCamera();
+                                          },
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(
+                                            FontAwesomeIcons.photoFilm,
+                                            size: 20.0,
+                                          ),
+                                          onPressed: () async {
+                                            await createAvatarFromGallery();
+                                          },
+                                        ),
+                                      ],
+                                    )
+                                  : Row(
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(
+                                            FontAwesomeIcons.photoFilm,
+                                            size: 20.0,
+                                          ),
+                                          onPressed: () async {
+                                            await createAvatarFromGallery();
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                            ],
+                          ).show(context)
+                        },
                         elevation: 2.0,
                         fillColor: Colors.white,
                         padding: const EdgeInsets.all(8.0),
@@ -318,36 +351,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             ),
             body: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: Center(
-                  child: FutureBuilder(
-                    builder: (ctx, snapshot) {
-                      // Checking if future is resolved or not
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        // If we got an error
-                        if (snapshot.hasError) {
-                          return Center(
-                            child: Text(
-                              '${snapshot.error} occurred',
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                          );
-
-                          // if we got our data
-                        } else if (snapshot.hasData) {
-                          // Extracting data from snapshot object
-                          final avatarPathFuture = snapshot.data as String;
-                          return profileForm(avatarPathFuture);
-                        }
-                      }
-                      return const Center(
-                        child: LoadingUtil(),
-                      );
-                    },
-                    future: prepareAvatarOnLoad(),
-                  ),
-                ),
-              ),
+                  padding: const EdgeInsets.all(30.0),
+                  child: Center(child: profileForm(context))),
             ),
           );
   }
