@@ -1,14 +1,11 @@
 import 'dart:async';
-import 'package:universal_io/io.dart';
+import 'dart:io' as uio;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:responsive_framework/responsive_value.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../models/profile.dart';
@@ -33,6 +30,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   String? passwordNewAgain;
   bool obscureText = true;
 
+  late final fileImage;
   XFile? avatarFile;
   String? avatarPathLocal;
   String? avatarPathOnline;
@@ -44,11 +42,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       if (kDebugMode) {
         print('Trying to update profile');
       }
-      print(avatarPathLocal!);
-      final avatarFile = File(avatarPathLocal!);
+
+      dynamic file = uio.File(avatarPathLocal!);
+      fileImage = FileImage(file);
+      //final avatarFile = uio.File(avatarPathLocal!);
       final String path = await supabase.storage.from('avatars').upload(
             'public/$id.jpg',
-            avatarFile,
+            file,
             fileOptions: const FileOptions(
                 contentType: 'image/jpeg', cacheControl: '3600', upsert: true),
           );
@@ -76,7 +76,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   Future prepareAvatarOnLoad() async {
-    print(widget.profile?.avatar);
     if (widget.profile?.avatar != '') {
       avatarPathOnline = await supabase.storage
           .from('avatars/public')
@@ -86,12 +85,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     } else {
       return emptyAvatar;
     }
-  }
-
-  void _toggle() {
-    setState(() {
-      obscureText = !obscureText;
-    });
   }
 
   profileForm(avatarPath) {
@@ -106,42 +99,47 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold))
                 : Container(),
             const SizedBox(height: 40.0),
-            // SizedBox(
-            //   height: 120.0,
-            //   width: 120.0,
-            //   child: Stack(
-            //     clipBehavior: Clip.none,
-            //     fit: StackFit.expand,
-            //     children: [
-            //       avatarPathLocal != null
-            //           ? CircleAvatar(
-            //               backgroundImage: FileImage(File(avatarPathLocal!)),
-            //             )
-            //           // ignore: unrelated_type_equality_checks, unnecessary_null_comparison
-            //           : avatarPath != null
-            //               ? CircleAvatar(
-            //                   backgroundImage: NetworkImage(avatarPath),
-            //                 )
-            //               : CircleAvatar(
-            //                   backgroundImage: NetworkImage(emptyAvatar),
-            //                 ),
-            //       Positioned(
-            //           bottom: 0,
-            //           right: -25,
-            //           child: RawMaterialButton(
-            //             onPressed: () async => {await createAvatarToUpload()},
-            //             elevation: 2.0,
-            //             fillColor: Colors.white,
-            //             padding: const EdgeInsets.all(8.0),
-            //             shape: const CircleBorder(),
-            //             child: Icon(
-            //               FontAwesomeIcons.camera,
-            //               color: Theme.of(context).colorScheme.primary,
-            //             ),
-            //           )),
-            //     ],
-            //   ),
-            // ),
+            SizedBox(
+              height: 120.0,
+              width: 120.0,
+              child: Stack(
+                clipBehavior: Clip.none,
+                fit: StackFit.expand,
+                children: [
+                  avatarPathLocal != null
+                      ? kIsWeb
+                          ? CircleAvatar(
+                              backgroundImage: NetworkImage(avatarPathLocal!))
+                          :
+                          //Container()
+                          CircleAvatar(
+                              backgroundImage: fileImage,
+                            )
+                      // ignore: unrelated_type_equality_checks, unnecessary_null_comparison
+                      : avatarPath != null
+                          ? CircleAvatar(
+                              backgroundImage: NetworkImage(avatarPath),
+                            )
+                          : CircleAvatar(
+                              backgroundImage: NetworkImage(emptyAvatar),
+                            ),
+                  Positioned(
+                      bottom: 0,
+                      right: -25,
+                      child: RawMaterialButton(
+                        onPressed: () async => {await createAvatarToUpload()},
+                        elevation: 2.0,
+                        fillColor: Colors.white,
+                        padding: const EdgeInsets.all(8.0),
+                        shape: const CircleBorder(),
+                        child: Icon(
+                          FontAwesomeIcons.camera,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      )),
+                ],
+              ),
+            ),
             const SizedBox(height: 50.0),
             TextFormField(
                 decoration: const InputDecoration(
