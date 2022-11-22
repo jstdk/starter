@@ -28,7 +28,10 @@ Future<void> main() async {
   // Initiate Supabase using .env
   HiveLocalStorage.encryptionKey = dotenv.env["SUPABASE_SECURE_KEY"];
   await Supabase.initialize(
-      url: dotenv.env['SUPABASE_URL']!, anonKey: dotenv.env['SUPABASE_KEY']!);
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_KEY']!,
+    storageRetryAttempts: 25,
+  );
 
   // Run the app
   runApp(const StarterApp());
@@ -67,7 +70,7 @@ class StarterApp extends StatelessWidget {
               ],
               builder: (context, child) => ResponsiveWrapper.builder(
                       BouncingScrollWrapper.builder(context, child!),
-                      maxWidth: 1200,
+                      //SmaxWidth: 1200,
                       minWidth: 450,
                       defaultScale: true,
                       breakpoints: [

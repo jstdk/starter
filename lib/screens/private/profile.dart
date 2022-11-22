@@ -135,9 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Center(
                   child: FutureBuilder(
                     builder: (ctx, snapshot) {
-                      // Checking if future is resolved or not
                       if (snapshot.connectionState == ConnectionState.done) {
-                        // If we got an error
                         if (snapshot.hasError) {
                           return Center(
                             child: Text(
@@ -145,10 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               style: const TextStyle(fontSize: 18),
                             ),
                           );
-
-                          // if we got our data
                         } else if (snapshot.hasData) {
-                          // Extracting data from snapshot object
                           final avatarDownloadPath = snapshot.data as String;
                           return profileOverview(avatarDownloadPath);
                         }

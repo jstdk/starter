@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io' as uio;
+import 'dart:io' as io;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -33,12 +33,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   String? passwordNewAgain;
   bool obscureText = true;
 
-  late final fileImage;
+  // ignore: prefer_typing_uninitialized_variables
+  late final localFileImage;
+  dynamic tempFile;
   XFile? avatarFile;
   String? avatarPathLocal;
   String? avatarPathOnline;
-  String emptyAvatar =
-      "https://dfymjnonymnyxvsobdmk.supabase.co/storage/v1/object/public/avatars/emptyAvatar.jpg";
 
   Future updateProfile(id, fullName, email) async {
     try {
@@ -46,17 +46,33 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         print('Trying to update profile');
       }
 
-      dynamic file = uio.File(avatarPathLocal!);
-      fileImage = FileImage(file);
+      tempFile = io.File(avatarPathLocal!);
+
+      //localFileImage = FileImage(tempFile);
       //final avatarFile = uio.File(avatarPathLocal!);
+      final image = '$id.jpg';
+
       final String path = await supabase.storage.from('avatars').upload(
-            'public/$id.jpg',
-            file,
+            'public/$image',
+            tempFile,
             fileOptions: const FileOptions(
                 contentType: 'image/jpeg', cacheControl: '3600', upsert: true),
           );
-      final data = await supabase.from('profiles').update(
-          {'full_name': fullName, 'avatar': '$id.jpg'}).match({'id': id});
+
+      // print('$id.jpg');
+
+      // final List<FileObject> objects =
+      //     await supabase.storage.from('avatars/public').remove([image]);
+
+      // final String path = await supabase.storage.from('avatars').update(
+      //       image,
+      //       tempFile,
+      //       fileOptions: const FileOptions(
+      //           contentType: 'image/jpeg', cacheControl: '3600', upsert: false),
+      //     );
+      // print(path);
+      // final data = await supabase.from('profiles').update(
+      //     {'full_name': fullName, 'avatar': '$id.jpg'}).match({'id': id});
     } catch (e) {
       setState(() => {loading = false, error = 'Something went wrong'});
       if (kDebugMode) {
@@ -70,13 +86,24 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   Future createAvatarFromCamera() async {
     setState(() => {loading = true});
     avatarFile = await _picker.pickImage(source: ImageSource.camera);
-    setState(() => {loading = false, avatarPathLocal = avatarFile!.path});
+    dynamic file;
+    setState(() => {
+          loading = false,
+          avatarPathLocal = avatarFile!.path,
+          tempFile = io.File(avatarPathLocal!),
+          localFileImage = FileImage(tempFile)
+        });
   }
 
   Future createAvatarFromGallery() async {
     setState(() => {loading = true});
     avatarFile = await _picker.pickImage(source: ImageSource.gallery);
-    setState(() => {loading = false, avatarPathLocal = avatarFile!.path});
+    setState(() => {
+          loading = false,
+          avatarPathLocal = avatarFile!.path,
+          tempFile = io.File(avatarPathLocal!),
+          localFileImage = FileImage(tempFile)
+        });
   }
 
   profileForm(context) {
@@ -103,7 +130,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           ? CircleAvatar(
                               backgroundImage: NetworkImage(avatarPathLocal!))
                           : CircleAvatar(
-                              backgroundImage: fileImage,
+                              backgroundImage: localFileImage,
                             )
                       // ignore: unrelated_type_equality_checks, unnecessary_null_comparison
                       : CircleAvatar(
@@ -118,9 +145,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           //await createAvatarToUpload()
                           NAlertDialog(
                             dialogStyle: DialogStyle(titleDivider: true),
-                            title:
-                                Center(child: Text("Create or pick an avatar")),
-                            content: Text('Camera options'),
+                            title: const Center(
+                                child: Text("Create or pick an avatar")),
+                            content: const Text('Camera options'),
                             actions: <Widget>[
                               !kIsWeb
                                   ? Row(
@@ -225,77 +252,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 onChanged: (val) {
                   setState(() => fullName = val);
                 }),
-            const SizedBox(height: 20.0),
-            // TextFormField(
-            //     obscureText: obscureText,
-            //     decoration: InputDecoration(
-            //       hintText: "Password",
-            //       border: const OutlineInputBorder(
-            //           borderRadius: BorderRadius.all(Radius.circular(5))),
-            //       labelText: "New Password",
-            //       labelStyle: const TextStyle(
-            //         fontSize: 15,
-            //       ), //label style
-            //       prefixIcon: const Padding(
-            //         padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-            //         child: Icon(FontAwesomeIcons.unlockKeyhole),
-            //       ),
-            //       suffixIcon: InkWell(
-            //         onTap: _toggle,
-            //         child: Icon(
-            //           obscureText
-            //               ? FontAwesomeIcons.eye
-            //               : FontAwesomeIcons.eyeSlash,
-            //           size: 20.0,
-            //         ),
-            //       ),
-            //     ),
-            //     textAlign: TextAlign.left,
-            //     autofocus: true,
-            //     validator: (String? value) {
-            //       return (value != null && value.length < 2)
-            //           ? 'Please provide a valid password.'
-            //           : null;
-            //     },
-            //     onChanged: (val) {
-            //       setState(() => passwordNew = val);
-            //     }),
-            // const SizedBox(height: 20.0),
-            // TextFormField(
-            //     obscureText: obscureText,
-            //     decoration: InputDecoration(
-            //       hintText: "Password",
-            //       border: const OutlineInputBorder(
-            //           borderRadius: BorderRadius.all(Radius.circular(5))),
-            //       labelText: "New Password again",
-            //       labelStyle: const TextStyle(
-            //         fontSize: 15,
-            //       ), //label style
-            //       prefixIcon: const Padding(
-            //         padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-            //         child: Icon(FontAwesomeIcons.unlockKeyhole),
-            //       ),
-            //       suffixIcon: InkWell(
-            //         onTap: _toggle,
-            //         child: Icon(
-            //           obscureText
-            //               ? FontAwesomeIcons.eye
-            //               : FontAwesomeIcons.eyeSlash,
-            //           size: 20.0,
-            //         ),
-            //       ),
-            //     ),
-            //     textAlign: TextAlign.left,
-            //     autofocus: true,
-            //     validator: (String? value) {
-            //       return (value != passwordNewAgain)
-            //           ? 'Your passwords must be the same'
-            //           : null;
-            //     },
-            //     onChanged: (val) {
-            //       setState(() => passwordNewAgain = val);
-            //     }),
-            // Text(error ?? '', style: const TextStyle(color: Colors.red)),
             const SizedBox(height: 20.0),
             SizedBox(
               width: ResponsiveValue(context,
