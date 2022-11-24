@@ -140,6 +140,15 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                     backgroundColor: Colors.transparent),
                 onPressed: () async {
                   signInUsingGoogle();
+                  final snackBarSignIn = SnackBar(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    content: const Text('Signin you in with Google',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                        )),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBarSignIn);
                 },
                 child: const Padding(
                   padding: EdgeInsets.all(15.0),
@@ -158,7 +167,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             ]),
             const SizedBox(height: 30.0),
             TextFormField(
-                initialValue: 'joost@dekruijff.email',
                 decoration: const InputDecoration(
                     hintText: "Email",
                     border: OutlineInputBorder(
@@ -183,7 +191,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 }),
             const SizedBox(height: 15.0),
             TextFormField(
-                initialValue: '030809',
                 obscureText: obscureText,
                 decoration: InputDecoration(
                   hintText: "Password",
@@ -250,6 +257,18 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                         if (formKey.currentState!.validate()) {
                           setState(() => loading = true);
                           signInUsingEmailAndPassword(email, password);
+                          final snackBarSignIn = SnackBar(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            content: const Text(
+                                'Welcome back. You have been signed in',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                )),
+                          );
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(snackBarSignIn);
                         } else {
                           setState(() {
                             loading = false;
@@ -270,6 +289,18 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                           setState(() => loading = true);
                           signUpUsingEmailAndPassword(
                               email: email, password: password);
+                          final snackBarSignUp = SnackBar(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            content:
+                                const Text('Welcome. You have been signed up',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    )),
+                          );
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(snackBarSignUp);
                         } else {
                           setState(() {
                             loading = false;

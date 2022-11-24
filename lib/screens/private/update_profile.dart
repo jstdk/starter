@@ -22,21 +22,14 @@ class UpdateProfileScreen extends StatefulWidget {
 }
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
-  final formKeyForm = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
   bool loading = false;
-  String? error;
+  String? error = '';
   String? email;
   String? fullName;
-  String? passwordNew;
-  String? passwordNewAgain;
-  bool obscureText = true;
 
-  // ignore: prefer_typing_uninitialized_variables
-  late final localFileImage;
   dynamic tempFile;
   XFile? avatarFile;
-  String? avatarPathLocal;
-  String? avatarPathOnline;
 
   dynamic avatarAsBytes;
   String? base64Avatar;
@@ -73,7 +66,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   profileForm(context) {
     return Form(
-        key: formKeyForm,
+        key: formKey,
         child: Column(
           children: <Widget>[
             kIsWeb
@@ -223,12 +216,29 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 onPressed: () async {
                   email = widget.profile?.email ?? email;
                   fullName = widget.profile?.fullName ?? fullName;
-                  if (formKeyForm.currentState!.validate()) {
+                  if (formKey.currentState!.validate()) {
                     setState(() => loading = true);
                     final response = await updateProfile(
                         widget.profile?.id, fullName, email);
                     if (response == null) {
                       if (!mounted) return;
+                      final snackBar = SnackBar(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        content: const Text('Your profile has been updated',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                            )),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      formKey.currentState!.reset();
+                      email = '';
+                      fullName = '';
+                      tempFile = null;
+                      avatarFile = null;
+                      base64Avatar = '';
+                      avatarAsBytes = '';
+                      avatarBytes = null;
                       Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(builder: (context) => const Root()),
                           (Route<dynamic> route) => false);
