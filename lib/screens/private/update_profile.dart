@@ -1,13 +1,11 @@
 import 'dart:async';
-import 'dart:io' as io;
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ndialog/ndialog.dart';
 
 import '../../models/profile.dart';
 import '../../utils/loading.dart';
@@ -15,8 +13,8 @@ import '../root.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   final ProfileModel? profile;
-  final String? avatarDownloadPath;
-  const UpdateProfileScreen({Key? key, this.profile, this.avatarDownloadPath})
+  final Uint8List? avatarBytes;
+  const UpdateProfileScreen({Key? key, this.profile, this.avatarBytes})
       : super(key: key);
 
   @override
@@ -40,39 +38,18 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   String? avatarPathLocal;
   String? avatarPathOnline;
 
+  dynamic avatarAsBytes;
+  String? base64Avatar;
+  Uint8List? avatarBytes;
+
   Future updateProfile(id, fullName, email) async {
     try {
       if (kDebugMode) {
         print('Trying to update profile');
       }
-
-      tempFile = io.File(avatarPathLocal!);
-
-      //localFileImage = FileImage(tempFile);
-      //final avatarFile = uio.File(avatarPathLocal!);
-      final image = '$id.jpg';
-
-      final String path = await supabase.storage.from('avatars').upload(
-            'public/$image',
-            tempFile,
-            fileOptions: const FileOptions(
-                contentType: 'image/jpeg', cacheControl: '3600', upsert: true),
-          );
-
-      // print('$id.jpg');
-
-      // final List<FileObject> objects =
-      //     await supabase.storage.from('avatars/public').remove([image]);
-
-      // final String path = await supabase.storage.from('avatars').update(
-      //       image,
-      //       tempFile,
-      //       fileOptions: const FileOptions(
-      //           contentType: 'image/jpeg', cacheControl: '3600', upsert: false),
-      //     );
-      // print(path);
-      // final data = await supabase.from('profiles').update(
-      //     {'full_name': fullName, 'avatar': '$id.jpg'}).match({'id': id});
+      return await supabase
+          .from('profiles')
+          .update({'avatar': base64Avatar}).match({'id': id});
     } catch (e) {
       setState(() => {loading = false, error = 'Something went wrong'});
       if (kDebugMode) {
@@ -83,27 +60,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   final ImagePicker _picker = ImagePicker();
 
-  Future createAvatarFromCamera() async {
+  Future pickAvatar(camera) async {
     setState(() => {loading = true});
-    avatarFile = await _picker.pickImage(source: ImageSource.camera);
-    dynamic file;
-    setState(() => {
-          loading = false,
-          avatarPathLocal = avatarFile!.path,
-          tempFile = io.File(avatarPathLocal!),
-          localFileImage = FileImage(tempFile)
-        });
-  }
-
-  Future createAvatarFromGallery() async {
-    setState(() => {loading = true});
-    avatarFile = await _picker.pickImage(source: ImageSource.gallery);
-    setState(() => {
-          loading = false,
-          avatarPathLocal = avatarFile!.path,
-          tempFile = io.File(avatarPathLocal!),
-          localFileImage = FileImage(tempFile)
-        });
+    Navigator.pop(context);
+    avatarFile = await _picker.pickImage(
+        source: camera == true ? ImageSource.camera : ImageSource.gallery);
+    avatarAsBytes = await avatarFile!.readAsBytes();
+    base64Avatar = base64Encode(avatarAsBytes);
+    setState(
+        () => {loading = false, avatarBytes = base64Decode(base64Avatar!)});
   }
 
   profileForm(context) {
@@ -117,76 +82,62 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     style:
                         TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold))
                 : Container(),
-            const SizedBox(height: 40.0),
+            const SizedBox(height: 20.0),
             SizedBox(
-              height: 120.0,
-              width: 120.0,
+              height: 200.0,
+              width: 200.0,
               child: Stack(
                 clipBehavior: Clip.none,
                 fit: StackFit.expand,
                 children: [
-                  avatarPathLocal != null
-                      ? kIsWeb
-                          ? CircleAvatar(
-                              backgroundImage: NetworkImage(avatarPathLocal!))
-                          : CircleAvatar(
-                              backgroundImage: localFileImage,
-                            )
-                      // ignore: unrelated_type_equality_checks, unnecessary_null_comparison
-                      : CircleAvatar(
-                          backgroundImage:
-                              NetworkImage(widget.avatarDownloadPath!),
-                        ),
+                  avatarBytes != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.memory(avatarBytes!))
+                      : widget.avatarBytes != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.memory(widget.avatarBytes!))
+                          : SizedBox(
+                              width: 50,
+                              child: Image.asset(
+                                  'assets/images/defaultAvatar.jpg'),
+                            ),
                   Positioned(
-                      bottom: 0,
-                      right: -25,
+                      bottom: -15,
+                      right: -15,
                       child: RawMaterialButton(
                         onPressed: () => {
-                          //await createAvatarToUpload()
-                          NAlertDialog(
-                            dialogStyle: DialogStyle(titleDivider: true),
-                            title: const Center(
-                                child: Text("Create or pick an avatar")),
-                            content: const Text('Camera options'),
-                            actions: <Widget>[
-                              !kIsWeb
-                                  ? Row(
-                                      children: [
-                                        IconButton(
-                                          icon: const Icon(
-                                            FontAwesomeIcons.camera,
-                                            size: 20.0,
-                                          ),
-                                          onPressed: () async {
-                                            await createAvatarFromCamera();
-                                          },
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(
-                                            FontAwesomeIcons.photoFilm,
-                                            size: 20.0,
-                                          ),
-                                          onPressed: () async {
-                                            await createAvatarFromGallery();
-                                          },
-                                        ),
-                                      ],
-                                    )
-                                  : Row(
-                                      children: [
-                                        IconButton(
-                                          icon: const Icon(
-                                            FontAwesomeIcons.photoFilm,
-                                            size: 20.0,
-                                          ),
-                                          onPressed: () async {
-                                            await createAvatarFromGallery();
-                                          },
-                                        ),
-                                      ],
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Expanded(
+                                child: SimpleDialog(
+                                  title: const Text('Create or pick an avatar'),
+                                  children: <Widget>[
+                                    IconButton(
+                                      icon: const Icon(
+                                        FontAwesomeIcons.camera,
+                                        size: 20.0,
+                                      ),
+                                      onPressed: () async {
+                                        await pickAvatar(true);
+                                      },
                                     ),
-                            ],
-                          ).show(context)
+                                    IconButton(
+                                      icon: const Icon(
+                                        FontAwesomeIcons.photoFilm,
+                                        size: 20.0,
+                                      ),
+                                      onPressed: () async {
+                                        await pickAvatar(false);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          )
                         },
                         elevation: 2.0,
                         fillColor: Colors.white,
@@ -277,7 +228,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     final response = await updateProfile(
                         widget.profile?.id, fullName, email);
                     if (response == null) {
-                      setState(() => loading = false);
                       if (!mounted) return;
                       Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(builder: (context) => const Root()),

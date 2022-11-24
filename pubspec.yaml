@@ -45,7 +45,6 @@ dependencies:
   shared_preferences: ^2.0.15
   provider: ^6.0.4
   image_picker: ^0.8.6
-  ndialog: ^4.2.0
 
 dev_dependencies:
   flutter_test:
@@ -71,8 +70,9 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - .env
-    - i18n/en.json
-    - i18n/nl.json
+    - assets/i18n/en.json
+    - assets/i18n/nl.json
+    - assets/images/defaultAvatar.jpg
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
