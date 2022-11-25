@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../main.dart';
 import 'public/authentication.dart';
 import 'private/home.dart';
 
@@ -31,9 +30,23 @@ class _RootState extends State<Root> {
         }
         user = session?.user;
       });
-      // Navigator.of(context).pushAndRemoveUntil(
-      //     MaterialPageRoute(builder: (context) => const StarterApp()),
-      //     (Route<dynamic> route) => false);
+      if (user != null) {
+        if (kDebugMode) {
+          print('Navigating to HomeScreen');
+        }
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            (Route<dynamic> route) => false);
+      } else {
+        if (kDebugMode) {
+          print('Navigating to AuthenticationScreen');
+        }
+
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+                builder: (context) => const AuthenticationScreen()),
+            (Route<dynamic> route) => false);
+      }
     });
     super.initState();
   }

@@ -34,74 +34,83 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Uint8List? avatarBytes;
 
   profileOverview(avatarBytes) {
-    return Column(
-      children: <Widget>[
-        kIsWeb
-            ? const Text('My Profile',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold))
-            : Container(),
-        const SizedBox(height: 20.0),
-        SizedBox(
-            height: 200.0,
-            width: 200.0,
-            child: widget.profile?.avatar != ''
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.memory(avatarBytes))
-                : Image.asset('assets/images/defaultAvatar.jpg')),
-        const SizedBox(height: 50.0),
-        Text(
-          widget.profile!.fullName,
-          style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Column(
+          children: <Widget>[
+            kIsWeb
+                ? const Text('My Profile',
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold))
+                : Container(),
+            const SizedBox(height: 20.0),
+            SizedBox(
+                height: 200.0,
+                width: 200.0,
+                child: widget.profile?.avatar != ''
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.memory(avatarBytes))
+                    : Image.asset('assets/images/defaultAvatar.jpg')),
+            const SizedBox(height: 50.0),
+            Text(
+              widget.profile!.fullName,
+              style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            Text(widget.profile!.email),
+            const SizedBox(height: 50),
+            SizedBox(
+                width: ResponsiveValue(context,
+                    defaultValue: 300.0,
+                    valueWhen: const [
+                      Condition.largerThan(name: MOBILE, value: 300.0),
+                      Condition.smallerThan(
+                          name: TABLET, value: double.infinity)
+                    ]).value,
+                child: ElevatedButton(
+                    child: const Padding(
+                      padding: EdgeInsets.all(15.0),
+                      child: Text('Edit Profile'),
+                    ),
+                    onPressed: () => {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => UpdateProfileScreen(
+                                profile: widget.profile,
+                                avatarBytes: avatarBytes),
+                          ))
+                        })),
+            const SizedBox(height: 10),
+            SizedBox(
+                width: ResponsiveValue(context,
+                    defaultValue: 300.0,
+                    valueWhen: const [
+                      Condition.largerThan(name: MOBILE, value: 300.0),
+                      Condition.smallerThan(
+                          name: TABLET, value: double.infinity)
+                    ]).value,
+                child: ElevatedButton(
+                    child: const Padding(
+                      padding: EdgeInsets.all(15.0),
+                      child: Text('Edit Password'),
+                    ),
+                    onPressed: () => {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                UpdatePasswordScreen(profile: widget.profile),
+                          ))
+                        }))
+          ],
         ),
-        const SizedBox(height: 20),
-        Text(widget.profile!.email),
-        const SizedBox(height: 50),
-        SizedBox(
-            width:
-                ResponsiveValue(context, defaultValue: 300.0, valueWhen: const [
-              Condition.largerThan(name: MOBILE, value: 300.0),
-              Condition.smallerThan(name: TABLET, value: double.infinity)
-            ]).value,
-            child: ElevatedButton(
-                child: const Padding(
-                  padding: EdgeInsets.all(15.0),
-                  child: Text('Edit Profile'),
-                ),
-                onPressed: () => {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => UpdateProfileScreen(
-                            profile: widget.profile, avatarBytes: avatarBytes),
-                      ))
-                    })),
-        const SizedBox(height: 20),
-        SizedBox(
-            width:
-                ResponsiveValue(context, defaultValue: 300.0, valueWhen: const [
-              Condition.largerThan(name: MOBILE, value: 300.0),
-              Condition.smallerThan(name: TABLET, value: double.infinity)
-            ]).value,
-            child: ElevatedButton(
-                child: const Padding(
-                  padding: EdgeInsets.all(15.0),
-                  child: Text('Edit Password'),
-                ),
-                onPressed: () => {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            UpdatePasswordScreen(profile: widget.profile),
-                      ))
-                    }))
-      ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.profile?.avatar != '') {
-      avatarBytes = base64Decode(widget.profile!.avatar);
-    }
+    avatarBytes = base64Decode(widget.profile!.avatar);
 
     return loading
         ? const LoadingUtil()

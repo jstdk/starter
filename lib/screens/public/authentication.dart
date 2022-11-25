@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,7 +9,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../utils/loading.dart';
 
-// Initiate Supabase
 final supabase = Supabase.instance.client;
 
 class AuthenticationScreen extends StatefulWidget {
@@ -54,8 +54,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       setState(() => {
             loading = false,
             error = '',
-            signupSuccess =
-                'Welcome! We sent you an email. Please confirm your email address to sign in'
           });
     } catch (e) {
       setState(() => {loading = false, error = 'Oops. Something went wrong'});
@@ -181,8 +179,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                     )),
                 autofocus: true,
                 validator: (String? value) {
-                  //print(value.length);
-                  return (value != null && value.length < 2)
+                  return !EmailValidator.validate(value!)
                       ? 'Please provide a valid email.'
                       : null;
                 },
@@ -292,12 +289,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                           final snackBarSignUp = SnackBar(
                             backgroundColor:
                                 Theme.of(context).colorScheme.primary,
-                            content:
-                                const Text('Welcome. You have been signed up',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                    )),
+                            content: const Text(
+                                'Welcome. You have been signed up. Please check you email to confirm your account',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                )),
                           );
                           ScaffoldMessenger.of(context)
                               .showSnackBar(snackBarSignUp);
@@ -349,7 +346,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         ));
   }
 
-  resetPasswordForm() {
+  resetPasswordForm(context) {
     return Form(
         key: formKey,
         child: Column(
@@ -376,8 +373,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                     )),
                 autofocus: true,
                 validator: (String? value) {
-                  //print(value.length);
-                  return (value != null && value.length < 2)
+                  return !EmailValidator.validate(value!)
                       ? 'Please provide a valid email.'
                       : null;
                 },
@@ -404,7 +400,17 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
                     setState(() => loading = true);
-                    resetPassword(email);
+                    await resetPassword(email);
+                    final snackBarSignUp = SnackBar(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      content: const Text(
+                          'You have been signed up. Please check you email to confirm your account. You can sign in after that',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                          )),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBarSignUp);
                   } else {
                     setState(() {
                       loading = false;
@@ -459,7 +465,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                   padding: const EdgeInsets.fromLTRB(
                                       10, 10, 100, 10),
                                   child: Row(
-                                    children: [
+                                    children: const [
                                       Text('YEAH!'),
                                       Spacer(),
                                       Text('YEAH!'),
@@ -479,7 +485,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                   padding: const EdgeInsets.all(20.0),
                                   child: reset == false
                                       ? signInUpForm()
-                                      : resetPasswordForm(),
+                                      : resetPasswordForm(context),
                                 ),
                               ),
                             ],

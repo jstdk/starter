@@ -53,10 +53,15 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  Future loadProfile(String uid, String email) async {
+  Future loadProfile(String id, String email) async {
     profile = ProfileModel.fromMap(
-        map: await supabase.from('profiles').select().eq('id', uid).single(),
+        map: await supabase.from('profiles').select().eq('id', id).single(),
         emailFromAuth: email);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -115,72 +120,96 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: StreamBuilder<List<MessageModel>>(
-        stream: messages,
-        builder: (
-          context,
-          snapshot,
-        ) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const LoadingUtil();
-          } else if (snapshot.connectionState == ConnectionState.active ||
-              snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            } else if (snapshot.hasData) {
-              final messages = snapshot.data!;
-              return ResponsiveRowColumn(
-                  layout: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
-                      ? ResponsiveRowColumnType.COLUMN
-                      : ResponsiveRowColumnType.ROW,
-                  rowMainAxisAlignment: MainAxisAlignment.center,
-                  rowPadding: const EdgeInsets.all(20),
-                  columnPadding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
-                  children: [
-                    ResponsiveRowColumnItem(
-                      rowFlex: 1,
-                      child: ListView.builder(
-                          reverse: true,
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          itemCount: messages.length,
-                          itemBuilder: (context, index) {
-                            final message = messages[index];
-                            return Card(
-                                // In many cases, the key isn't mandatory
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 15),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Text(message.content!),
-                                ));
-                          }),
-                    ),
-                    ResponsiveRowColumnItem(
-                        rowFlex: 1,
-                        child: ResponsiveVisibility(
-                          hiddenWhen: const [
-                            Condition.smallerThan(name: TABLET)
-                          ],
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
-                              Text('YEAHHHHH'),
-                              SizedBox(
-                                width: 300,
-                              )
-                            ],
-                          ),
-                        )),
-                  ]);
-            } else {
-              return const Text('Empty data');
-            }
-          } else {
-            return Text('State: ${snapshot.connectionState}');
-          }
-        },
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 15),
+            SizedBox(
+              width: double.infinity,
+              height: double.maxFinite,
+              child: StreamBuilder<List<MessageModel>>(
+                stream: messages,
+                builder: (
+                  context,
+                  snapshot,
+                ) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const LoadingUtil();
+                  } else if (snapshot.connectionState ==
+                          ConnectionState.active ||
+                      snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasError) {
+                      return Text(snapshot.error.toString());
+                    } else if (snapshot.hasData) {
+                      final messages = snapshot.data!;
+                      return ResponsiveRowColumn(
+                          layout: ResponsiveWrapper.of(context)
+                                  .isSmallerThan(TABLET)
+                              ? ResponsiveRowColumnType.COLUMN
+                              : ResponsiveRowColumnType.ROW,
+                          rowMainAxisAlignment: MainAxisAlignment.start,
+                          rowCrossAxisAlignment: CrossAxisAlignment.start,
+                          rowPadding: const EdgeInsets.all(20),
+                          columnPadding:
+                              const EdgeInsets.fromLTRB(10, 20, 10, 10),
+                          children: [
+                            ResponsiveRowColumnItem(
+                              rowFlex: 1,
+                              child: ListView.builder(
+                                  reverse: true,
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: messages.length,
+                                  itemBuilder: (context, index) {
+                                    final message = messages[index];
+                                    return Card(
+                                        // In many cases, the key isn't mandatory
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 15),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: Text(message.content!),
+                                        ));
+                                  }),
+                            ),
+                            ResponsiveRowColumnItem(
+                                rowFlex: 1,
+                                child: ResponsiveVisibility(
+                                  hiddenWhen: const [
+                                    Condition.smallerThan(name: TABLET)
+                                  ],
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Card(
+                                          child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Row(
+                                          children: const [
+                                            Text('YEAHHHHH'),
+                                          ],
+                                        ),
+                                      )),
+                                      const SizedBox(
+                                        width: 300,
+                                      )
+                                    ],
+                                  ),
+                                )),
+                          ]);
+                    } else {
+                      return const Text('Empty data');
+                    }
+                  } else {
+                    return Text('State: ${snapshot.connectionState}');
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
       drawer: const Drawer(child: Text('Text')),
       endDrawer: Drawer(
