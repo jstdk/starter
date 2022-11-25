@@ -30,23 +30,6 @@ class _RootState extends State<Root> {
         }
         user = session?.user;
       });
-      if (user != null) {
-        if (kDebugMode) {
-          print('Navigating to HomeScreen');
-        }
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-            (Route<dynamic> route) => false);
-      } else {
-        if (kDebugMode) {
-          print('Navigating to AuthenticationScreen');
-        }
-
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-                builder: (context) => const AuthenticationScreen()),
-            (Route<dynamic> route) => false);
-      }
     });
     super.initState();
   }
@@ -64,13 +47,11 @@ class _RootState extends State<Root> {
       if (kDebugMode) {
         print('Navigating to HomeScreen');
       }
-      return const HomeScreen();
     } else {
       if (kDebugMode) {
         print('Navigating to AuthenticationScreen');
       }
-
-      return const AuthenticationScreen();
     }
+    return user == null ? const AuthenticationScreen() : const HomeScreen();
   }
 }

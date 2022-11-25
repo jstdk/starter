@@ -311,8 +311,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: const Icon(
                     FontAwesomeIcons.circleChevronRight,
                   ),
-                  onPressed: () {
-                    signOut();
+                  onPressed: () async {
+                    await signOut();
                   },
                 ),
               ]),

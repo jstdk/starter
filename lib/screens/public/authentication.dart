@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/foundation.dart';
@@ -30,12 +31,18 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   bool signup = false;
   bool reset = false;
 
-  Future<void> signInUsingEmailAndPassword(email, password) async {
+  Future signInUsingEmailAndPassword(email, password) async {
     try {
       if (kDebugMode) {
         print('Trying to sign in');
       }
-      await supabase.auth.signInWithPassword(email: email, password: password);
+      AuthResponse result = await supabase.auth
+          .signInWithPassword(email: email, password: password);
+      if (EmailValidator.validate(result.user!.email!)) {
+        return true;
+      } else {
+        return false;
+      }
     } catch (e) {
       setState(() => {loading = false, error = 'Invalid email or password'});
       if (kDebugMode) {
@@ -50,11 +57,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       if (kDebugMode) {
         print('Trying to sign up');
       }
-      await supabase.auth.signUp(email: email, password: password);
-      setState(() => {
-            loading = false,
-            error = '',
-          });
+      AuthResponse result =
+          await supabase.auth.signUp(email: email, password: password);
+      if (EmailValidator.validate(result.user!.email!)) {
+        return true;
+      } else {
+        return false;
+      }
     } catch (e) {
       setState(() => {loading = false, error = 'Oops. Something went wrong'});
       if (kDebugMode) {
@@ -164,66 +173,82 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               Expanded(child: Divider()),
             ]),
             const SizedBox(height: 30.0),
-            TextFormField(
-                decoration: const InputDecoration(
-                    hintText: "Email",
-                    border: OutlineInputBorder(
+            SizedBox(
+              width: ResponsiveValue(context,
+                  defaultValue: 300.0,
+                  valueWhen: const [
+                    Condition.largerThan(name: MOBILE, value: 300.0),
+                    Condition.smallerThan(name: TABLET, value: double.infinity)
+                  ]).value,
+              child: TextFormField(
+                  decoration: const InputDecoration(
+                      hintText: "Email",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                      labelText: "Email",
+                      labelStyle: TextStyle(
+                        fontSize: 15,
+                      ), //label style
+                      prefixIcon: Padding(
+                        padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                        child: Icon(FontAwesomeIcons.envelope),
+                      )),
+                  autofocus: true,
+                  validator: (String? value) {
+                    return !EmailValidator.validate(value!)
+                        ? 'Please provide a valid email.'
+                        : null;
+                  },
+                  onChanged: (val) {
+                    setState(() => email = val);
+                  }),
+            ),
+            const SizedBox(height: 15.0),
+            SizedBox(
+              width: ResponsiveValue(context,
+                  defaultValue: 300.0,
+                  valueWhen: const [
+                    Condition.largerThan(name: MOBILE, value: 300.0),
+                    Condition.smallerThan(name: TABLET, value: double.infinity)
+                  ]).value,
+              child: TextFormField(
+                  obscureText: obscureText,
+                  decoration: InputDecoration(
+                    hintText: "Password",
+                    border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(5))),
-                    labelText: "Email",
-                    labelStyle: TextStyle(
+                    labelText: "Password",
+                    labelStyle: const TextStyle(
                       fontSize: 15,
                     ), //label style
-                    prefixIcon: Padding(
+                    prefixIcon: const Padding(
                       padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                      child: Icon(FontAwesomeIcons.envelope),
-                    )),
-                autofocus: true,
-                validator: (String? value) {
-                  return !EmailValidator.validate(value!)
-                      ? 'Please provide a valid email.'
-                      : null;
-                },
-                onChanged: (val) {
-                  setState(() => email = val);
-                }),
-            const SizedBox(height: 15.0),
-            TextFormField(
-                obscureText: obscureText,
-                decoration: InputDecoration(
-                  hintText: "Password",
-                  border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5))),
-                  labelText: "Password",
-                  labelStyle: const TextStyle(
-                    fontSize: 15,
-                  ), //label style
-                  prefixIcon: const Padding(
-                    padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                    child: Icon(FontAwesomeIcons.unlockKeyhole),
-                  ),
-                  suffixIcon: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
-                    child: InkWell(
-                      onTap: _toggle,
-                      child: Icon(
-                        obscureText
-                            ? FontAwesomeIcons.eye
-                            : FontAwesomeIcons.eyeSlash,
-                        size: 20.0,
+                      child: Icon(FontAwesomeIcons.unlockKeyhole),
+                    ),
+                    suffixIcon: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+                      child: InkWell(
+                        onTap: _toggle,
+                        child: Icon(
+                          obscureText
+                              ? FontAwesomeIcons.eye
+                              : FontAwesomeIcons.eyeSlash,
+                          size: 20.0,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                textAlign: TextAlign.left,
-                autofocus: true,
-                validator: (String? value) {
-                  return (value != null && value.length < 2)
-                      ? 'Please provide a valid password.'
-                      : null;
-                },
-                onChanged: (val) {
-                  setState(() => password = val);
-                }),
+                  textAlign: TextAlign.left,
+                  autofocus: true,
+                  validator: (String? value) {
+                    return (value != null && value.length < 2)
+                        ? 'Please provide a valid password.'
+                        : null;
+                  },
+                  onChanged: (val) {
+                    setState(() => password = val);
+                  }),
+            ),
             error != '' ? const SizedBox(height: 20.0) : Container(),
             Text(error ?? '', style: const TextStyle(color: Colors.red)),
             GestureDetector(
@@ -253,19 +278,23 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
                           setState(() => loading = true);
-                          signInUsingEmailAndPassword(email, password);
-                          final snackBarSignIn = SnackBar(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            content: const Text(
-                                'Welcome back. You have been signed in',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                )),
-                          );
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(snackBarSignIn);
+                          bool success = await signInUsingEmailAndPassword(
+                              email, password);
+                          if (success == true) {
+                            if (!mounted) return;
+                            final snackBarSignIn = SnackBar(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              content: const Text(
+                                  'Welcome back. You have been signed in',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  )),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBarSignIn);
+                          }
                         } else {
                           setState(() {
                             loading = false;
@@ -284,20 +313,25 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
                           setState(() => loading = true);
-                          signUpUsingEmailAndPassword(
+                          bool success = await signUpUsingEmailAndPassword(
                               email: email, password: password);
-                          final snackBarSignUp = SnackBar(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            content: const Text(
-                                'Welcome. You have been signed up. Please check you email to confirm your account',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                )),
-                          );
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(snackBarSignUp);
+                          if (success == true) {
+                            if (!mounted) return;
+                            setState(() => loading = false);
+                            final snackBarSignUp = SnackBar(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              content: const Text(
+                                  'Welcome. You have been signed up. Please check you email to confirm your account',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  )),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBarSignUp);
+                            setState(() => signup = false);
+                          }
                         } else {
                           setState(() {
                             loading = false;
@@ -358,28 +392,36 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             const SizedBox(height: 20.0),
             Text(resetPasswordRequestSuccess ?? ''),
             const SizedBox(height: 10),
-            TextFormField(
-                decoration: const InputDecoration(
-                    hintText: "Email",
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
-                    labelText: "Email",
-                    labelStyle: TextStyle(
-                      fontSize: 15,
-                    ), //label style
-                    prefixIcon: Padding(
-                      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                      child: Icon(FontAwesomeIcons.envelope),
-                    )),
-                autofocus: true,
-                validator: (String? value) {
-                  return !EmailValidator.validate(value!)
-                      ? 'Please provide a valid email.'
-                      : null;
-                },
-                onChanged: (val) {
-                  setState(() => email = val);
-                }),
+            SizedBox(
+              width: ResponsiveValue(context,
+                  defaultValue: 300.0,
+                  valueWhen: const [
+                    Condition.largerThan(name: MOBILE, value: 300.0),
+                    Condition.smallerThan(name: TABLET, value: double.infinity)
+                  ]).value,
+              child: TextFormField(
+                  decoration: const InputDecoration(
+                      hintText: "Email",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                      labelText: "Email",
+                      labelStyle: TextStyle(
+                        fontSize: 15,
+                      ), //label style
+                      prefixIcon: Padding(
+                        padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                        child: Icon(FontAwesomeIcons.envelope),
+                      )),
+                  autofocus: true,
+                  validator: (String? value) {
+                    return !EmailValidator.validate(value!)
+                        ? 'Please provide a valid email.'
+                        : null;
+                  },
+                  onChanged: (val) {
+                    setState(() => email = val);
+                  }),
+            ),
             const SizedBox(height: 20.0),
             SizedBox(
               width: ResponsiveValue(context,
@@ -444,7 +486,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   const ResponsiveVisibility(
                       visible: false,
                       visibleWhen: [Condition.largerThan(name: MOBILE)],
-                      child: SizedBox(height: 50)),
+                      child: SizedBox(height: 20)),
                   ResponsiveRowColumn(
                     layout: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
                         ? ResponsiveRowColumnType.COLUMN
@@ -454,7 +496,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                     columnPadding: const EdgeInsets.all(20),
                     children: [
                       ResponsiveRowColumnItem(
-                          rowFlex: 1,
+                          rowFlex: 2,
                           child: ResponsiveVisibility(
                             hiddenWhen: const [
                               Condition.smallerThan(name: TABLET)

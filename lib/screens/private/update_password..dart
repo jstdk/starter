@@ -163,7 +163,7 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
                       }),
                 ),
                 Text(error ?? '', style: const TextStyle(color: Colors.red)),
-                const SizedBox(height: 40.0),
+                const SizedBox(height: 20.0),
                 SizedBox(
                   width: ResponsiveValue(context,
                       defaultValue: 300.0,
@@ -199,6 +199,7 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
                                 )),
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          Navigator.pop(context);
                         }
                       } else {
                         setState(() {

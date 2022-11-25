@@ -99,7 +99,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     setState(() => {loading = true});
     Navigator.pop(context);
     avatarFile = await _picker.pickImage(
-        source: camera == true ? ImageSource.camera : ImageSource.gallery);
+        source: camera == true ? ImageSource.camera : ImageSource.gallery,
+        maxHeight: 480,
+        maxWidth: 640);
     avatarAsBytes = await avatarFile!.readAsBytes();
     base64Avatar = base64Encode(avatarAsBytes);
     setState(
@@ -288,7 +290,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         final response = await updateProfileProcedure(
                             widget.profile?.id, fullName, email, avatar);
                         if (response == null) {
-                          setState(() => loading = false);
                           if (!mounted) return;
                           final snackBar = SnackBar(
                             backgroundColor:
@@ -300,6 +301,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                 )),
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          Navigator.of(context, rootNavigator: true)
+                              .pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => const Root()),
+                                  (route) => false);
                         }
                       } else {
                         setState(() {
