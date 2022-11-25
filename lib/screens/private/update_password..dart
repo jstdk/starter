@@ -26,26 +26,17 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
   String? passwordNewAgain;
   bool obscureText = true;
 
-  Future<void> signOut() async {
-    try {
-      await supabase.auth.signOut();
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-  }
-
   Future updatePassword(id, passwordNew) async {
     try {
       if (kDebugMode) {
         print('Trying to update profile');
       }
-      return await supabase.auth.updateUser(
+      UserResponse result = await supabase.auth.updateUser(
         UserAttributes(
           password: passwordNew,
         ),
       );
+      print(result);
     } catch (e) {
       setState(() => {loading = false, error = 'Something went wrong'});
       if (kDebugMode) {
@@ -58,6 +49,133 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
     setState(() {
       obscureText = !obscureText;
     });
+  }
+
+  newPasswordFormField() {
+    return SizedBox(
+        width: ResponsiveValue(context, defaultValue: 300.0, valueWhen: const [
+          Condition.largerThan(name: MOBILE, value: 300.0),
+          Condition.smallerThan(name: TABLET, value: double.infinity)
+        ]).value,
+        child: TextFormField(
+            obscureText: obscureText,
+            decoration: InputDecoration(
+              hintText: "Password",
+              border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5))),
+              labelText: "New Password",
+              labelStyle: const TextStyle(
+                fontSize: 15,
+              ), //label style
+              prefixIcon: const Padding(
+                padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                child: Icon(FontAwesomeIcons.unlockKeyhole),
+              ),
+              suffixIcon: InkWell(
+                onTap: _toggle,
+                child: Icon(
+                  obscureText
+                      ? FontAwesomeIcons.eye
+                      : FontAwesomeIcons.eyeSlash,
+                  size: 20.0,
+                ),
+              ),
+            ),
+            textAlign: TextAlign.left,
+            autofocus: true,
+            validator: (String? value) {
+              return (value != null && value.length < 2)
+                  ? 'Please provide a valid password.'
+                  : null;
+            },
+            onChanged: (val) {
+              setState(() => passwordNew = val);
+            }));
+  }
+
+  newPasswordAgainFormField() {
+    return SizedBox(
+      width: ResponsiveValue(context, defaultValue: 300.0, valueWhen: const [
+        Condition.largerThan(name: MOBILE, value: 300.0),
+        Condition.smallerThan(name: TABLET, value: double.infinity)
+      ]).value,
+      child: TextFormField(
+          obscureText: obscureText,
+          decoration: InputDecoration(
+            hintText: "Password",
+            border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(5))),
+            labelText: "New Password again",
+            labelStyle: const TextStyle(
+              fontSize: 15,
+            ), //label style
+            prefixIcon: const Padding(
+              padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+              child: Icon(FontAwesomeIcons.unlockKeyhole),
+            ),
+            suffixIcon: InkWell(
+              onTap: _toggle,
+              child: Icon(
+                obscureText ? FontAwesomeIcons.eye : FontAwesomeIcons.eyeSlash,
+                size: 20.0,
+              ),
+            ),
+          ),
+          textAlign: TextAlign.left,
+          autofocus: true,
+          validator: (String? value) {
+            return (value != passwordNew)
+                ? 'Your passwords are not the same'
+                : null;
+          },
+          onChanged: (val) {
+            setState(() => passwordNewAgain = val);
+          }),
+    );
+  }
+
+  updatePasswordFormButton() {
+    return SizedBox(
+      width: ResponsiveValue(context, defaultValue: 300.0, valueWhen: const [
+        Condition.largerThan(name: MOBILE, value: 300.0),
+        Condition.smallerThan(name: TABLET, value: double.infinity)
+      ]).value,
+      child: ElevatedButton(
+        child: const Padding(
+          padding: EdgeInsets.all(15.0),
+          child: Text(
+            "Update Password",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ),
+        onPressed: () async {
+          if (formKey.currentState!.validate()) {
+            setState(() => loading = true);
+            final response =
+                await updatePassword(widget.profile?.id, passwordNew);
+            setState(() => loading = false);
+            if (response != null) {
+              if (!mounted) return;
+              final snackBar = SnackBar(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                content: const Text('Password has been updated',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                    )),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              Navigator.pop(context);
+            }
+          } else {
+            setState(() {
+              loading = false;
+              error = 'Something went wrong.';
+            });
+          }
+        },
+      ),
+    );
   }
 
   passwordForm() {
@@ -75,141 +193,13 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
                             fontSize: 25.0, fontWeight: FontWeight.bold))
                     : Container(),
                 const SizedBox(height: 40.0),
-                SizedBox(
-                  width: ResponsiveValue(context,
-                      defaultValue: 300.0,
-                      valueWhen: const [
-                        Condition.largerThan(name: MOBILE, value: 300.0),
-                        Condition.smallerThan(
-                            name: TABLET, value: double.infinity)
-                      ]).value,
-                  child: TextFormField(
-                      obscureText: obscureText,
-                      decoration: InputDecoration(
-                        hintText: "Password",
-                        border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(5))),
-                        labelText: "New Password",
-                        labelStyle: const TextStyle(
-                          fontSize: 15,
-                        ), //label style
-                        prefixIcon: const Padding(
-                          padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                          child: Icon(FontAwesomeIcons.unlockKeyhole),
-                        ),
-                        suffixIcon: InkWell(
-                          onTap: _toggle,
-                          child: Icon(
-                            obscureText
-                                ? FontAwesomeIcons.eye
-                                : FontAwesomeIcons.eyeSlash,
-                            size: 20.0,
-                          ),
-                        ),
-                      ),
-                      textAlign: TextAlign.left,
-                      autofocus: true,
-                      validator: (String? value) {
-                        return (value != null && value.length < 2)
-                            ? 'Please provide a valid password.'
-                            : null;
-                      },
-                      onChanged: (val) {
-                        setState(() => passwordNew = val);
-                      }),
-                ),
+                newPasswordFormField(),
                 const SizedBox(height: 20.0),
-                SizedBox(
-                  width: ResponsiveValue(context,
-                      defaultValue: 300.0,
-                      valueWhen: const [
-                        Condition.largerThan(name: MOBILE, value: 300.0),
-                        Condition.smallerThan(
-                            name: TABLET, value: double.infinity)
-                      ]).value,
-                  child: TextFormField(
-                      obscureText: obscureText,
-                      decoration: InputDecoration(
-                        hintText: "Password",
-                        border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(5))),
-                        labelText: "New Password again",
-                        labelStyle: const TextStyle(
-                          fontSize: 15,
-                        ), //label style
-                        prefixIcon: const Padding(
-                          padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                          child: Icon(FontAwesomeIcons.unlockKeyhole),
-                        ),
-                        suffixIcon: InkWell(
-                          onTap: _toggle,
-                          child: Icon(
-                            obscureText
-                                ? FontAwesomeIcons.eye
-                                : FontAwesomeIcons.eyeSlash,
-                            size: 20.0,
-                          ),
-                        ),
-                      ),
-                      textAlign: TextAlign.left,
-                      autofocus: true,
-                      validator: (String? value) {
-                        return (value != passwordNew)
-                            ? 'Your passwords are not the same'
-                            : null;
-                      },
-                      onChanged: (val) {
-                        setState(() => passwordNewAgain = val);
-                      }),
-                ),
+                newPasswordAgainFormField(),
+                error != '' ? const SizedBox(height: 20) : Container(),
                 Text(error ?? '', style: const TextStyle(color: Colors.red)),
-                const SizedBox(height: 20.0),
-                SizedBox(
-                  width: ResponsiveValue(context,
-                      defaultValue: 300.0,
-                      valueWhen: const [
-                        Condition.largerThan(name: MOBILE, value: 300.0),
-                        Condition.smallerThan(
-                            name: TABLET, value: double.infinity)
-                      ]).value,
-                  child: ElevatedButton(
-                    child: const Padding(
-                      padding: EdgeInsets.all(15.0),
-                      child: Text(
-                        "Update Password",
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    onPressed: () async {
-                      if (formKey.currentState!.validate()) {
-                        setState(() => loading = true);
-                        final response = await updatePassword(
-                            widget.profile?.id, passwordNew);
-                        setState(() => loading = false);
-                        if (response != null) {
-                          if (!mounted) return;
-                          final snackBar = SnackBar(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            content: const Text('Password has been updated',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                )),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          Navigator.pop(context);
-                        }
-                      } else {
-                        setState(() {
-                          loading = false;
-                          error = 'Something went wrong.';
-                        });
-                      }
-                    },
-                  ),
-                ),
+                const SizedBox(height: 20),
+                updatePasswordFormButton(),
               ],
             )),
       ),

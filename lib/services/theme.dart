@@ -6,11 +6,13 @@ ThemeData light = ThemeData(
   brightness: Brightness.light,
   primarySwatch: Colors.grey,
   scaffoldBackgroundColor: const Color(0xfff1f1f1),
+  fontFamily: 'Nunito',
 );
 
 ThemeData dark = ThemeData(
   brightness: Brightness.dark,
   primarySwatch: Colors.indigo,
+  fontFamily: 'Nunito',
 );
 
 class ThemeService extends ChangeNotifier {

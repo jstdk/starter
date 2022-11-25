@@ -51,7 +51,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     }
   }
 
-  // Sign up user with email and password
   Future signUpUsingEmailAndPassword({email, password}) async {
     try {
       if (kDebugMode) {
@@ -118,6 +117,190 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     });
   }
 
+  emailFormField() {
+    return SizedBox(
+      width: ResponsiveValue(context, defaultValue: 300.0, valueWhen: const [
+        Condition.largerThan(name: MOBILE, value: 300.0),
+        Condition.smallerThan(name: TABLET, value: double.infinity)
+      ]).value,
+      child: TextFormField(
+          decoration: const InputDecoration(
+              hintText: "Email",
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5))),
+              labelText: "Email",
+              labelStyle: TextStyle(
+                fontSize: 15,
+              ), //label style
+              prefixIcon: Padding(
+                padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                child: Icon(FontAwesomeIcons.envelope),
+              )),
+          autofocus: true,
+          validator: (String? value) {
+            return !EmailValidator.validate(value!)
+                ? 'Please provide a valid email.'
+                : null;
+          },
+          onChanged: (val) {
+            setState(() => email = val);
+          }),
+    );
+  }
+
+  passwordFormField() {
+    return SizedBox(
+      width: ResponsiveValue(context, defaultValue: 300.0, valueWhen: const [
+        Condition.largerThan(name: MOBILE, value: 300.0),
+        Condition.smallerThan(name: TABLET, value: double.infinity)
+      ]).value,
+      child: TextFormField(
+          obscureText: obscureText,
+          decoration: InputDecoration(
+            hintText: "Password",
+            border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(5))),
+            labelText: "Password",
+            labelStyle: const TextStyle(
+              fontSize: 15,
+            ), //label style
+            prefixIcon: const Padding(
+              padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+              child: Icon(FontAwesomeIcons.unlockKeyhole),
+            ),
+            suffixIcon: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+              child: InkWell(
+                onTap: _toggle,
+                child: Icon(
+                  obscureText
+                      ? FontAwesomeIcons.eye
+                      : FontAwesomeIcons.eyeSlash,
+                  size: 20.0,
+                ),
+              ),
+            ),
+          ),
+          textAlign: TextAlign.left,
+          autofocus: true,
+          validator: (String? value) {
+            return (value != null && value.length < 2)
+                ? 'Please provide a valid password.'
+                : null;
+          },
+          onChanged: (val) {
+            setState(() => password = val);
+          }),
+    );
+  }
+
+  signInUpFormButton() {
+    return SizedBox(
+      width: ResponsiveValue(context, defaultValue: 300.0, valueWhen: const [
+        Condition.largerThan(name: MOBILE, value: 300.0),
+        Condition.smallerThan(name: TABLET, value: double.infinity)
+      ]).value,
+      child: signup == false
+          ? ElevatedButton(
+              child: const Padding(
+                padding: EdgeInsets.all(15.0),
+                child: Text(
+                  "Sign-In using email",
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
+              onPressed: () async {
+                if (formKey.currentState!.validate()) {
+                  setState(() => loading = true);
+                  bool success =
+                      await signInUsingEmailAndPassword(email, password);
+                  if (success == true) {
+                    if (!mounted) return;
+                    final snackBarSignIn = SnackBar(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      content:
+                          const Text('Welcome back. You have been signed in',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                              )),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBarSignIn);
+                  }
+                } else {
+                  setState(() {
+                    loading = false;
+                  });
+                }
+              },
+            )
+          : ElevatedButton(
+              child: const Padding(
+                padding: EdgeInsets.all(15.0),
+                child: Text(
+                  "Sign-Up using email",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              onPressed: () async {
+                if (formKey.currentState!.validate()) {
+                  setState(() => loading = true);
+                  bool success = await signUpUsingEmailAndPassword(
+                      email: email, password: password);
+                  if (success == true) {
+                    if (!mounted) return;
+                    setState(() => loading = false);
+                    final snackBarSignUp = SnackBar(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      content: const Text(
+                          'Welcome. You have been signed up. Please check you email to confirm your account',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                          )),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBarSignUp);
+                    setState(() => signup = false);
+                  }
+                } else {
+                  setState(() {
+                    loading = false;
+                  });
+                }
+              },
+            ),
+    );
+  }
+
+  signInUpSwitcher() {
+    return SizedBox(
+      width: ResponsiveValue(context, defaultValue: 300.0, valueWhen: const [
+        Condition.largerThan(name: MOBILE, value: 300.0),
+        Condition.smallerThan(name: TABLET, value: double.infinity)
+      ]).value,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+        ),
+        onPressed: () {
+          setState(() {
+            formKey.currentState!.reset();
+            error = '';
+            signup = !signup;
+          });
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Text(
+            signup == false ? "Sign-up using email" : "Sign-in using email",
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+    );
+  }
+
   signInUpForm() {
     return Form(
         key: formKey,
@@ -173,84 +356,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               Expanded(child: Divider()),
             ]),
             const SizedBox(height: 30.0),
-            SizedBox(
-              width: ResponsiveValue(context,
-                  defaultValue: 300.0,
-                  valueWhen: const [
-                    Condition.largerThan(name: MOBILE, value: 300.0),
-                    Condition.smallerThan(name: TABLET, value: double.infinity)
-                  ]).value,
-              child: TextFormField(
-                  decoration: const InputDecoration(
-                      hintText: "Email",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5))),
-                      labelText: "Email",
-                      labelStyle: TextStyle(
-                        fontSize: 15,
-                      ), //label style
-                      prefixIcon: Padding(
-                        padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                        child: Icon(FontAwesomeIcons.envelope),
-                      )),
-                  autofocus: true,
-                  validator: (String? value) {
-                    return !EmailValidator.validate(value!)
-                        ? 'Please provide a valid email.'
-                        : null;
-                  },
-                  onChanged: (val) {
-                    setState(() => email = val);
-                  }),
-            ),
+            emailFormField(),
             const SizedBox(height: 15.0),
-            SizedBox(
-              width: ResponsiveValue(context,
-                  defaultValue: 300.0,
-                  valueWhen: const [
-                    Condition.largerThan(name: MOBILE, value: 300.0),
-                    Condition.smallerThan(name: TABLET, value: double.infinity)
-                  ]).value,
-              child: TextFormField(
-                  obscureText: obscureText,
-                  decoration: InputDecoration(
-                    hintText: "Password",
-                    border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
-                    labelText: "Password",
-                    labelStyle: const TextStyle(
-                      fontSize: 15,
-                    ), //label style
-                    prefixIcon: const Padding(
-                      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                      child: Icon(FontAwesomeIcons.unlockKeyhole),
-                    ),
-                    suffixIcon: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
-                      child: InkWell(
-                        onTap: _toggle,
-                        child: Icon(
-                          obscureText
-                              ? FontAwesomeIcons.eye
-                              : FontAwesomeIcons.eyeSlash,
-                          size: 20.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                  textAlign: TextAlign.left,
-                  autofocus: true,
-                  validator: (String? value) {
-                    return (value != null && value.length < 2)
-                        ? 'Please provide a valid password.'
-                        : null;
-                  },
-                  onChanged: (val) {
-                    setState(() => password = val);
-                  }),
-            ),
-            error != '' ? const SizedBox(height: 20.0) : Container(),
+            passwordFormField(),
+            error != '' ? const SizedBox(height: 20) : Container(),
             Text(error ?? '', style: const TextStyle(color: Colors.red)),
+            error != '' ? const SizedBox(height: 20) : Container(),
             GestureDetector(
                 child: const Text("I forgot my password",
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -258,88 +369,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   setState(() => reset = true);
                 }),
             const SizedBox(height: 20.0),
-            SizedBox(
-              width: ResponsiveValue(context,
-                  defaultValue: 300.0,
-                  valueWhen: const [
-                    Condition.largerThan(name: MOBILE, value: 300.0),
-                    Condition.smallerThan(name: TABLET, value: double.infinity)
-                  ]).value,
-              child: signup == false
-                  ? ElevatedButton(
-                      child: const Padding(
-                        padding: EdgeInsets.all(15.0),
-                        child: Text(
-                          "Sign-In using email",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      onPressed: () async {
-                        if (formKey.currentState!.validate()) {
-                          setState(() => loading = true);
-                          bool success = await signInUsingEmailAndPassword(
-                              email, password);
-                          if (success == true) {
-                            if (!mounted) return;
-                            final snackBarSignIn = SnackBar(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary,
-                              content: const Text(
-                                  'Welcome back. You have been signed in',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  )),
-                            );
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBarSignIn);
-                          }
-                        } else {
-                          setState(() {
-                            loading = false;
-                          });
-                        }
-                      },
-                    )
-                  : ElevatedButton(
-                      child: const Padding(
-                        padding: EdgeInsets.all(15.0),
-                        child: Text(
-                          "Sign-Up using email",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      onPressed: () async {
-                        if (formKey.currentState!.validate()) {
-                          setState(() => loading = true);
-                          bool success = await signUpUsingEmailAndPassword(
-                              email: email, password: password);
-                          if (success == true) {
-                            if (!mounted) return;
-                            setState(() => loading = false);
-                            final snackBarSignUp = SnackBar(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary,
-                              content: const Text(
-                                  'Welcome. You have been signed up. Please check you email to confirm your account',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  )),
-                            );
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBarSignUp);
-                            setState(() => signup = false);
-                          }
-                        } else {
-                          setState(() {
-                            loading = false;
-                          });
-                        }
-                      },
-                    ),
-            ),
+            signInUpFormButton(),
             const SizedBox(height: 30.0),
             Row(children: const <Widget>[
               Expanded(child: Divider()),
@@ -347,37 +377,49 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               Expanded(child: Divider()),
             ]),
             const SizedBox(height: 30.0),
-            SizedBox(
-              width: ResponsiveValue(context,
-                  defaultValue: 300.0,
-                  valueWhen: const [
-                    Condition.largerThan(name: MOBILE, value: 300.0),
-                    Condition.smallerThan(name: TABLET, value: double.infinity)
-                  ]).value,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                ),
-                onPressed: () {
-                  setState(() {
-                    formKey.currentState!.reset();
-                    error = '';
-                    signup = !signup;
-                  });
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Text(
-                    signup == false
-                        ? "Sign-up using email"
-                        : "Sign-in using email",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ),
+            signInUpSwitcher(),
           ],
         ));
+  }
+
+  resetPasswordFormButton() {
+    return SizedBox(
+      width: ResponsiveValue(context, defaultValue: 300.0, valueWhen: const [
+        Condition.largerThan(name: MOBILE, value: 300.0),
+        Condition.smallerThan(name: TABLET, value: double.infinity)
+      ]).value,
+      child: ElevatedButton(
+        child: const Padding(
+          padding: EdgeInsets.all(15.0),
+          child: Text(
+            "Reset password",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ),
+        onPressed: () async {
+          if (formKey.currentState!.validate()) {
+            setState(() => loading = true);
+            await resetPassword(email);
+            if (!mounted) return;
+            final snackBarSignUp = SnackBar(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              content: const Text(
+                  'You have been signed up. Please check you email to confirm your account. You can sign in after that',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                  )),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBarSignUp);
+          } else {
+            setState(() {
+              loading = false;
+              error = 'Something went wrong.';
+            });
+          }
+        },
+      ),
+    );
   }
 
   resetPasswordForm(context) {
@@ -392,76 +434,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             const SizedBox(height: 20.0),
             Text(resetPasswordRequestSuccess ?? ''),
             const SizedBox(height: 10),
-            SizedBox(
-              width: ResponsiveValue(context,
-                  defaultValue: 300.0,
-                  valueWhen: const [
-                    Condition.largerThan(name: MOBILE, value: 300.0),
-                    Condition.smallerThan(name: TABLET, value: double.infinity)
-                  ]).value,
-              child: TextFormField(
-                  decoration: const InputDecoration(
-                      hintText: "Email",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5))),
-                      labelText: "Email",
-                      labelStyle: TextStyle(
-                        fontSize: 15,
-                      ), //label style
-                      prefixIcon: Padding(
-                        padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                        child: Icon(FontAwesomeIcons.envelope),
-                      )),
-                  autofocus: true,
-                  validator: (String? value) {
-                    return !EmailValidator.validate(value!)
-                        ? 'Please provide a valid email.'
-                        : null;
-                  },
-                  onChanged: (val) {
-                    setState(() => email = val);
-                  }),
-            ),
+            emailFormField(),
             const SizedBox(height: 20.0),
-            SizedBox(
-              width: ResponsiveValue(context,
-                  defaultValue: 300.0,
-                  valueWhen: const [
-                    Condition.largerThan(name: MOBILE, value: 300.0),
-                    Condition.smallerThan(name: TABLET, value: double.infinity)
-                  ]).value,
-              child: ElevatedButton(
-                child: const Padding(
-                  padding: EdgeInsets.all(15.0),
-                  child: Text(
-                    "Reset password",
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                onPressed: () async {
-                  if (formKey.currentState!.validate()) {
-                    setState(() => loading = true);
-                    await resetPassword(email);
-                    final snackBarSignUp = SnackBar(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      content: const Text(
-                          'You have been signed up. Please check you email to confirm your account. You can sign in after that',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                          )),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBarSignUp);
-                  } else {
-                    setState(() {
-                      loading = false;
-                      error = 'Something went wrong.';
-                    });
-                  }
-                },
-              ),
-            ),
+            resetPasswordFormButton(),
             const SizedBox(height: 30.0),
             GestureDetector(
                 child: const Text("Go back",
@@ -471,6 +446,19 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 }),
           ],
         ));
+  }
+
+  jumbotron() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 10, 100, 10),
+      child: Row(
+        children: const [
+          Text('YEAH!'),
+          Spacer(),
+          Text('YEAH!'),
+        ],
+      ),
+    );
   }
 
   @override
@@ -503,17 +491,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             ],
                             child: Column(
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      10, 10, 100, 10),
-                                  child: Row(
-                                    children: const [
-                                      Text('YEAH!'),
-                                      Spacer(),
-                                      Text('YEAH!'),
-                                    ],
-                                  ),
-                                ),
+                                jumbotron(),
                               ],
                             ),
                           )),
