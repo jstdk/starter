@@ -145,25 +145,32 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                   ? 'Select an image'
                                   : 'Make or select an image')),
                           children: <Widget>[
-                            kIsWeb
-                                ? Container()
-                                : IconButton(
-                                    icon: const Icon(
-                                      FontAwesomeIcons.cameraRetro,
-                                      size: 20.0,
-                                    ),
-                                    onPressed: () async {
-                                      await pickAvatar(true);
-                                    },
+                            Row(
+                              children: [
+                                const Spacer(),
+                                kIsWeb
+                                    ? Container()
+                                    : IconButton(
+                                        icon: const Icon(
+                                          FontAwesomeIcons.cameraRetro,
+                                          size: 20.0,
+                                        ),
+                                        onPressed: () async {
+                                          await pickAvatar(true);
+                                        },
+                                      ),
+                                const Spacer(),
+                                IconButton(
+                                  icon: const Icon(
+                                    FontAwesomeIcons.image,
+                                    size: 20.0,
                                   ),
-                            IconButton(
-                              icon: const Icon(
-                                FontAwesomeIcons.image,
-                                size: 20.0,
-                              ),
-                              onPressed: () async {
-                                await pickAvatar(false);
-                              },
+                                  onPressed: () async {
+                                    await pickAvatar(false);
+                                  },
+                                ),
+                                const Spacer()
+                              ],
                             ),
                           ],
                         ),

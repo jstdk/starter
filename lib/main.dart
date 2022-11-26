@@ -70,7 +70,6 @@ class StarterApp extends StatelessWidget {
               ],
               builder: (context, child) => ResponsiveWrapper.builder(
                       BouncingScrollWrapper.builder(context, child!),
-                      //SmaxWidth: 1200,
                       minWidth: 450,
                       defaultScale: true,
                       breakpoints: [

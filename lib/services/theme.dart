@@ -4,14 +4,15 @@ import 'package:flutter/material.dart';
 
 ThemeData light = ThemeData(
   brightness: Brightness.light,
-  primarySwatch: Colors.grey,
+  primarySwatch: Colors.green,
   scaffoldBackgroundColor: const Color(0xfff1f1f1),
   fontFamily: 'Nunito',
 );
 
 ThemeData dark = ThemeData(
+  backgroundColor: Colors.black,
   brightness: Brightness.dark,
-  primarySwatch: Colors.indigo,
+  primarySwatch: Colors.green,
   fontFamily: 'Nunito',
 );
 

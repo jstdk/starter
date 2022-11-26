@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/foundation.dart';
@@ -306,7 +305,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         key: formKey,
         child: Column(
           children: <Widget>[
-            const SizedBox(height: 10.0),
             Text('Get Started',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -451,11 +449,38 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   jumbotron() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 10, 100, 10),
-      child: Row(
-        children: const [
-          Text('YEAH!'),
-          Spacer(),
-          Text('YEAH!'),
+      child: Column(
+        children: [
+          SizedBox(
+            width: ResponsiveValue(context,
+                defaultValue: 500.0,
+                valueWhen: const [
+                  Condition.smallerThan(name: TABLET, value: 250.0)
+                ]).value,
+            child: Text('Starter Template',
+                style: TextStyle(
+                    fontSize: ResponsiveValue(context,
+                        defaultValue: 60.0,
+                        valueWhen: const [
+                          Condition.smallerThan(name: TABLET, value: 30.0)
+                        ]).value,
+                    fontWeight: FontWeight.bold)),
+          ),
+          SizedBox(
+            width: ResponsiveValue(context,
+                defaultValue: 500.0,
+                valueWhen: const [
+                  Condition.smallerThan(name: TABLET, value: 250.0)
+                ]).value,
+            child: Text('For very cool kids that build shit',
+                style: TextStyle(
+                    fontSize: ResponsiveValue(context,
+                        defaultValue: 20.0,
+                        valueWhen: const [
+                          Condition.smallerThan(name: TABLET, value: 10.0)
+                        ]).value,
+                    fontWeight: FontWeight.bold)),
+          ),
         ],
       ),
     );
@@ -466,25 +491,23 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     return loading
         ? const LoadingUtil()
         : Scaffold(
-            appBar: AppBar(),
             resizeToAvoidBottomInset: false,
             body: SingleChildScrollView(
               child: Column(
                 children: [
                   const ResponsiveVisibility(
                       visible: false,
-                      visibleWhen: [Condition.largerThan(name: MOBILE)],
+                      visibleWhen: [Condition.largerThan(name: TABLET)],
                       child: SizedBox(height: 20)),
                   ResponsiveRowColumn(
                     layout: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
                         ? ResponsiveRowColumnType.COLUMN
                         : ResponsiveRowColumnType.ROW,
                     rowMainAxisAlignment: MainAxisAlignment.center,
-                    rowPadding: const EdgeInsets.all(80),
-                    columnPadding: const EdgeInsets.all(20),
+                    rowPadding: const EdgeInsets.all(40),
                     children: [
                       ResponsiveRowColumnItem(
-                          rowFlex: 2,
+                          rowFlex: 1,
                           child: ResponsiveVisibility(
                             hiddenWhen: const [
                               Condition.smallerThan(name: TABLET)
@@ -499,13 +522,24 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                           rowFlex: 1,
                           child: Column(
                             children: [
-                              Card(
-                                color: Colors.grey[800],
-                                child: Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: reset == false
-                                      ? signInUpForm()
-                                      : resetPasswordForm(context),
+                              SizedBox(
+                                width: ResponsiveValue(context,
+                                    defaultValue: 400.0,
+                                    valueWhen: const [
+                                      Condition.largerThan(
+                                          name: MOBILE, value: 400.0),
+                                      Condition.smallerThan(
+                                          name: TABLET, value: double.infinity)
+                                    ]).value,
+                                child: Card(
+                                  color: Colors.grey[800],
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        10.0, 40.0, 10.0, 40.0),
+                                    child: reset == false
+                                        ? signInUpForm()
+                                        : resetPasswordForm(context),
+                                  ),
                                 ),
                               ),
                             ],
