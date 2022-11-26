@@ -285,14 +285,14 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         onPressed: () {
           setState(() {
             formKey.currentState!.reset();
-            error = '';
+            error = null;
             signup = !signup;
           });
         },
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Text(
-            signup == false ? "Sign-up using email" : "Sign-in using email",
+            signup == false ? "Sign-Up using email" : "Sign-in using email",
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
@@ -357,17 +357,17 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             emailFormField(),
             const SizedBox(height: 15.0),
             passwordFormField(),
-            error != '' ? const SizedBox(height: 20) : Container(),
+            error != null ? const SizedBox(height: 20) : Container(),
             Text(error ?? '', style: const TextStyle(color: Colors.red)),
-            error != '' ? const SizedBox(height: 20) : Container(),
+            error != null ? const SizedBox(height: 20) : Container(),
+            signInUpFormButton(),
+            const SizedBox(height: 20.0),
             GestureDetector(
                 child: const Text("I forgot my password",
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 onTap: () {
                   setState(() => reset = true);
                 }),
-            const SizedBox(height: 20.0),
-            signInUpFormButton(),
             const SizedBox(height: 30.0),
             Row(children: const <Widget>[
               Expanded(child: Divider()),
@@ -466,6 +466,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                         ]).value,
                     fontWeight: FontWeight.bold)),
           ),
+          const SizedBox(height: 10),
           SizedBox(
             width: ResponsiveValue(context,
                 defaultValue: 500.0,
