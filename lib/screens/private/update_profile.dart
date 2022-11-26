@@ -96,12 +96,14 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   Future pickAvatar(camera) async {
-    setState(() => {loading = true});
     Navigator.pop(context);
     avatarFile = await _picker.pickImage(
         source: camera == true ? ImageSource.camera : ImageSource.gallery,
         maxHeight: 480,
         maxWidth: 640);
+    if (avatarFile != null) {
+      setState(() => {loading = true});
+    }
     avatarAsBytes = await avatarFile!.readAsBytes();
     base64Avatar = base64Encode(avatarAsBytes);
     setState(
@@ -136,22 +138,27 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return Expanded(
+                      return Center(
                         child: SimpleDialog(
-                          title: const Text('Create or pick an avatar'),
+                          title: const Center(
+                              child: Text(kIsWeb
+                                  ? 'Select an image'
+                                  : 'Make or select an image')),
                           children: <Widget>[
+                            kIsWeb
+                                ? Container()
+                                : IconButton(
+                                    icon: const Icon(
+                                      FontAwesomeIcons.cameraRetro,
+                                      size: 20.0,
+                                    ),
+                                    onPressed: () async {
+                                      await pickAvatar(true);
+                                    },
+                                  ),
                             IconButton(
                               icon: const Icon(
-                                FontAwesomeIcons.camera,
-                                size: 20.0,
-                              ),
-                              onPressed: () async {
-                                await pickAvatar(true);
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(
-                                FontAwesomeIcons.photoFilm,
+                                FontAwesomeIcons.image,
                                 size: 20.0,
                               ),
                               onPressed: () async {
@@ -333,9 +340,20 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               centerTitle: true,
             ),
             body: SingleChildScrollView(
-              child: Padding(
-                  padding: const EdgeInsets.all(30.0),
-                  child: Center(child: profileForm(context))),
+              child: Center(
+                child: SizedBox(
+                  width: ResponsiveValue(context,
+                      defaultValue: 400.0,
+                      valueWhen: const [
+                        Condition.largerThan(name: MOBILE, value: 400.0),
+                        Condition.smallerThan(
+                            name: TABLET, value: double.infinity)
+                      ]).value,
+                  child: Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: profileForm(context)),
+                ),
+              ),
             ),
           );
   }

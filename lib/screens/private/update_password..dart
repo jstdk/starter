@@ -1,4 +1,5 @@
 // ignore_for_file: file_names
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -36,7 +37,11 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
           password: passwordNew,
         ),
       );
-      print(result);
+      if (EmailValidator.validate(result.user!.email!)) {
+        return true;
+      } else {
+        return false;
+      }
     } catch (e) {
       setState(() => {loading = false, error = 'Something went wrong'});
       if (kDebugMode) {
@@ -187,7 +192,7 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
             child: Column(
               children: <Widget>[
                 kIsWeb
-                    ? const Text('Current Password',
+                    ? const Text('Edit Password',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 25.0, fontWeight: FontWeight.bold))
@@ -216,9 +221,20 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
               centerTitle: true,
             ),
             body: SingleChildScrollView(
-              child: Padding(
-                  padding: const EdgeInsets.all(30.0),
-                  child: Center(child: passwordForm())),
+              child: Center(
+                child: SizedBox(
+                  width: ResponsiveValue(context,
+                      defaultValue: 400.0,
+                      valueWhen: const [
+                        Condition.largerThan(name: MOBILE, value: 400.0),
+                        Condition.smallerThan(
+                            name: TABLET, value: double.infinity)
+                      ]).value,
+                  child: Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: passwordForm()),
+                ),
+              ),
             ),
           );
   }
