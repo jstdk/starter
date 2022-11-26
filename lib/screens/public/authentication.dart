@@ -429,8 +429,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             const Text('Reset your password',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 20.0),
-            Text(resetPasswordRequestSuccess ?? ''),
             const SizedBox(height: 10),
             emailFormField(),
             const SizedBox(height: 20.0),
@@ -440,7 +438,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 child: const Text("Go back",
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 onTap: () {
-                  setState(() => reset = false);
+                  setState(() => {reset = false, signup = false});
                 }),
           ],
         ));
@@ -448,7 +446,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   jumbotron() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 10, 100, 10),
+      padding: const EdgeInsets.fromLTRB(0, 10, 100, 10),
       child: Column(
         children: [
           SizedBox(
@@ -493,6 +491,75 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         ? const LoadingUtil()
         : Scaffold(
             resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              title: Text('Logo'),
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              actions: [
+                ResponsiveVisibility(
+                  visible: false,
+                  visibleWhen: const [Condition.smallerThan(name: TABLET)],
+                  child: Builder(
+                    builder: (context) {
+                      return IconButton(
+                        icon: const Icon(
+                          FontAwesomeIcons.bars,
+                          size: 20.0,
+                        ),
+                        onPressed: () {
+                          Scaffold.of(context).openEndDrawer();
+                        },
+                      );
+                    },
+                  ),
+                ),
+                ResponsiveVisibility(
+                  visible: false,
+                  visibleWhen: const [Condition.largerThan(name: MOBILE)],
+                  child: Builder(builder: (context) {
+                    return TextButton(
+                      child: const Text(
+                        "About us",
+                        style: TextStyle(fontSize: 15, color: Colors.white),
+                      ),
+                      onPressed: () {},
+                    );
+                  }),
+                ),
+                ResponsiveVisibility(
+                  visible: false,
+                  visibleWhen: const [Condition.largerThan(name: MOBILE)],
+                  child: Builder(builder: (context) {
+                    return TextButton(
+                      child: const Padding(
+                        padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                        child: Text(
+                          "Pricing",
+                          style: TextStyle(fontSize: 15, color: Colors.white),
+                        ),
+                      ),
+                      onPressed: () {},
+                    );
+                  }),
+                ),
+                ResponsiveVisibility(
+                  visible: false,
+                  visibleWhen: const [Condition.largerThan(name: MOBILE)],
+                  child: Builder(builder: (context) {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 50, 0),
+                      child: TextButton(
+                        child: const Text(
+                          "Contact",
+                          style: TextStyle(fontSize: 15, color: Colors.white),
+                        ),
+                        onPressed: () {},
+                      ),
+                    );
+                  }),
+                ),
+              ],
+            ),
             body: SingleChildScrollView(
               child: Column(
                 children: [
@@ -505,7 +572,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                         ? ResponsiveRowColumnType.COLUMN
                         : ResponsiveRowColumnType.ROW,
                     rowMainAxisAlignment: MainAxisAlignment.center,
-                    rowPadding: const EdgeInsets.all(40),
+                    columnCrossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       ResponsiveRowColumnItem(
                           rowFlex: 1,
@@ -532,14 +599,17 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                       Condition.smallerThan(
                                           name: TABLET, value: double.infinity)
                                     ]).value,
-                                child: Card(
-                                  color: Colors.grey[800],
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        10.0, 40.0, 10.0, 40.0),
-                                    child: reset == false
-                                        ? signInUpForm()
-                                        : resetPasswordForm(context),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Card(
+                                    color: Colors.grey[800],
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20.0, 40.0, 20.0, 40.0),
+                                      child: reset == false
+                                          ? signInUpForm()
+                                          : resetPasswordForm(context),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -549,6 +619,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   ),
                 ],
               ),
-            ));
+            ),
+            endDrawer: const Drawer(child: Text('Text')),
+          );
   }
 }

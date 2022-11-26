@@ -123,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
             SizedBox(
               width: double.infinity,
               height: double.maxFinite,
