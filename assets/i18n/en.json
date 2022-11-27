@@ -1,4 +1,5 @@
 {
+  "brand": "Starter",
   "title": "Hello!",
-  "language_label" : "Language"
+  "language_label": "Language"
 }

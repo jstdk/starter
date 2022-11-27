@@ -308,7 +308,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-
         title: Padding(
           padding: const EdgeInsets.fromLTRB(15.0, 0.0, 0.0, 0.0),
           child: Row(
@@ -351,12 +350,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-
-        // leading:
-        // title:
         titleSpacing: 0,
-        backgroundColor: Colors.transparent,
         elevation: 0,
+        backgroundColor: Colors.transparent,
         actions: [
           ResponsiveVisibility(
             visible: false,

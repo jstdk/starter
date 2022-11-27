@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../services/localization.dart';
 import '../../utils/loading.dart';
 
 final supabase = Supabase.instance.client;
@@ -492,9 +493,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         : Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
-              title: const Padding(
-                padding: EdgeInsets.fromLTRB(50.0, 0, 0, 0),
-                child: Text('Logo'),
+              title: Padding(
+                padding: const EdgeInsets.fromLTRB(50.0, 0, 0, 0),
+                child: Text(
+                    LocalizationService.of(context)?.translate('brand') ?? ''),
               ),
               elevation: 0,
               backgroundColor: Colors.transparent,
@@ -595,7 +597,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             children: [
                               SizedBox(
                                 width: ResponsiveValue(context,
-                                    defaultValue: 400.0,
+                                    defaultValue: 450.0,
                                     valueWhen: const [
                                       Condition.largerThan(
                                           name: MOBILE, value: 400.0),
@@ -608,7 +610,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                     color: Colors.grey[800],
                                     child: Padding(
                                       padding: const EdgeInsets.fromLTRB(
-                                          20.0, 40.0, 20.0, 40.0),
+                                          15.0, 40.0, 15.0, 40.0),
                                       child: reset == false
                                           ? signInUpForm()
                                           : resetPasswordForm(context),
