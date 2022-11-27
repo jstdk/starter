@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:system_theme/system_theme.dart';
 
 ThemeData light = ThemeData(
   brightness: Brightness.light,
@@ -23,7 +24,7 @@ class ThemeService extends ChangeNotifier {
   bool get darkTheme => _darkTheme;
 
   ThemeService() {
-    _darkTheme = false;
+    _darkTheme = SystemTheme.isDarkMode;
     loadFromPrefs();
   }
 
@@ -34,7 +35,7 @@ class ThemeService extends ChangeNotifier {
 
   loadFromPrefs() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    _darkTheme = pref.getBool(key) ?? true;
+    _darkTheme = pref.getBool(key) ?? SystemTheme.isDarkMode;
     if (kDebugMode) {
       print('Theme loaded from storage. DarkTheme is: $_darkTheme');
     }

@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   app_links_windows
   local_auth_windows
+  system_theme
   url_launcher_windows
 )
 

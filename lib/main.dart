@@ -7,7 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:responsive_framework/utils/scroll_behavior.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
+import 'package:system_theme/system_theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import './screens/root.dart';
@@ -68,6 +68,15 @@ class StarterApp extends StatelessWidget {
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
               ],
+              localeResolutionCallback: (locale, supportedLocales) {
+                for (var supportedLocale in supportedLocales) {
+                  if (supportedLocale.languageCode == locale?.languageCode &&
+                      supportedLocale.countryCode == locale?.countryCode) {
+                    return supportedLocale;
+                  }
+                }
+                return supportedLocales.first;
+              },
               builder: (context, child) => ResponsiveWrapper.builder(
                       BouncingScrollWrapper.builder(context, child!),
                       minWidth: 450,
