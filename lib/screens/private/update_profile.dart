@@ -360,31 +360,79 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     );
   }
 
+  goBackButton() {
+    return ResponsiveVisibility(
+      visible: false,
+      visibleWhen: const [Condition.largerThan(name: MOBILE)],
+      child: Builder(builder: (context) {
+        return TextButton(
+          child: const Text(
+            "Go back",
+            style: TextStyle(fontSize: 15, color: Colors.white),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        );
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return loading
         ? const LoadingUtil()
         : Scaffold(
             appBar: AppBar(
-              title: const Text(!kIsWeb ? 'My profile' : ''),
+              leading: ResponsiveVisibility(
+                visible: false,
+                visibleWhen: const [Condition.smallerThan(name: DESKTOP)],
+                child: Builder(builder: (context) {
+                  return IconButton(
+                    icon: const Icon(
+                      FontAwesomeIcons.chevronLeft,
+                      size: 20.0,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  );
+                }),
+              ),
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              title: const Text(!kIsWeb ? 'Update Profile' : ''),
               centerTitle: true,
             ),
             body: SingleChildScrollView(
-              child: Center(
-                child: SizedBox(
-                  width: ResponsiveValue(context,
-                      defaultValue: 400.0,
-                      valueWhen: const [
-                        Condition.largerThan(name: MOBILE, value: 400.0),
-                        Condition.smallerThan(
-                            name: TABLET, value: double.infinity)
-                      ]).value,
-                  child: Padding(
-                      padding: const EdgeInsets.all(30.0),
-                      child: profileForm(context)),
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Center(
+                  child: SizedBox(
+                    width: ResponsiveValue(context,
+                        defaultValue: 400.0,
+                        valueWhen: const [
+                          Condition.largerThan(name: MOBILE, value: 400.0),
+                          Condition.smallerThan(
+                              name: TABLET, value: double.infinity)
+                        ]).value,
+                    child: Column(
+                      children: [
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(40.0),
+                            child: Column(
+                              children: [profileForm(context)],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        goBackButton()
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
-          );
+            ));
   }
 }

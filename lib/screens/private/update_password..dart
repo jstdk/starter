@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:starter/utils/go_back.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../models/profile.dart';
@@ -184,7 +185,7 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
     );
   }
 
-  passwordForm() {
+  updatePasswordForm() {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -212,31 +213,79 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
     );
   }
 
+  // goBackButton() {
+  //   return ResponsiveVisibility(
+  //     visible: false,
+  //     visibleWhen: const [Condition.largerThan(name: MOBILE)],
+  //     child: Builder(builder: (context) {
+  //       return TextButton(
+  //         child: const Text(
+  //           "Go back",
+  //           style: TextStyle(fontSize: 15, color: Colors.white),
+  //         ),
+  //         onPressed: () {
+  //           Navigator.pop(context);
+  //         },
+  //       );
+  //     }),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     return loading
         ? const LoadingUtil()
         : Scaffold(
             appBar: AppBar(
+              leading: ResponsiveVisibility(
+                visible: false,
+                visibleWhen: const [Condition.smallerThan(name: DESKTOP)],
+                child: Builder(builder: (context) {
+                  return IconButton(
+                    icon: const Icon(
+                      FontAwesomeIcons.chevronLeft,
+                      size: 20.0,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  );
+                }),
+              ),
+              elevation: 0,
+              backgroundColor: Colors.transparent,
               title: const Text(!kIsWeb ? 'Update Password' : ''),
               centerTitle: true,
             ),
             body: SingleChildScrollView(
-              child: Center(
-                child: SizedBox(
-                  width: ResponsiveValue(context,
-                      defaultValue: 400.0,
-                      valueWhen: const [
-                        Condition.largerThan(name: MOBILE, value: 400.0),
-                        Condition.smallerThan(
-                            name: TABLET, value: double.infinity)
-                      ]).value,
-                  child: Padding(
-                      padding: const EdgeInsets.all(30.0),
-                      child: passwordForm()),
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Center(
+                  child: SizedBox(
+                    width: ResponsiveValue(context,
+                        defaultValue: 400.0,
+                        valueWhen: const [
+                          Condition.largerThan(name: MOBILE, value: 400.0),
+                          Condition.smallerThan(
+                              name: TABLET, value: double.infinity)
+                        ]).value,
+                    child: Column(
+                      children: [
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(40.0),
+                            child: Column(
+                              children: [updatePasswordForm()],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        GoBackButton()
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
-          );
+            ));
   }
 }

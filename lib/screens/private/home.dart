@@ -64,40 +64,272 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+  leftSection() {
+    return ResponsiveRowColumnItem(
+        child: ResponsiveVisibility(
+      hiddenWhen: const [Condition.smallerThan(name: TABLET)],
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10.0, 0, 0, 0),
+            child: Row(
+              children: [
+                const Text('Open'),
+                SizedBox(
+                  child: Builder(
+                    builder: (context) {
+                      return IconButton(
+                        icon: const Icon(
+                          Icons.chevron_right,
+                        ),
+                        onPressed: () {
+                          Scaffold.of(context).openDrawer();
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    ));
+  }
+
+  middleSection(messages) {
+    return ResponsiveRowColumnItem(
+      rowFlex: 2,
+      child: ListView.builder(
+          reverse: true,
+          shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          itemCount: messages.length,
+          itemBuilder: (context, index) {
+            final message = messages[index];
+            return Card(
+                // In many cases, the key isn't mandatory
+                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Text(message.content!),
+                ));
+          }),
+    );
+  }
+
+  rightSection() {
+    return ResponsiveRowColumnItem(
+        rowFlex: 1,
+        child: ResponsiveVisibility(
+          hiddenWhen: const [Condition.smallerThan(name: TABLET)],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Card(
+                  child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Row(
+                  children: const [
+                    Text('YEAHHHHH'),
+                  ],
+                ),
+              )),
+              const SizedBox(
+                width: 300,
+              )
+            ],
+          ),
+        ));
+  }
+
+  mainSection() {
+    return SizedBox(
+      width: double.infinity,
+      height: double.maxFinite,
+      child: StreamBuilder<List<MessageModel>>(
+        stream: messages,
+        builder: (
+          context,
+          snapshot,
+        ) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const LoadingUtil();
+          } else if (snapshot.connectionState == ConnectionState.active ||
+              snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return Text(snapshot.error.toString());
+            } else if (snapshot.hasData) {
+              final messages = snapshot.data!;
+              return ResponsiveRowColumn(
+                  layout: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
+                      ? ResponsiveRowColumnType.COLUMN
+                      : ResponsiveRowColumnType.ROW,
+                  rowMainAxisAlignment: MainAxisAlignment.start,
+                  rowCrossAxisAlignment: CrossAxisAlignment.start,
+                  rowPadding: const EdgeInsets.all(20),
+                  columnPadding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
+                  children: [
+                    leftSection(),
+                    middleSection(messages),
+                    rightSection(),
+                  ]);
+            } else {
+              return const Text('Empty data');
+            }
+          } else {
+            return Text('State: ${snapshot.connectionState}');
+          }
+        },
+      ),
+    );
+  }
+
+  drawer() {
+    return const Drawer(child: Text('Text'));
+  }
+
+  endDrawer() {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.grey,
+            ),
+            child: Text('Settings'),
+          ),
+          const SizedBox(height: 20.0),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
+            child: Row(children: [
+              const Text('My Profile',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              const Spacer(),
+              IconButton(
+                icon: const Icon(
+                  FontAwesomeIcons.circleChevronRight,
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ProfileScreen(profile: profile),
+                    ),
+                  );
+                },
+              ),
+            ]),
+          ),
+          const SizedBox(height: 5.0),
+          Consumer<ThemeService>(
+            builder: (context, theme, child) => SwitchListTile(
+              title: const Text(
+                "Dark Mode",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              onChanged: (value) {
+                theme.toggleTheme();
+              },
+              value: theme.darkTheme,
+            ),
+          ),
+          defaultTargetPlatform == TargetPlatform.iOS ||
+                  defaultTargetPlatform == TargetPlatform.android
+              ? Consumer<LocalAuthenticationService>(
+                  builder: (context, localAuthentication, child) =>
+                      SwitchListTile(
+                    title: const Text(
+                      "Biometric Unlock",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    onChanged: (value) {
+                      localAuthentication.toggleBiometrics();
+                    },
+                    value: localAuthentication.biometrics,
+                  ),
+                )
+              : Container(),
+          Consumer<InternationalizationService>(
+            builder: (context, internationalization, child) => Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 20, 5),
+                child: Row(children: [
+                  Text(
+                      LocalizationService.of(context)!
+                          .translate('language_label')!,
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  const Spacer(),
+                  DropdownButton<String>(
+                    underline: Container(color: Colors.transparent),
+                    value: internationalization.selectedItem,
+                    onChanged: (String? newValue) {
+                      internationalization.changeLanguage(Locale(newValue!));
+                    },
+                    items: internationalization.languages
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  )
+                ])),
+          ),
+          const Divider(
+            color: Colors.white,
+          ),
+          const SizedBox(height: 50),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
+            child: Row(children: [
+              const Text('Sign Out',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              const Spacer(),
+              IconButton(
+                icon: const Icon(
+                  FontAwesomeIcons.circleChevronRight,
+                ),
+                onPressed: () async {
+                  await signOut();
+                },
+              ),
+            ]),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              icon: const Icon(
-                Icons.menu_rounded,
-              ),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
+        automaticallyImplyLeading: false,
+        title: const Padding(
+          padding: EdgeInsets.fromLTRB(10.0, 0, 0, 0),
+          child: Text('Logo'),
         ),
-        title: ResponsiveVisibility(
-            visible: false,
-            visibleWhen: const [Condition.smallerThan(name: DESKTOP)],
-            child: Text(LocalizationService.of(context)!.translate('title')!)),
-        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         actions: [
           ResponsiveVisibility(
             visible: false,
             visibleWhen: const [Condition.largerThan(name: MOBILE)],
             child: Builder(builder: (context) {
-              return TextButton(
-                child: const Text(
-                  "Settings",
-                  style: TextStyle(fontSize: 15, color: Colors.white),
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                child: TextButton(
+                  child: const Text(
+                    "Settings",
+                    style: TextStyle(fontSize: 15, color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Scaffold.of(context).openEndDrawer();
+                  },
                 ),
-                onPressed: () {
-                  Scaffold.of(context).openEndDrawer();
-                },
               );
             }),
           ),
@@ -122,204 +354,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: [
-            const SizedBox(height: 15),
-            SizedBox(
-              width: double.infinity,
-              height: double.maxFinite,
-              child: StreamBuilder<List<MessageModel>>(
-                stream: messages,
-                builder: (
-                  context,
-                  snapshot,
-                ) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const LoadingUtil();
-                  } else if (snapshot.connectionState ==
-                          ConnectionState.active ||
-                      snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasError) {
-                      return Text(snapshot.error.toString());
-                    } else if (snapshot.hasData) {
-                      final messages = snapshot.data!;
-                      return ResponsiveRowColumn(
-                          layout: ResponsiveWrapper.of(context)
-                                  .isSmallerThan(TABLET)
-                              ? ResponsiveRowColumnType.COLUMN
-                              : ResponsiveRowColumnType.ROW,
-                          rowMainAxisAlignment: MainAxisAlignment.start,
-                          rowCrossAxisAlignment: CrossAxisAlignment.start,
-                          rowPadding: const EdgeInsets.all(20),
-                          columnPadding:
-                              const EdgeInsets.fromLTRB(10, 20, 10, 10),
-                          children: [
-                            ResponsiveRowColumnItem(
-                              rowFlex: 1,
-                              child: ListView.builder(
-                                  reverse: true,
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.vertical,
-                                  itemCount: messages.length,
-                                  itemBuilder: (context, index) {
-                                    final message = messages[index];
-                                    return Card(
-                                        // In many cases, the key isn't mandatory
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 15),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Text(message.content!),
-                                        ));
-                                  }),
-                            ),
-                            ResponsiveRowColumnItem(
-                                rowFlex: 1,
-                                child: ResponsiveVisibility(
-                                  hiddenWhen: const [
-                                    Condition.smallerThan(name: TABLET)
-                                  ],
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Card(
-                                          child: Padding(
-                                        padding: const EdgeInsets.all(15.0),
-                                        child: Row(
-                                          children: const [
-                                            Text('YEAHHHHH'),
-                                          ],
-                                        ),
-                                      )),
-                                      const SizedBox(
-                                        width: 300,
-                                      )
-                                    ],
-                                  ),
-                                )),
-                          ]);
-                    } else {
-                      return const Text('Empty data');
-                    }
-                  } else {
-                    return Text('State: ${snapshot.connectionState}');
-                  }
-                },
-              ),
-            ),
-          ],
+          children: [mainSection()],
         ),
       ),
-      drawer: const Drawer(child: Text('Text')),
-      endDrawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.grey,
-              ),
-              child: Text('Settings'),
-            ),
-            const SizedBox(height: 20.0),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
-              child: Row(children: [
-                const Text('My Profile',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(
-                    FontAwesomeIcons.circleChevronRight,
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => ProfileScreen(profile: profile),
-                      ),
-                    );
-                  },
-                ),
-              ]),
-            ),
-            const SizedBox(height: 5.0),
-            Consumer<ThemeService>(
-              builder: (context, theme, child) => SwitchListTile(
-                title: const Text(
-                  "Dark Mode",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                onChanged: (value) {
-                  theme.toggleTheme();
-                },
-                value: theme.darkTheme,
-              ),
-            ),
-            defaultTargetPlatform == TargetPlatform.iOS ||
-                    defaultTargetPlatform == TargetPlatform.android
-                ? Consumer<LocalAuthenticationService>(
-                    builder: (context, localAuthentication, child) =>
-                        SwitchListTile(
-                      title: const Text(
-                        "Biometric Unlock",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      onChanged: (value) {
-                        localAuthentication.toggleBiometrics();
-                      },
-                      value: localAuthentication.biometrics,
-                    ),
-                  )
-                : Container(),
-            Consumer<InternationalizationService>(
-              builder: (context, internationalization, child) => Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 20, 5),
-                  child: Row(children: [
-                    Text(
-                        LocalizationService.of(context)!
-                            .translate('language_label')!,
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                    const Spacer(),
-                    DropdownButton<String>(
-                      underline: Container(color: Colors.transparent),
-                      value: internationalization.selectedItem,
-                      onChanged: (String? newValue) {
-                        internationalization.changeLanguage(Locale(newValue!));
-                      },
-                      items: internationalization.languages
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    )
-                  ])),
-            ),
-            const Divider(
-              color: Colors.white,
-            ),
-            const SizedBox(height: 50),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
-              child: Row(children: [
-                const Text('Sign Out',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(
-                    FontAwesomeIcons.circleChevronRight,
-                  ),
-                  onPressed: () async {
-                    await signOut();
-                  },
-                ),
-              ]),
-            ),
-          ],
-        ),
-      ),
+      drawer: drawer(),
+      endDrawer: endDrawer(),
     );
   }
 }
