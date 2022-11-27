@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../models/profile.dart';
+import '../root.dart';
 import 'update_password..dart';
 import 'update_profile.dart';
 
@@ -33,78 +34,103 @@ class _ProfileScreenState extends State<ProfileScreen> {
   XFile? avatarFile;
   Uint8List? avatarBytes;
 
-  profileOverview(avatarBytes) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          children: <Widget>[
-            kIsWeb
-                ? const Text('My Profile',
-                    textAlign: TextAlign.center,
-                    style:
-                        TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold))
-                : Container(),
-            const SizedBox(height: 20.0),
-            SizedBox(
-                height: 200.0,
-                width: 200.0,
-                child: widget.profile?.avatar != ''
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.memory(avatarBytes))
-                    : Image.asset('assets/images/defaultAvatar.jpg')),
-            const SizedBox(height: 50.0),
-            Text(
-              widget.profile!.fullName,
-              style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+  updateProfileButton() {
+    return SizedBox(
+        width: ResponsiveValue(context, defaultValue: 300.0, valueWhen: const [
+          Condition.largerThan(name: MOBILE, value: 300.0),
+          Condition.smallerThan(name: TABLET, value: double.infinity)
+        ]).value,
+        child: ElevatedButton(
+            child: const Padding(
+              padding: EdgeInsets.all(15.0),
+              child: Text('Edit Profile'),
             ),
-            const SizedBox(height: 20),
-            Text(widget.profile!.email),
-            const SizedBox(height: 50),
-            SizedBox(
-                width: ResponsiveValue(context,
-                    defaultValue: 300.0,
-                    valueWhen: const [
-                      Condition.largerThan(name: MOBILE, value: 300.0),
-                      Condition.smallerThan(
-                          name: TABLET, value: double.infinity)
-                    ]).value,
-                child: ElevatedButton(
-                    child: const Padding(
-                      padding: EdgeInsets.all(15.0),
-                      child: Text('Edit Profile'),
-                    ),
-                    onPressed: () => {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => UpdateProfileScreen(
-                                profile: widget.profile,
-                                avatarBytes: avatarBytes),
-                          ))
-                        })),
-            const SizedBox(height: 10),
-            SizedBox(
-                width: ResponsiveValue(context,
-                    defaultValue: 300.0,
-                    valueWhen: const [
-                      Condition.largerThan(name: MOBILE, value: 300.0),
-                      Condition.smallerThan(
-                          name: TABLET, value: double.infinity)
-                    ]).value,
-                child: ElevatedButton(
-                    child: const Padding(
-                      padding: EdgeInsets.all(15.0),
-                      child: Text('Edit Password'),
-                    ),
-                    onPressed: () => {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                UpdatePasswordScreen(profile: widget.profile),
-                          ))
-                        }))
-          ],
+            onPressed: () => {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => UpdateProfileScreen(
+                        profile: widget.profile, avatarBytes: avatarBytes),
+                  ))
+                }));
+  }
+
+  updatePasswordButton() {
+    return SizedBox(
+        width: ResponsiveValue(context, defaultValue: 300.0, valueWhen: const [
+          Condition.largerThan(name: MOBILE, value: 300.0),
+          Condition.smallerThan(name: TABLET, value: double.infinity)
+        ]).value,
+        child: ElevatedButton(
+            child: const Padding(
+              padding: EdgeInsets.all(15.0),
+              child: Text('Edit Password'),
+            ),
+            onPressed: () => {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        UpdatePasswordScreen(profile: widget.profile),
+                  ))
+                }));
+  }
+
+  goBackButton() {
+    return ResponsiveVisibility(
+      visible: false,
+      visibleWhen: const [Condition.largerThan(name: MOBILE)],
+      child: Builder(builder: (context) {
+        return TextButton(
+          child: const Text(
+            "Go back",
+            style: TextStyle(fontSize: 15, color: Colors.white),
+          ),
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const Root()),
+                (route) => false);
+          },
+        );
+      }),
+    );
+  }
+
+  profileOverview(avatarBytes) {
+    return Column(
+      children: <Widget>[
+        kIsWeb
+            ? const Text('My Profile',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold))
+            : Container(),
+        SizedBox(
+          height: ResponsiveValue(context,
+              defaultValue: 20.0,
+              valueWhen: const [
+                Condition.smallerThan(name: TABLET, value: 0.0)
+              ]).value,
         ),
-      ),
+        SizedBox(
+            height: ResponsiveValue(context,
+                defaultValue: 200.0,
+                valueWhen: const [
+                  Condition.smallerThan(name: TABLET, value: 175.0)
+                ]).value,
+            width: ResponsiveValue(context,
+                defaultValue: 200.0,
+                valueWhen: const [
+                  Condition.smallerThan(name: TABLET, value: 175.0)
+                ]).value,
+            child: widget.profile?.avatar != ''
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.memory(avatarBytes))
+                : Image.asset('assets/images/defaultAvatar.jpg')),
+        const SizedBox(height: 50.0),
+        Text(
+          widget.profile!.fullName,
+          style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 20),
+        Text(widget.profile!.email),
+      ],
     );
   }
 
@@ -116,14 +142,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ? const LoadingUtil()
         : Scaffold(
             appBar: AppBar(
+              leading: ResponsiveVisibility(
+                visible: false,
+                visibleWhen: const [Condition.smallerThan(name: DESKTOP)],
+                child: Builder(builder: (context) {
+                  return IconButton(
+                    icon: const Icon(
+                      FontAwesomeIcons.chevronLeft,
+                      size: 20.0,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true)
+                          .pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                  builder: (context) => const Root()),
+                              (route) => false);
+                    },
+                  );
+                }),
+              ),
+              elevation: 0,
+              backgroundColor: Colors.transparent,
               title: const Text(!kIsWeb ? 'My profile' : ''),
               centerTitle: true,
             ),
             body: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(30.0),
+                padding: const EdgeInsets.all(15.0),
                 child: Center(
-                  child: profileOverview(avatarBytes),
+                  child: SizedBox(
+                    width: ResponsiveValue(context,
+                        defaultValue: 400.0,
+                        valueWhen: const [
+                          Condition.largerThan(name: MOBILE, value: 400.0),
+                          Condition.smallerThan(
+                              name: TABLET, value: double.infinity)
+                        ]).value,
+                    child: Column(
+                      children: [
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(40.0),
+                            child: Column(
+                              children: [
+                                profileOverview(avatarBytes),
+                                const SizedBox(height: 50),
+                                updateProfileButton(),
+                                const SizedBox(height: 10),
+                                updatePasswordButton(),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        goBackButton()
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ));

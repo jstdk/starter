@@ -12,6 +12,9 @@ import 'package:email_validator/email_validator.dart';
 import '../../models/profile.dart';
 import '../../utils/loading.dart';
 import '../root.dart';
+import 'profile.dart';
+
+final supabase = Supabase.instance.client;
 
 class UpdateProfileScreen extends StatefulWidget {
   final ProfileModel? profile;
@@ -78,7 +81,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       if (kDebugMode) {
         print('Trying to update email and profile procedure');
       }
-      AuthResponse emailUpdate = await updateEmail(id, email);
+      UserResponse emailUpdate = await updateEmail(id, email);
       final profileUpdate = await updateProfile(id, fullName, avatar);
       if (EmailValidator.validate(emailUpdate.user!.email!) &&
           profileUpdate == null) {
@@ -108,6 +111,16 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     base64Avatar = base64Encode(avatarAsBytes);
     setState(
         () => {loading = false, avatarBytes = base64Decode(base64Avatar!)});
+  }
+
+  Future loadUpdatedProfile() async {
+    return ProfileModel.fromMap(
+        map: await supabase
+            .from('profiles')
+            .select()
+            .eq('id', widget.profile?.id)
+            .single(),
+        emailFromAuth: widget.profile!.email);
   }
 
   avatarFormField() {
@@ -282,6 +295,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             final response = await updateProfileProcedure(
                 widget.profile?.id, fullName, email, avatar);
             if (response == null) {
+              ProfileModel? newProfile = await loadUpdatedProfile();
               if (!mounted) return;
               final snackBar = SnackBar(
                 backgroundColor: Theme.of(context).colorScheme.primary,
@@ -292,9 +306,18 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     )),
               );
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const Root()),
-                  (route) => false);
+              if (EmailValidator.validate(newProfile!.email)) {
+                if (!mounted) return;
+                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ProfileScreen(profile: newProfile)),
+                    (route) => false);
+              } else {
+                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => const Root()),
+                    (route) => false);
+              }
             }
           } else {
             setState(() {

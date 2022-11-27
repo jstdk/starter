@@ -492,7 +492,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         : Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
-              title: Text('Logo'),
+              title: const Padding(
+                padding: EdgeInsets.fromLTRB(50.0, 0, 0, 0),
+                child: Text('Logo'),
+              ),
               elevation: 0,
               backgroundColor: Colors.transparent,
               actions: [

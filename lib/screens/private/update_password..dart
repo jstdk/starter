@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore: file_names
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +8,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../models/profile.dart';
 import '../../utils/loading.dart';
-import '../root.dart';
+
+final supabase = Supabase.instance.client;
 
 class UpdatePasswordScreen extends StatefulWidget {
   final ProfileModel? profile;
