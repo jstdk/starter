@@ -10,6 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:email_validator/email_validator.dart';
 
 import '../../models/profile.dart';
+import '../../utils/go_back.dart';
 import '../../utils/loading.dart';
 import '../root.dart';
 import 'profile.dart';
@@ -360,24 +361,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     );
   }
 
-  goBackButton() {
-    return ResponsiveVisibility(
-      visible: false,
-      visibleWhen: const [Condition.largerThan(name: MOBILE)],
-      child: Builder(builder: (context) {
-        return TextButton(
-          child: const Text(
-            "Go back",
-            style: TextStyle(fontSize: 15, color: Colors.white),
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        );
-      }),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return loading
@@ -386,7 +369,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             appBar: AppBar(
               leading: ResponsiveVisibility(
                 visible: false,
-                visibleWhen: const [Condition.smallerThan(name: DESKTOP)],
+                visibleWhen: const [Condition.smallerThan(name: TABLET)],
                 child: Builder(builder: (context) {
                   return IconButton(
                     icon: const Icon(
@@ -427,7 +410,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        goBackButton()
+                        const GoBackButton(removeAllState: false),
                       ],
                     ),
                   ),

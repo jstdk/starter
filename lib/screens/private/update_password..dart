@@ -239,7 +239,7 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
             appBar: AppBar(
               leading: ResponsiveVisibility(
                 visible: false,
-                visibleWhen: const [Condition.smallerThan(name: DESKTOP)],
+                visibleWhen: const [Condition.smallerThan(name: TABLET)],
                 child: Builder(builder: (context) {
                   return IconButton(
                     icon: const Icon(
@@ -280,7 +280,7 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        GoBackButton()
+                        const GoBackButton(removeAllState: false),
                       ],
                     ),
                   ),

@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../models/profile.dart';
+import '../../utils/go_back.dart';
 import '../root.dart';
 import 'update_password..dart';
 import 'update_profile.dart';
@@ -72,26 +73,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 }));
   }
 
-  goBackButton() {
-    return ResponsiveVisibility(
-      visible: false,
-      visibleWhen: const [Condition.largerThan(name: MOBILE)],
-      child: Builder(builder: (context) {
-        return TextButton(
-          child: const Text(
-            "Go back",
-            style: TextStyle(fontSize: 15, color: Colors.white),
-          ),
-          onPressed: () {
-            Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => const Root()),
-                (route) => false);
-          },
-        );
-      }),
-    );
-  }
-
   profileOverview(avatarBytes) {
     return Column(
       children: <Widget>[
@@ -144,7 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             appBar: AppBar(
               leading: ResponsiveVisibility(
                 visible: false,
-                visibleWhen: const [Condition.smallerThan(name: DESKTOP)],
+                visibleWhen: const [Condition.smallerThan(name: TABLET)],
                 child: Builder(builder: (context) {
                   return IconButton(
                     icon: const Icon(
@@ -195,7 +176,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        goBackButton()
+                        const GoBackButton(removeAllState: true),
                       ],
                     ),
                   ),

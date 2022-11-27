@@ -308,10 +308,53 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Padding(
-          padding: EdgeInsets.fromLTRB(10.0, 0, 0, 0),
-          child: Text('Logo'),
+
+        title: Padding(
+          padding: const EdgeInsets.fromLTRB(15.0, 0.0, 0.0, 0.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              ResponsiveVisibility(
+                visible: false,
+                visibleWhen: const [Condition.smallerThan(name: TABLET)],
+                child: Builder(builder: (context) {
+                  return IconButton(
+                    icon: const Icon(
+                      FontAwesomeIcons.chevronRight,
+                      size: 20.0,
+                    ),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                }),
+              ),
+              ResponsiveVisibility(
+                visible: true,
+                hiddenWhen: const [Condition.smallerThan(name: TABLET)],
+                child: Builder(builder: (context) {
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
+                    child: TextButton(
+                      child: const Text(
+                        "Logo",
+                        style: TextStyle(fontSize: 15, color: Colors.white),
+                      ),
+                      onPressed: () {
+                        Scaffold.of(context).openEndDrawer();
+                      },
+                    ),
+                  );
+                }),
+              ),
+            ],
+          ),
         ),
+
+        // leading:
+        // title:
+        titleSpacing: 0,
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
