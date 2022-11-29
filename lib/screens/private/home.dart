@@ -178,7 +178,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     rightSection(),
                   ]);
             } else {
-              return const Text('Empty data');
+              return Text(LocalizationService.of(context)
+                      ?.translate('no_data_message') ??
+                  '');
             }
           } else {
             return Text('State: ${snapshot.connectionState}');
@@ -197,18 +199,22 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
+          DrawerHeader(
+            decoration: const BoxDecoration(
               color: Colors.grey,
             ),
-            child: Text('Settings'),
+            child: Text(
+                LocalizationService.of(context)?.translate('settings_header') ??
+                    ''),
           ),
           const SizedBox(height: 20.0),
           Padding(
             padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
             child: Row(children: [
-              const Text('My Profile',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(
+                  LocalizationService.of(context)?.translate('profile_link') ??
+                      '',
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
               const Spacer(),
               IconButton(
                 icon: const Icon(
@@ -227,9 +233,11 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 5.0),
           Consumer<ThemeService>(
             builder: (context, theme, child) => SwitchListTile(
-              title: const Text(
-                "Dark Mode",
-                style: TextStyle(fontWeight: FontWeight.bold),
+              title: Text(
+                LocalizationService.of(context)
+                        ?.translate('dark_mode_switcher') ??
+                    '',
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               onChanged: (value) {
                 theme.toggleTheme();
@@ -242,9 +250,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ? Consumer<LocalAuthenticationService>(
                   builder: (context, localAuthentication, child) =>
                       SwitchListTile(
-                    title: const Text(
-                      "Biometric Unlock",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    title: Text(
+                      LocalizationService.of(context)
+                              ?.translate('biometrics_switcher') ??
+                          '',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     onChanged: (value) {
                       localAuthentication.toggleBiometrics();
@@ -259,7 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(children: [
                   Text(
                       LocalizationService.of(context)!
-                          .translate('language_label')!,
+                          .translate('language_dropdown')!,
                       style: const TextStyle(fontWeight: FontWeight.bold)),
                   const Spacer(),
                   DropdownButton<String>(
@@ -285,8 +295,10 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
             child: Row(children: [
-              const Text('Sign Out',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(
+                  LocalizationService.of(context)?.translate('sign_out_link') ??
+                      '',
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
               const Spacer(),
               IconButton(
                 icon: const Icon(
@@ -336,9 +348,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   return Padding(
                     padding: const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
                     child: TextButton(
-                      child: const Text(
-                        "Logo",
-                        style: TextStyle(fontSize: 15, color: Colors.white),
+                      child: Text(
+                        LocalizationService.of(context)
+                                ?.translate('brand_header') ??
+                            '',
+                        style:
+                            const TextStyle(fontSize: 15, color: Colors.white),
                       ),
                       onPressed: () {
                         Scaffold.of(context).openEndDrawer();
@@ -361,9 +376,11 @@ class _HomeScreenState extends State<HomeScreen> {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: TextButton(
-                  child: const Text(
-                    "Settings",
-                    style: TextStyle(fontSize: 15, color: Colors.white),
+                  child: Text(
+                    LocalizationService.of(context)
+                            ?.translate('settings_header') ??
+                        '',
+                    style: const TextStyle(fontSize: 15, color: Colors.white),
                   ),
                   onPressed: () {
                     Scaffold.of(context).openEndDrawer();

@@ -30,7 +30,7 @@ class UpdateProfileScreen extends StatefulWidget {
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final formKey = GlobalKey<FormState>();
   bool loading = false;
-  String? error = '';
+  String? error;
   String? email;
   String? fullName;
   String? avatar;

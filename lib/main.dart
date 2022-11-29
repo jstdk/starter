@@ -7,7 +7,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:responsive_framework/utils/scroll_behavior.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:system_theme/system_theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import './screens/root.dart';

@@ -44,7 +44,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         return false;
       }
     } catch (e) {
-      setState(() => {loading = false, error = 'Invalid email or password'});
+      setState(() => {
+            loading = false,
+            error = LocalizationService.of(context)
+                    ?.translate('authentication_error_message') ??
+                ''
+          });
       if (kDebugMode) {
         print(e);
       }
@@ -64,7 +69,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         return false;
       }
     } catch (e) {
-      setState(() => {loading = false, error = 'Oops. Something went wrong'});
+      setState(() => {
+            loading = false,
+            error = LocalizationService.of(context)
+                    ?.translate('general_error_message') ??
+                ''
+          });
       if (kDebugMode) {
         print(e);
       }
@@ -81,7 +91,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         redirectTo: kIsWeb ? null : 'io.supabase.starter://login-callback/',
       );
     } catch (e) {
-      setState(() => {loading = false, error = 'Invalid email or password'});
+      setState(() => {
+            loading = false,
+            error = LocalizationService.of(context)
+                    ?.translate('authentication_error_message') ??
+                ''
+          });
       if (kDebugMode) {
         print(e);
       }
@@ -95,19 +110,19 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         redirectTo: kIsWeb ? null : 'io.supabase.flutter://reset-callback/',
       );
       setState(() {
+        reset = false;
         loading = false;
-        resetPasswordRequestSuccess =
-            'Reset email sent, please check your email';
-      });
-      Timer(const Duration(seconds: 3), () {
-        setState(() {
-          reset = false;
-        });
       });
     } catch (e) {
       if (kDebugMode) {
         print(e);
       }
+      setState(() {
+        error = LocalizationService.of(context)
+                ?.translate('general_error_message') ??
+            '';
+        loading = false;
+      });
     }
   }
 
@@ -124,15 +139,19 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         Condition.smallerThan(name: TABLET, value: double.infinity)
       ]).value,
       child: TextFormField(
-          decoration: const InputDecoration(
-              hintText: "Email",
-              border: OutlineInputBorder(
+          decoration: InputDecoration(
+              hintText: LocalizationService.of(context)
+                      ?.translate('email_hinttext') ??
+                  '',
+              border: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5))),
-              labelText: "Email",
-              labelStyle: TextStyle(
+              labelText:
+                  LocalizationService.of(context)?.translate('email_label') ??
+                      '',
+              labelStyle: const TextStyle(
                 fontSize: 15,
               ), //label style
-              prefixIcon: Padding(
+              prefixIcon: const Padding(
                 padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
                 child: Icon(FontAwesomeIcons.envelope),
               )),
@@ -157,10 +176,14 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       child: TextFormField(
           obscureText: obscureText,
           decoration: InputDecoration(
-            hintText: "Password",
+            hintText: LocalizationService.of(context)
+                    ?.translate('password_hinttext') ??
+                '',
             border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(5))),
-            labelText: "Password",
+            labelText:
+                LocalizationService.of(context)?.translate('password_label') ??
+                    '',
             labelStyle: const TextStyle(
               fontSize: 15,
             ), //label style
@@ -202,11 +225,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       ]).value,
       child: signup == false
           ? ElevatedButton(
-              child: const Padding(
-                padding: EdgeInsets.all(15.0),
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
                 child: Text(
-                  "Sign-In using email",
-                  style: TextStyle(
+                  LocalizationService.of(context)
+                          ?.translate('sign_in_button_label') ??
+                      '',
+                  style: const TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -217,16 +242,18 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                       await signInUsingEmailAndPassword(email, password);
                   if (success == true) {
                     if (!mounted) return;
-                    final snackBarSignIn = SnackBar(
+                    final signInSnackbar = SnackBar(
                       backgroundColor: Theme.of(context).colorScheme.primary,
-                      content:
-                          const Text('Welcome back. You have been signed in',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                              )),
+                      content: Text(
+                          LocalizationService.of(context)
+                                  ?.translate('sign_in_snackbar') ??
+                              '',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Colors.white,
+                          )),
                     );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBarSignIn);
+                    ScaffoldMessenger.of(context).showSnackBar(signInSnackbar);
                   }
                 } else {
                   setState(() {
@@ -236,11 +263,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               },
             )
           : ElevatedButton(
-              child: const Padding(
-                padding: EdgeInsets.all(15.0),
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
                 child: Text(
-                  "Sign-Up using email",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  LocalizationService.of(context)
+                          ?.translate('sign_up_button_label') ??
+                      '',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               onPressed: () async {
@@ -251,16 +280,18 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   if (success == true) {
                     if (!mounted) return;
                     setState(() => loading = false);
-                    final snackBarSignUp = SnackBar(
+                    final signUpSnackbar = SnackBar(
                       backgroundColor: Theme.of(context).colorScheme.primary,
-                      content: const Text(
-                          'Welcome. You have been signed up. Please check you email to confirm your account',
+                      content: Text(
+                          LocalizationService.of(context)
+                                  ?.translate('sign_up_snackbar') ??
+                              '',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                           )),
                     );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBarSignUp);
+                    ScaffoldMessenger.of(context).showSnackBar(signUpSnackbar);
                     setState(() => signup = false);
                   }
                 } else {
@@ -293,7 +324,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Text(
-            signup == false ? "Sign-Up using email" : "Sign-in using email",
+            signup == false
+                ? LocalizationService.of(context)
+                        ?.translate('sign_up_switcher_link_label') ??
+                    ''
+                : LocalizationService.of(context)
+                        ?.translate('sign_up_switcher_link_label') ??
+                    '',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
@@ -306,7 +343,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         key: formKey,
         child: Column(
           children: <Widget>[
-            Text('Get Started',
+            Text(
+                LocalizationService.of(context)
+                        ?.translate('sign_in_up_card_header') ??
+                    '',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: ResponsiveValue(context,
@@ -339,20 +379,22 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   );
                   ScaffoldMessenger.of(context).showSnackBar(snackBarSignIn);
                 },
-                child: const Padding(
-                  padding: EdgeInsets.all(15.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
                   child: Text(
-                    "Sign-In using Google",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    LocalizationService.of(context)
+                            ?.translate('sign_in_google_button_label') ??
+                        '',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
             ),
             const SizedBox(height: 30.0),
-            Row(children: const <Widget>[
-              Expanded(child: Divider()),
-              Text("OR"),
-              Expanded(child: Divider()),
+            Row(children: <Widget>[
+              const Expanded(child: Divider()),
+              Text(LocalizationService.of(context)?.translate('or') ?? ''),
+              const Expanded(child: Divider()),
             ]),
             const SizedBox(height: 30.0),
             emailFormField(),
@@ -364,16 +406,19 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             signInUpFormButton(),
             const SizedBox(height: 20.0),
             GestureDetector(
-                child: const Text("I forgot my password",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                child: Text(
+                    LocalizationService.of(context)
+                            ?.translate('reset_password_link_label') ??
+                        '',
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
                 onTap: () {
                   setState(() => reset = true);
                 }),
             const SizedBox(height: 30.0),
-            Row(children: const <Widget>[
-              Expanded(child: Divider()),
-              Text("OR"),
-              Expanded(child: Divider()),
+            Row(children: <Widget>[
+              const Expanded(child: Divider()),
+              Text(LocalizationService.of(context)?.translate('or') ?? ''),
+              const Expanded(child: Divider()),
             ]),
             const SizedBox(height: 30.0),
             signInUpSwitcher(),
@@ -388,11 +433,14 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         Condition.smallerThan(name: TABLET, value: double.infinity)
       ]).value,
       child: ElevatedButton(
-        child: const Padding(
-          padding: EdgeInsets.all(15.0),
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
           child: Text(
-            "Reset password",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            LocalizationService.of(context)
+                    ?.translate('reset_password_button_label') ??
+                '',
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
         onPressed: () async {
@@ -400,20 +448,21 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             setState(() => loading = true);
             await resetPassword(email);
             if (!mounted) return;
-            final snackBarSignUp = SnackBar(
+            final resetPasswordSnackbar = SnackBar(
               backgroundColor: Theme.of(context).colorScheme.primary,
-              content: const Text(
-                  'You have been signed up. Please check you email to confirm your account. You can sign in after that',
+              content: Text(
+                  LocalizationService.of(context)
+                          ?.translate('reset_password_snackbar') ??
+                      '',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                   )),
             );
-            ScaffoldMessenger.of(context).showSnackBar(snackBarSignUp);
+            ScaffoldMessenger.of(context).showSnackBar(resetPasswordSnackbar);
           } else {
             setState(() {
               loading = false;
-              error = 'Something went wrong.';
             });
           }
         },
@@ -436,8 +485,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             resetPasswordFormButton(),
             const SizedBox(height: 30.0),
             GestureDetector(
-                child: const Text("Go back",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                child: Text(
+                    LocalizationService.of(context)
+                            ?.translate('go_back_link') ??
+                        '',
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
                 onTap: () {
                   setState(() => {reset = false, signup = false});
                 }),
@@ -456,14 +508,17 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 valueWhen: const [
                   Condition.smallerThan(name: TABLET, value: 250.0)
                 ]).value,
-            child: Text('Starter Template',
-                style: TextStyle(
-                    fontSize: ResponsiveValue(context,
-                        defaultValue: 60.0,
-                        valueWhen: const [
-                          Condition.smallerThan(name: TABLET, value: 30.0)
-                        ]).value,
-                    fontWeight: FontWeight.bold)),
+            child: Text(
+                LocalizationService.of(context)?.translate('main_tagline') ??
+                    '',
+                style:
+                    TextStyle(
+                        fontSize: ResponsiveValue(context,
+                            defaultValue: 60.0,
+                            valueWhen: const [
+                              Condition.smallerThan(name: TABLET, value: 30.0)
+                            ]).value,
+                        fontWeight: FontWeight.bold)),
           ),
           const SizedBox(height: 10),
           SizedBox(
@@ -472,7 +527,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 valueWhen: const [
                   Condition.smallerThan(name: TABLET, value: 250.0)
                 ]).value,
-            child: Text('For very cool kids that build shit',
+            child: Text(
+                LocalizationService.of(context)?.translate('sub_tagline') ?? '',
                 style: TextStyle(
                     fontSize: ResponsiveValue(context,
                         defaultValue: 20.0,
@@ -495,8 +551,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             appBar: AppBar(
               title: Padding(
                 padding: const EdgeInsets.fromLTRB(50.0, 0, 0, 0),
-                child: Text(
-                    LocalizationService.of(context)?.translate('brand') ?? ''),
+                child: Text(LocalizationService.of(context)
+                        ?.translate('brand_header') ??
+                    ''),
               ),
               elevation: 0,
               backgroundColor: Colors.transparent,
@@ -523,9 +580,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   visibleWhen: const [Condition.largerThan(name: MOBILE)],
                   child: Builder(builder: (context) {
                     return TextButton(
-                      child: const Text(
-                        "About us",
-                        style: TextStyle(fontSize: 15, color: Colors.white),
+                      child: Text(
+                        LocalizationService.of(context)
+                                ?.translate('about_us_header') ??
+                            '',
+                        style:
+                            const TextStyle(fontSize: 15, color: Colors.white),
                       ),
                       onPressed: () {},
                     );
@@ -536,11 +596,14 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   visibleWhen: const [Condition.largerThan(name: MOBILE)],
                   child: Builder(builder: (context) {
                     return TextButton(
-                      child: const Padding(
-                        padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                         child: Text(
-                          "Pricing",
-                          style: TextStyle(fontSize: 15, color: Colors.white),
+                          LocalizationService.of(context)
+                                  ?.translate('pricing_header') ??
+                              '',
+                          style: const TextStyle(
+                              fontSize: 15, color: Colors.white),
                         ),
                       ),
                       onPressed: () {},
@@ -554,9 +617,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                     return Padding(
                       padding: const EdgeInsets.fromLTRB(20, 0, 50, 0),
                       child: TextButton(
-                        child: const Text(
-                          "Contact",
-                          style: TextStyle(fontSize: 15, color: Colors.white),
+                        child: Text(
+                          LocalizationService.of(context)
+                                  ?.translate('contact_header') ??
+                              '',
+                          style: const TextStyle(
+                              fontSize: 15, color: Colors.white),
                         ),
                         onPressed: () {},
                       ),

@@ -8,6 +8,7 @@ import 'package:starter/utils/go_back.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../models/profile.dart';
+import '../../services/localization.dart';
 import '../../utils/loading.dart';
 
 final supabase = Supabase.instance.client;
@@ -24,7 +25,7 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
   final formKey = GlobalKey<FormState>();
   bool loading = false;
 
-  String? error = '';
+  String? error;
   String? passwordNew;
   String? passwordNewAgain;
   bool obscureText = true;
@@ -45,7 +46,12 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
         return false;
       }
     } catch (e) {
-      setState(() => {loading = false, error = 'Something went wrong'});
+      setState(() => {
+            loading = false,
+            error = LocalizationService.of(context)
+                    ?.translate('general_error_message') ??
+                ''
+          });
       if (kDebugMode) {
         print(e);
       }
@@ -67,10 +73,14 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
         child: TextFormField(
             obscureText: obscureText,
             decoration: InputDecoration(
-              hintText: "Password",
+              hintText: LocalizationService.of(context)
+                      ?.translate('new_password_hinttext') ??
+                  '',
               border: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5))),
-              labelText: "New Password",
+              labelText: LocalizationService.of(context)
+                      ?.translate('new_password_label') ??
+                  '',
               labelStyle: const TextStyle(
                 fontSize: 15,
               ), //label style
@@ -92,7 +102,9 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
             autofocus: true,
             validator: (String? value) {
               return (value != null && value.length < 2)
-                  ? 'Please provide a valid password.'
+                  ? LocalizationService.of(context)
+                          ?.translate('invalid_password_message') ??
+                      ''
                   : null;
             },
             onChanged: (val) {
@@ -109,10 +121,14 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
       child: TextFormField(
           obscureText: obscureText,
           decoration: InputDecoration(
-            hintText: "Password",
+            hintText: LocalizationService.of(context)
+                    ?.translate('new_password_again_hinttext') ??
+                '',
             border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(5))),
-            labelText: "New Password again",
+            labelText: LocalizationService.of(context)
+                    ?.translate('new_password_again_label') ??
+                '',
             labelStyle: const TextStyle(
               fontSize: 15,
             ), //label style
@@ -132,7 +148,9 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
           autofocus: true,
           validator: (String? value) {
             return (value != passwordNew)
-                ? 'Your passwords are not the same'
+                ? LocalizationService.of(context)
+                        ?.translate('invalid_password_again_message') ??
+                    ''
                 : null;
           },
           onChanged: (val) {
@@ -161,7 +179,7 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
             final response =
                 await updatePassword(widget.profile?.id, passwordNew);
             setState(() => loading = false);
-            if (response != null) {
+            if (response == true) {
               if (!mounted) return;
               final snackBar = SnackBar(
                 backgroundColor: Theme.of(context).colorScheme.primary,
@@ -177,7 +195,9 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
           } else {
             setState(() {
               loading = false;
-              error = 'Something went wrong.';
+              error = LocalizationService.of(context)
+                      ?.translate('general_error_message') ??
+                  '';
             });
           }
         },
@@ -193,12 +213,15 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
             key: formKey,
             child: Column(
               children: <Widget>[
-                kIsWeb
-                    ? const Text('Edit Password',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 25.0, fontWeight: FontWeight.bold))
-                    : Container(),
+                ResponsiveVisibility(
+                    visible: false,
+                    visibleWhen: const [Condition.largerThan(name: MOBILE)],
+                    child: Text(
+                        LocalizationService.of(context)
+                                ?.translate('update_password_header') ??
+                            '',
+                        style: const TextStyle(
+                            fontSize: 25.0, fontWeight: FontWeight.bold))),
                 const SizedBox(height: 40.0),
                 newPasswordFormField(),
                 const SizedBox(height: 20.0),
@@ -212,24 +235,6 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
       ),
     );
   }
-
-  // goBackButton() {
-  //   return ResponsiveVisibility(
-  //     visible: false,
-  //     visibleWhen: const [Condition.largerThan(name: MOBILE)],
-  //     child: Builder(builder: (context) {
-  //       return TextButton(
-  //         child: const Text(
-  //           "Go back",
-  //           style: TextStyle(fontSize: 15, color: Colors.white),
-  //         ),
-  //         onPressed: () {
-  //           Navigator.pop(context);
-  //         },
-  //       );
-  //     }),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -254,7 +259,12 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
               ),
               elevation: 0,
               backgroundColor: Colors.transparent,
-              title: const Text(!kIsWeb ? 'Update Password' : ''),
+              title: ResponsiveVisibility(
+                  visible: false,
+                  visibleWhen: const [Condition.smallerThan(name: TABLET)],
+                  child: Text(LocalizationService.of(context)
+                          ?.translate('update_password_header') ??
+                      '')),
               centerTitle: true,
             ),
             body: SingleChildScrollView(

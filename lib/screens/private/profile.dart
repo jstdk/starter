@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../models/profile.dart';
+import '../../services/localization.dart';
 import '../../utils/go_back.dart';
 import '../root.dart';
 import 'update_password..dart';
@@ -42,9 +43,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Condition.smallerThan(name: TABLET, value: double.infinity)
         ]).value,
         child: ElevatedButton(
-            child: const Padding(
-              padding: EdgeInsets.all(15.0),
-              child: Text('Edit Profile'),
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Text(LocalizationService.of(context)
+                      ?.translate('update_profile_button_label') ??
+                  ''),
             ),
             onPressed: () => {
                   Navigator.of(context).push(MaterialPageRoute(
@@ -61,9 +64,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Condition.smallerThan(name: TABLET, value: double.infinity)
         ]).value,
         child: ElevatedButton(
-            child: const Padding(
-              padding: EdgeInsets.all(15.0),
-              child: Text('Edit Password'),
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Text(LocalizationService.of(context)
+                      ?.translate('update_password_button_label') ??
+                  ''),
             ),
             onPressed: () => {
                   Navigator.of(context).push(MaterialPageRoute(
@@ -76,11 +81,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   profileOverview(avatarBytes) {
     return Column(
       children: <Widget>[
-        kIsWeb
-            ? const Text('My Profile',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold))
-            : Container(),
+        ResponsiveVisibility(
+            visible: false,
+            visibleWhen: const [Condition.largerThan(name: MOBILE)],
+            child: Text(
+                LocalizationService.of(context)?.translate('profile_header') ??
+                    '',
+                style: const TextStyle(
+                    fontSize: 25.0, fontWeight: FontWeight.bold))),
         SizedBox(
           height: ResponsiveValue(context,
               defaultValue: 20.0,
@@ -144,7 +152,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               elevation: 0,
               backgroundColor: Colors.transparent,
-              title: const Text(!kIsWeb ? 'My profile' : ''),
+              title: ResponsiveVisibility(
+                  visible: false,
+                  visibleWhen: const [Condition.smallerThan(name: TABLET)],
+                  child: Text(LocalizationService.of(context)
+                          ?.translate('profile_header') ??
+                      '')),
               centerTitle: true,
             ),
             body: SingleChildScrollView(
