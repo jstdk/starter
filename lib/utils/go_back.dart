@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../screens/root.dart';
+import '../services/localization.dart';
 
 class GoBackButton extends StatefulWidget {
   final bool removeAllState;
@@ -18,20 +20,33 @@ class _GoBackButtonState extends State<GoBackButton> {
       visible: false,
       visibleWhen: const [Condition.largerThan(name: MOBILE)],
       child: Builder(builder: (context) {
-        return TextButton(
-          child: const Text(
-            "Go back",
-            style: TextStyle(fontSize: 15, color: Colors.white),
-          ),
-          onPressed: () {
-            if (widget.removeAllState == true) {
-              Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const Root()),
-                  (route) => false);
-            } else {
-              Navigator.pop(context);
-            }
-          },
+        return Row(
+          children: [
+            IconButton(
+                icon: const Icon(
+                  FontAwesomeIcons.chevronLeft,
+                  color: Colors.black,
+                ),
+                onPressed: () async {
+                  if (widget.removeAllState == true) {
+                    Navigator.of(context, rootNavigator: true)
+                        .pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) => const Root()),
+                            (route) => false);
+                  } else {
+                    Navigator.pop(context);
+                  }
+                }),
+            const SizedBox(
+              width: 5,
+            ),
+            Text(
+                LocalizationService.of(context)
+                        ?.translate('invalid_password_again_message') ??
+                    '',
+                style: const TextStyle(fontSize: 15))
+          ],
         );
       }),
     );

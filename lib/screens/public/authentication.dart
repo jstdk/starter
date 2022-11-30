@@ -4,10 +4,12 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart' as pv;
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../services/localization.dart';
+import '../../services/theme.dart';
 import '../../utils/loading.dart';
 
 final supabase = Supabase.instance.client;
@@ -177,13 +179,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           obscureText: obscureText,
           decoration: InputDecoration(
             hintText: LocalizationService.of(context)
-                    ?.translate('password_hinttext') ??
+                    ?.translate('password_input_hinttext') ??
                 '',
             border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(5))),
-            labelText:
-                LocalizationService.of(context)?.translate('password_label') ??
-                    '',
+            labelText: LocalizationService.of(context)
+                    ?.translate('password_input_label') ??
+                '',
             labelStyle: const TextStyle(
               fontSize: 15,
             ), //label style
@@ -246,7 +248,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       content: Text(
                           LocalizationService.of(context)
-                                  ?.translate('sign_in_snackbar') ??
+                                  ?.translate('sign_in_snackbar_label') ??
                               '',
                           textAlign: TextAlign.center,
                           style: const TextStyle(
@@ -284,7 +286,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       content: Text(
                           LocalizationService.of(context)
-                                  ?.translate('sign_up_snackbar') ??
+                                  ?.translate('sign_up_snackbar_label') ??
                               '',
                           textAlign: TextAlign.center,
                           style: const TextStyle(
@@ -338,6 +340,33 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     );
   }
 
+  signInWithGoogleButton() {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
+      onPressed: () async {
+        signInUsingGoogle();
+        final snackBarSignIn = SnackBar(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          content: const Text('Signin you in with Google',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+              )),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBarSignIn);
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Text(
+          LocalizationService.of(context)
+                  ?.translate('sign_in_google_button_label') ??
+              '',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
   signInUpForm() {
     return Form(
         key: formKey,
@@ -364,31 +393,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                     Condition.largerThan(name: MOBILE, value: 300.0),
                     Condition.smallerThan(name: TABLET, value: double.infinity)
                   ]).value,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent),
-                onPressed: () async {
-                  signInUsingGoogle();
-                  final snackBarSignIn = SnackBar(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    content: const Text('Signin you in with Google',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                        )),
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBarSignIn);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Text(
-                    LocalizationService.of(context)
-                            ?.translate('sign_in_google_button_label') ??
-                        '',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
+              child: signInWithGoogleButton(),
             ),
             const SizedBox(height: 30.0),
             Row(children: <Widget>[
@@ -452,7 +457,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               backgroundColor: Theme.of(context).colorScheme.primary,
               content: Text(
                   LocalizationService.of(context)
-                          ?.translate('reset_password_snackbar') ??
+                          ?.translate('reset_password_snackbar_label') ??
                       '',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
@@ -476,9 +481,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         child: Column(
           children: <Widget>[
             const SizedBox(height: 30.0),
-            const Text('Reset your password',
+            Text(
+                LocalizationService.of(context)
+                        ?.translate('reset_password_header') ??
+                    '',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold)),
+                style: const TextStyle(
+                    fontSize: 25.0, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
             emailFormField(),
             const SizedBox(height: 20.0),
@@ -584,8 +593,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                         LocalizationService.of(context)
                                 ?.translate('about_us_header') ??
                             '',
-                        style:
-                            const TextStyle(fontSize: 15, color: Colors.white),
+                        style: const TextStyle(fontSize: 15),
                       ),
                       onPressed: () {},
                     );
@@ -602,8 +610,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                           LocalizationService.of(context)
                                   ?.translate('pricing_header') ??
                               '',
-                          style: const TextStyle(
-                              fontSize: 15, color: Colors.white),
+                          style: const TextStyle(fontSize: 15),
                         ),
                       ),
                       onPressed: () {},
@@ -615,20 +622,39 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   visibleWhen: const [Condition.largerThan(name: MOBILE)],
                   child: Builder(builder: (context) {
                     return Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 50, 0),
+                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                       child: TextButton(
                         child: Text(
                           LocalizationService.of(context)
                                   ?.translate('contact_header') ??
                               '',
-                          style: const TextStyle(
-                              fontSize: 15, color: Colors.white),
+                          style: const TextStyle(fontSize: 15),
                         ),
                         onPressed: () {},
                       ),
                     );
                   }),
                 ),
+                pv.Consumer<ThemeService>(
+                    builder: (context, theme, child) => theme.darkTheme == true
+                        ? Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 0, 50, 0),
+                            child: IconButton(
+                                icon: const Icon(
+                                  FontAwesomeIcons.sun,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () => theme.toggleTheme()),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 0, 50, 0),
+                            child: IconButton(
+                                icon: const Icon(
+                                  FontAwesomeIcons.moon,
+                                  color: Colors.black,
+                                ),
+                                onPressed: () => theme.toggleTheme()),
+                          )),
               ],
             ),
             body: SingleChildScrollView(
@@ -673,7 +699,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Card(
-                                    color: Colors.grey[800],
+                                    elevation: 0,
                                     child: Padding(
                                       padding: const EdgeInsets.fromLTRB(
                                           15.0, 40.0, 15.0, 40.0),

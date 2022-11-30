@@ -5,7 +5,20 @@ import 'package:system_theme/system_theme.dart';
 
 ThemeData light = ThemeData(
   brightness: Brightness.light,
-  primarySwatch: Colors.green,
+  primaryColor: Colors.grey,
+  colorScheme: ColorScheme(
+    brightness: Brightness.light,
+    primary: Colors.grey,
+    onPrimary: Colors.grey,
+    secondary: Colors.green,
+    onSecondary: Colors.green,
+    background: null,
+  ),
+  textTheme: const TextTheme(
+    headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+    headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+    bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
+  ),
   scaffoldBackgroundColor: const Color(0xfff1f1f1),
   fontFamily: 'Nunito',
 );
