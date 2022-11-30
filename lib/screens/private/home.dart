@@ -269,7 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(children: [
                   Text(
                       LocalizationService.of(context)!
-                          .translate('language_dropdown')!,
+                          .translate('language_dropdown_label')!,
                       style: const TextStyle(fontWeight: FontWeight.bold)),
                   const Spacer(),
                   DropdownButton<String>(

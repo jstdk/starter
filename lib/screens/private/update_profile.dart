@@ -10,6 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:email_validator/email_validator.dart';
 
 import '../../models/profile.dart';
+import '../../services/localization.dart';
 import '../../utils/go_back.dart';
 import '../../utils/loading.dart';
 import '../root.dart';
@@ -54,7 +55,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         ),
       );
     } catch (e) {
-      setState(() => {loading = false, error = 'Something went wrong'});
+      setState(() => {
+            loading = false,
+            error = LocalizationService.of(context)
+                    ?.translate('generall_error_message') ??
+                ''
+          });
       if (kDebugMode) {
         print(e);
       }
@@ -70,7 +76,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           .from('profiles')
           .update({'full_name': fullName, 'avatar': avatar}).match({'id': id});
     } catch (e) {
-      setState(() => {loading = false, error = 'Something went wrong'});
+      setState(() => {
+            loading = false,
+            error = LocalizationService.of(context)
+                    ?.translate('general_error_message') ??
+                ''
+          });
       if (kDebugMode) {
         print(e);
       }
@@ -86,13 +97,23 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       final profileUpdate = await updateProfile(id, fullName, avatar);
       if (EmailValidator.validate(emailUpdate.user!.email!) &&
           profileUpdate == null) {
-        return null;
+        return true;
       } else {
-        setState(() => {loading = false, error = 'Something went wrong'});
+        setState(() => {
+              loading = false,
+              error = LocalizationService.of(context)
+                      ?.translate('general_error_message') ??
+                  ''
+            });
         return false;
       }
     } catch (e) {
-      setState(() => {loading = false, error = 'Something went wrong'});
+      setState(() => {
+            loading = false,
+            error = LocalizationService.of(context)
+                    ?.translate('general_error_message') ??
+                ''
+          });
       if (kDebugMode) {
         print(e);
       }
@@ -136,14 +157,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               ? ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.memory(avatarBytes!))
-              : widget.avatarBytes != null
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Image.memory(widget.avatarBytes!))
-                  : SizedBox(
-                      width: 50,
-                      child: Image.asset('assets/images/defaultAvatar.jpg'),
-                    ),
+              : ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.memory(widget.avatarBytes!)),
           Positioned(
               bottom: -15,
               right: -15,
@@ -154,10 +170,14 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     builder: (BuildContext context) {
                       return Center(
                         child: SimpleDialog(
-                          title: const Center(
+                          title: Center(
                               child: Text(kIsWeb
-                                  ? 'Select an image'
-                                  : 'Make or select an image')),
+                                  ? LocalizationService.of(context)
+                                          ?.translate('select_avatar_label') ??
+                                      ''
+                                  : LocalizationService.of(context)?.translate(
+                                          'make_select_avatar_label') ??
+                                      '')),
                           children: <Widget>[
                             Row(
                               children: [
@@ -213,24 +233,30 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         Condition.smallerThan(name: TABLET, value: double.infinity)
       ]).value,
       child: TextFormField(
-          decoration: const InputDecoration(
-              border: OutlineInputBorder(
+          decoration: InputDecoration(
+              border: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5))),
-              labelText: "Email",
-              labelStyle: TextStyle(
+              labelText: LocalizationService.of(context)
+                      ?.translate('email_input_label') ??
+                  '',
+              labelStyle: const TextStyle(
                 fontSize: 15,
               ), //label style
-              prefixIcon: Padding(
+              prefixIcon: const Padding(
                 padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
                 child: Icon(FontAwesomeIcons.envelope),
               ),
-              hintText: "email"),
+              hintText: LocalizationService.of(context)
+                      ?.translate('email_input_hinttext') ??
+                  ''),
           textAlign: TextAlign.left,
           initialValue: widget.profile!.email,
           autofocus: true,
           validator: (String? value) {
             return !EmailValidator.validate(value!)
-                ? 'Please provide a valid email.'
+                ? LocalizationService.of(context)
+                        ?.translate('invalid_email_message') ??
+                    ''
                 : null;
           },
           onChanged: (val) {
@@ -246,14 +272,16 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         Condition.smallerThan(name: TABLET, value: double.infinity)
       ]).value,
       child: TextFormField(
-          decoration: const InputDecoration(
-              border: OutlineInputBorder(
+          decoration: InputDecoration(
+              border: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5))),
-              labelText: "Name",
-              labelStyle: TextStyle(
+              labelText:
+                  LocalizationService.of(context)?.translate('name_label') ??
+                      '',
+              labelStyle: const TextStyle(
                 fontSize: 15,
               ), //label style
-              prefixIcon: Padding(
+              prefixIcon: const Padding(
                 padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
                 child: Icon(FontAwesomeIcons.faceLaugh),
               ),
@@ -264,7 +292,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           validator: (String? value) {
             //print(value.length);
             return (value != null && value.length < 2)
-                ? 'Please provide a valid name.'
+                ? LocalizationService.of(context)
+                        ?.translate('invalid_name_message') ??
+                    ''
                 : null;
           },
           onChanged: (val) {
@@ -280,11 +310,14 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         Condition.smallerThan(name: TABLET, value: double.infinity)
       ]).value,
       child: ElevatedButton(
-        child: const Padding(
-          padding: EdgeInsets.all(15.0),
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
           child: Text(
-            "Update profile",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            LocalizationService.of(context)
+                    ?.translate('update_profile_button_label') ??
+                '',
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
         onPressed: () async {
@@ -300,9 +333,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               if (!mounted) return;
               final snackBar = SnackBar(
                 backgroundColor: Theme.of(context).colorScheme.primary,
-                content: const Text('Your profile has been updated',
+                content: Text(
+                    LocalizationService.of(context)
+                            ?.translate('update_profile_snackbar') ??
+                        '',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                     )),
               );
@@ -323,7 +359,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           } else {
             setState(() {
               loading = false;
-              error = 'Something went wrong.';
+              error = LocalizationService.of(context)
+                      ?.translate('general_error_message') ??
+                  '';
             });
           }
         },
@@ -331,7 +369,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     );
   }
 
-  profileForm(context) {
+  updateProfileForm(context) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -340,9 +378,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             child: Column(
               children: <Widget>[
                 kIsWeb
-                    ? const Text('My Profile',
+                    ? Text(
+                        LocalizationService.of(context)
+                                ?.translate('update_profile_header') ??
+                            '',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 25.0, fontWeight: FontWeight.bold))
                     : Container(),
                 const SizedBox(height: 20.0),
@@ -405,7 +446,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(40.0),
                             child: Column(
-                              children: [profileForm(context)],
+                              children: [updateProfileForm(context)],
                             ),
                           ),
                         ),

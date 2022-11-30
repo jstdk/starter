@@ -74,12 +74,12 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
             obscureText: obscureText,
             decoration: InputDecoration(
               hintText: LocalizationService.of(context)
-                      ?.translate('new_password_hinttext') ??
+                      ?.translate('new_password_input_hinttext') ??
                   '',
               border: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5))),
               labelText: LocalizationService.of(context)
-                      ?.translate('new_password_label') ??
+                      ?.translate('new_password_input_label') ??
                   '',
               labelStyle: const TextStyle(
                 fontSize: 15,
@@ -122,12 +122,12 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
           obscureText: obscureText,
           decoration: InputDecoration(
             hintText: LocalizationService.of(context)
-                    ?.translate('new_password_again_hinttext') ??
+                    ?.translate('new_password_again_input_hinttext') ??
                 '',
             border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(5))),
             labelText: LocalizationService.of(context)
-                    ?.translate('new_password_again_label') ??
+                    ?.translate('new_password_again_input_label') ??
                 '',
             labelStyle: const TextStyle(
               fontSize: 15,

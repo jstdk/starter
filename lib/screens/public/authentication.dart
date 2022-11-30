@@ -141,13 +141,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       child: TextFormField(
           decoration: InputDecoration(
               hintText: LocalizationService.of(context)
-                      ?.translate('email_hinttext') ??
+                      ?.translate('email_input_hinttext') ??
                   '',
               border: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5))),
-              labelText:
-                  LocalizationService.of(context)?.translate('email_label') ??
-                      '',
+              labelText: LocalizationService.of(context)
+                      ?.translate('email_input_label') ??
+                  '',
               labelStyle: const TextStyle(
                 fontSize: 15,
               ), //label style
