@@ -6,13 +6,18 @@ import 'package:system_theme/system_theme.dart';
 ThemeData light = ThemeData(
   brightness: Brightness.light,
   primaryColor: Colors.grey,
-  colorScheme: ColorScheme(
+  colorScheme: const ColorScheme(
     brightness: Brightness.light,
     primary: Colors.grey,
     onPrimary: Colors.grey,
     secondary: Colors.green,
     onSecondary: Colors.green,
-    background: null,
+    background: Colors.white,
+    error: Colors.red,
+    onBackground: Colors.black,
+    onError: Colors.red,
+    onSurface: Colors.white,
+    surface: Colors.black,
   ),
   textTheme: const TextTheme(
     headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
