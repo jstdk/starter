@@ -544,14 +544,21 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   jumbotron() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 10, 100, 10),
+      padding: EdgeInsets.fromLTRB(
+          ResponsiveValue(context, defaultValue: 0.0, valueWhen: const [
+                Condition.smallerThan(name: DESKTOP, value: 40.0)
+              ]).value ??
+              0.0,
+          10.0,
+          50.0,
+          10.0),
       child: Column(
         children: [
           SizedBox(
             width: ResponsiveValue(context,
                 defaultValue: 500.0,
                 valueWhen: const [
-                  Condition.smallerThan(name: TABLET, value: 250.0)
+                  Condition.smallerThan(name: TABLET, value: 300.0)
                 ]).value,
             child: Text(
                 LocalizationService.of(context)?.translate('main_tagline') ??
@@ -631,14 +638,18 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                       child: Builder(builder: (context) {
                         return Padding(
                           padding:
-                              const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
+                              const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
                           child: TextButton(
                             child: Text(
                               LocalizationService.of(context)
                                       ?.translate('brand_header') ??
                                   '',
-                              style: const TextStyle(
-                                  fontSize: 15, color: Colors.white),
+                              style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground),
                             ),
                             onPressed: () {
                               Scaffold.of(context).openEndDrawer();
@@ -663,7 +674,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                         LocalizationService.of(context)
                                 ?.translate('about_us_header') ??
                             '',
-                        style: const TextStyle(fontSize: 15),
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onBackground),
                       ),
                       onPressed: () {},
                     );
@@ -680,7 +694,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                           LocalizationService.of(context)
                                   ?.translate('pricing_header') ??
                               '',
-                          style: const TextStyle(fontSize: 15),
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  Theme.of(context).colorScheme.onBackground),
                         ),
                       ),
                       onPressed: () {},
@@ -698,7 +716,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                           LocalizationService.of(context)
                                   ?.translate('contact_header') ??
                               '',
-                          style: const TextStyle(fontSize: 15),
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  Theme.of(context).colorScheme.onBackground),
                         ),
                         onPressed: () {},
                       ),
@@ -789,8 +811,20 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                           name: TABLET, value: double.infinity)
                                     ]).value,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: EdgeInsets.fromLTRB(
+                                      8.0,
+                                      30.0,
+                                      ResponsiveValue(context,
+                                              defaultValue: 40.0,
+                                              valueWhen: const [
+                                                Condition.smallerThan(
+                                                    name: TABLET, value: 8.0)
+                                              ]).value ??
+                                          40.0,
+                                      8.0),
                                   child: Card(
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
                                     elevation: 0,
                                     child: Padding(
                                       padding: const EdgeInsets.fromLTRB(
