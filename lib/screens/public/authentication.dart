@@ -559,11 +559,21 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
               title: Padding(
-                padding: const EdgeInsets.fromLTRB(50.0, 0, 0, 0),
-                child: Text(LocalizationService.of(context)
-                        ?.translate('brand_header') ??
-                    ''),
-              ),
+                  padding: const EdgeInsets.fromLTRB(50.0, 0, 0, 0),
+                  child: Text(
+                    LocalizationService.of(context)
+                            ?.translate('brand_header') ??
+                        '',
+                    style: TextStyle(
+                        fontSize: ResponsiveValue(context,
+                            defaultValue: 30.0,
+                            valueWhen: const [
+                              Condition.largerThan(name: MOBILE, value: 30.0),
+                              Condition.smallerThan(
+                                  name: TABLET, value: double.infinity)
+                            ]).value,
+                        color: Theme.of(context).colorScheme.secondary),
+                  )),
               elevation: 0,
               backgroundColor: Colors.transparent,
               actions: [

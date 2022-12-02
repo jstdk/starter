@@ -4,14 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:system_theme/system_theme.dart';
 
 ThemeData light = ThemeData(
-  brightness: Brightness.light,
-  primaryColor: Colors.grey,
   colorScheme: const ColorScheme(
     brightness: Brightness.light,
-    primary: Colors.grey,
+    primary: Colors.green,
     onPrimary: Colors.grey,
-    secondary: Colors.green,
-    onSecondary: Colors.green,
+    secondary: Colors.orange,
+    onSecondary: Colors.orange,
     background: Colors.white,
     error: Colors.red,
     onBackground: Colors.black,
@@ -19,11 +17,13 @@ ThemeData light = ThemeData(
     onSurface: Colors.white,
     surface: Colors.black,
   ),
-  textTheme: const TextTheme(
-    headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-    headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-    bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
-  ),
+  // textTheme: const TextTheme(
+  //   headline1: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+  //   headline2: TextStyle(
+  //       fontSize: 25.0, fontWeight: FontWeight.bold, color: Colors.blue),
+  //   headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+  //   //bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
+  // ),
   scaffoldBackgroundColor: const Color(0xfff1f1f1),
   fontFamily: 'Nunito',
 );
