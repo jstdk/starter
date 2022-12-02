@@ -7,9 +7,9 @@ ThemeData light = ThemeData(
   colorScheme: const ColorScheme(
     brightness: Brightness.light,
     primary: Colors.green,
-    onPrimary: Colors.grey,
-    secondary: Colors.orange,
-    onSecondary: Colors.orange,
+    onPrimary: Colors.white,
+    secondary: Colors.grey,
+    onSecondary: Colors.black,
     background: Colors.white,
     error: Colors.red,
     onBackground: Colors.black,
@@ -17,21 +17,23 @@ ThemeData light = ThemeData(
     onSurface: Colors.white,
     surface: Colors.black,
   ),
-  // textTheme: const TextTheme(
-  //   headline1: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
-  //   headline2: TextStyle(
-  //       fontSize: 25.0, fontWeight: FontWeight.bold, color: Colors.blue),
-  //   headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-  //   //bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
-  // ),
-  scaffoldBackgroundColor: const Color(0xfff1f1f1),
   fontFamily: 'Nunito',
 );
 
 ThemeData dark = ThemeData(
-  backgroundColor: Colors.black,
-  brightness: Brightness.dark,
-  primarySwatch: Colors.green,
+  colorScheme: const ColorScheme(
+    brightness: Brightness.dark,
+    primary: Colors.green,
+    onPrimary: Colors.white,
+    secondary: Colors.grey,
+    onSecondary: Colors.black,
+    background: Colors.black,
+    error: Colors.red,
+    onBackground: Colors.white,
+    onError: Colors.red,
+    onSurface: Colors.white,
+    surface: Colors.black,
+  ),
   fontFamily: 'Nunito',
 );
 

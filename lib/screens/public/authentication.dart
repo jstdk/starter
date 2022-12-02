@@ -145,8 +145,20 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               hintText: LocalizationService.of(context)
                       ?.translate('email_input_hinttext') ??
                   '',
-              border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5))),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5.0),
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 2.0,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5.0),
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.secondary,
+                  width: 1.0,
+                ),
+              ),
               labelText: LocalizationService.of(context)
                       ?.translate('email_input_label') ??
                   '',
@@ -181,8 +193,20 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             hintText: LocalizationService.of(context)
                     ?.translate('password_input_hinttext') ??
                 '',
-            border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(5))),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5.0),
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.primary,
+                width: 2.0,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5.0),
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.secondary,
+                width: 1.0,
+              ),
+            ),
             labelText: LocalizationService.of(context)
                     ?.translate('password_input_label') ??
                 '',
@@ -227,16 +251,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       ]).value,
       child: signup == false
           ? ElevatedButton(
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Text(
-                  LocalizationService.of(context)
-                          ?.translate('sign_in_button_label') ??
-                      '',
-                  style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                ),
-              ),
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
                   setState(() => loading = true);
@@ -263,17 +277,24 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   });
                 }
               },
-            )
-          : ElevatedButton(
+              style: ButtonStyle(
+                  shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                  // Change your radius here
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              )),
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: Text(
                   LocalizationService.of(context)
-                          ?.translate('sign_up_button_label') ??
+                          ?.translate('sign_in_button_label') ??
                       '',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
+            )
+          : ElevatedButton(
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
                   setState(() => loading = true);
@@ -302,6 +323,21 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   });
                 }
               },
+              style: ButtonStyle(
+                  shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+              )),
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Text(
+                  LocalizationService.of(context)
+                          ?.translate('sign_up_button_label') ??
+                      '',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
             ),
     );
   }
@@ -314,8 +350,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       ]).value,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-        ),
+            backgroundColor: Theme.of(context).colorScheme.secondary),
         onPressed: () {
           setState(() {
             formKey.currentState!.reset();
@@ -331,7 +366,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                         ?.translate('sign_up_switcher_link_label') ??
                     ''
                 : LocalizationService.of(context)
-                        ?.translate('sign_up_switcher_link_label') ??
+                        ?.translate('sign_in_switcher_link_label') ??
                     '',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -342,7 +377,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   signInWithGoogleButton() {
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
+      style: ElevatedButton.styleFrom(
+          backgroundColor: Theme.of(context).colorScheme.secondary),
       onPressed: () async {
         signInUsingGoogle();
         final snackBarSignIn = SnackBar(
@@ -558,42 +594,66 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         : Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
+              automaticallyImplyLeading: false,
               title: Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0, 0, 0, 0),
-                  child: Text(
-                    LocalizationService.of(context)
-                            ?.translate('brand_header') ??
-                        '',
-                    style: TextStyle(
-                        fontSize: ResponsiveValue(context,
-                            defaultValue: 30.0,
+                padding: EdgeInsets.fromLTRB(
+                    ResponsiveValue(context,
+                            defaultValue: 15.0,
                             valueWhen: const [
-                              Condition.largerThan(name: MOBILE, value: 30.0),
-                              Condition.smallerThan(
-                                  name: TABLET, value: double.infinity)
-                            ]).value,
-                        color: Theme.of(context).colorScheme.secondary),
-                  )),
+                              Condition.smallerThan(name: TABLET, value: 5.0)
+                            ]).value ??
+                        15.0,
+                    0.0,
+                    0.0,
+                    0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    ResponsiveVisibility(
+                      visible: false,
+                      visibleWhen: const [Condition.smallerThan(name: TABLET)],
+                      child: Builder(builder: (context) {
+                        return IconButton(
+                          icon: Icon(
+                            FontAwesomeIcons.bars,
+                            color: Theme.of(context).colorScheme.onBackground,
+                          ),
+                          onPressed: () {
+                            Scaffold.of(context).openDrawer();
+                          },
+                        );
+                      }),
+                    ),
+                    ResponsiveVisibility(
+                      visible: true,
+                      hiddenWhen: const [Condition.smallerThan(name: TABLET)],
+                      child: Builder(builder: (context) {
+                        return Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
+                          child: TextButton(
+                            child: Text(
+                              LocalizationService.of(context)
+                                      ?.translate('brand_header') ??
+                                  '',
+                              style: const TextStyle(
+                                  fontSize: 15, color: Colors.white),
+                            ),
+                            onPressed: () {
+                              Scaffold.of(context).openEndDrawer();
+                            },
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
+                ),
+              ),
+              titleSpacing: 0,
               elevation: 0,
               backgroundColor: Colors.transparent,
               actions: [
-                ResponsiveVisibility(
-                  visible: false,
-                  visibleWhen: const [Condition.smallerThan(name: TABLET)],
-                  child: Builder(
-                    builder: (context) {
-                      return IconButton(
-                        icon: const Icon(
-                          FontAwesomeIcons.bars,
-                          size: 20.0,
-                        ),
-                        onPressed: () {
-                          Scaffold.of(context).openEndDrawer();
-                        },
-                      );
-                    },
-                  ),
-                ),
                 ResponsiveVisibility(
                   visible: false,
                   visibleWhen: const [Condition.largerThan(name: MOBILE)],
@@ -648,21 +708,43 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 pv.Consumer<ThemeService>(
                     builder: (context, theme, child) => theme.darkTheme == true
                         ? Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 0, 50, 0),
+                            padding: EdgeInsets.fromLTRB(
+                                20.0,
+                                0.0,
+                                ResponsiveValue(context,
+                                        defaultValue: 50.0,
+                                        valueWhen: const [
+                                          Condition.smallerThan(
+                                              name: TABLET, value: 10.0)
+                                        ]).value ??
+                                    50.0,
+                                0.0),
                             child: IconButton(
-                                icon: const Icon(
+                                icon: Icon(
                                   FontAwesomeIcons.sun,
-                                  color: Colors.white,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
                                 ),
                                 onPressed: () => theme.toggleTheme()),
                           )
                         : Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 0, 50, 0),
+                            padding: EdgeInsets.fromLTRB(
+                                20,
+                                0,
+                                ResponsiveValue(context,
+                                        defaultValue: 50.0,
+                                        valueWhen: const [
+                                          Condition.smallerThan(
+                                              name: TABLET, value: 10.0)
+                                        ]).value ??
+                                    50.0,
+                                0),
                             child: IconButton(
-                                icon: const Icon(
-                                  FontAwesomeIcons.moon,
-                                  color: Colors.black,
-                                ),
+                                icon: Icon(FontAwesomeIcons.moon,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground),
                                 onPressed: () => theme.toggleTheme()),
                           )),
               ],
@@ -712,7 +794,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                     elevation: 0,
                                     child: Padding(
                                       padding: const EdgeInsets.fromLTRB(
-                                          15.0, 40.0, 15.0, 40.0),
+                                          15.0, 30.0, 15.0, 40.0),
                                       child: reset == false
                                           ? signInUpForm()
                                           : resetPasswordForm(context),
@@ -727,7 +809,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 ],
               ),
             ),
-            endDrawer: const Drawer(child: Text('Text')),
+            drawer: const Drawer(child: Text('Text')),
           );
   }
 }
