@@ -11,6 +11,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../services/localization.dart';
 import '../../services/theme.dart';
 import '../../utils/loading.dart';
+import 'about_us.dart';
+import 'contact_us.dart';
+import 'features.dart';
+import 'pricing.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -280,7 +284,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               style: ButtonStyle(
                   shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(
-                  // Change your radius here
                   borderRadius: BorderRadius.circular(5),
                 ),
               )),
@@ -326,7 +329,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               style: ButtonStyle(
                   shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
+                  borderRadius: BorderRadius.circular(5),
                 ),
               )),
               child: Padding(
@@ -368,7 +371,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 : LocalizationService.of(context)
                         ?.translate('sign_in_switcher_link_label') ??
                     '',
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontSize: ResponsiveValue(context,
+                    defaultValue: 20.0,
+                    valueWhen: const [
+                      Condition.smallerThan(name: DESKTOP, value: 15.0),
+                    ]).value,
+                fontWeight: FontWeight.bold),
           ),
         ),
       ),
@@ -383,9 +392,17 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         signInUsingGoogle();
         final snackBarSignIn = SnackBar(
           backgroundColor: Theme.of(context).colorScheme.primary,
-          content: const Text('Signin you in with Google',
+          content: Text(
+              LocalizationService.of(context)
+                      ?.translate('sign_in_google_snackbar_label') ??
+                  '',
               textAlign: TextAlign.center,
               style: TextStyle(
+                fontSize: ResponsiveValue(context,
+                    defaultValue: 20.0,
+                    valueWhen: const [
+                      Condition.smallerThan(name: DESKTOP, value: 15.0),
+                    ]).value,
                 color: Colors.white,
               )),
         );
@@ -415,10 +432,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: ResponsiveValue(context,
-                        defaultValue: 30.0,
+                        defaultValue: 25.0,
                         valueWhen: const [
                           Condition.smallerThan(name: DESKTOP, value: 20.0),
-                          Condition.largerThan(name: TABLET, value: 30.0)
                         ]).value,
                     fontWeight: FontWeight.bold)),
             const SizedBox(height: 40.0),
@@ -434,7 +450,14 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             const SizedBox(height: 30.0),
             Row(children: <Widget>[
               const Expanded(child: Divider()),
-              Text(LocalizationService.of(context)?.translate('or') ?? ''),
+              Text(LocalizationService.of(context)?.translate('or') ?? '',
+                  style: TextStyle(
+                    fontSize: ResponsiveValue(context,
+                        defaultValue: 20.0,
+                        valueWhen: const [
+                          Condition.smallerThan(name: DESKTOP, value: 15.0),
+                        ]).value,
+                  )),
               const Expanded(child: Divider()),
             ]),
             const SizedBox(height: 30.0),
@@ -458,7 +481,14 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             const SizedBox(height: 30.0),
             Row(children: <Widget>[
               const Expanded(child: Divider()),
-              Text(LocalizationService.of(context)?.translate('or') ?? ''),
+              Text(LocalizationService.of(context)?.translate('or') ?? '',
+                  style: TextStyle(
+                    fontSize: ResponsiveValue(context,
+                        defaultValue: 20.0,
+                        valueWhen: const [
+                          Condition.smallerThan(name: DESKTOP, value: 15.0),
+                        ]).value,
+                  )),
               const Expanded(child: Divider()),
             ]),
             const SizedBox(height: 30.0),
@@ -558,40 +588,247 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             width: ResponsiveValue(context,
                 defaultValue: 500.0,
                 valueWhen: const [
-                  Condition.smallerThan(name: TABLET, value: 300.0)
+                  Condition.smallerThan(name: DESKTOP, value: 400.0)
                 ]).value,
             child: Text(
                 LocalizationService.of(context)?.translate('main_tagline') ??
                     '',
-                style:
-                    TextStyle(
-                        fontSize: ResponsiveValue(context,
-                            defaultValue: 60.0,
-                            valueWhen: const [
-                              Condition.smallerThan(name: TABLET, value: 30.0)
-                            ]).value,
-                        fontWeight: FontWeight.bold)),
+                style: TextStyle(
+                    fontSize: ResponsiveValue(context,
+                        defaultValue: 60.0,
+                        valueWhen: const [
+                          Condition.smallerThan(name: DESKTOP, value: 40.0),
+                        ]).value,
+                    fontWeight: FontWeight.bold)),
           ),
-          const SizedBox(height: 10),
           SizedBox(
             width: ResponsiveValue(context,
                 defaultValue: 500.0,
                 valueWhen: const [
-                  Condition.smallerThan(name: TABLET, value: 250.0)
+                  Condition.smallerThan(name: DESKTOP, value: 400.0)
                 ]).value,
             child: Text(
                 LocalizationService.of(context)?.translate('sub_tagline') ?? '',
                 style: TextStyle(
                     fontSize: ResponsiveValue(context,
-                        defaultValue: 20.0,
+                        defaultValue: 30.0,
                         valueWhen: const [
-                          Condition.smallerThan(name: TABLET, value: 10.0)
+                          Condition.smallerThan(name: DESKTOP, value: 20.0),
                         ]).value,
                     fontWeight: FontWeight.bold)),
           ),
         ],
       ),
     );
+  }
+
+  menuIcon() {
+    return ResponsiveVisibility(
+      visible: false,
+      visibleWhen: const [Condition.smallerThan(name: TABLET)],
+      child: Builder(builder: (context) {
+        return IconButton(
+          icon: Icon(
+            FontAwesomeIcons.bars,
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
+        );
+      }),
+    );
+  }
+
+  brandHeader() {
+    return ResponsiveVisibility(
+      visible: true,
+      hiddenWhen: const [Condition.smallerThan(name: TABLET)],
+      child: Builder(builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
+          child: TextButton(
+            child: Text(
+              LocalizationService.of(context)?.translate('brand_header') ?? '',
+              style: TextStyle(
+                  fontSize: ResponsiveValue(context,
+                      defaultValue: 30.0,
+                      valueWhen: const [
+                        Condition.smallerThan(name: DESKTOP, value: 30.0),
+                      ]).value,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onBackground),
+            ),
+            onPressed: () {
+              Scaffold.of(context).openEndDrawer();
+            },
+          ),
+        );
+      }),
+    );
+  }
+
+  featuresHeader() {
+    return ResponsiveVisibility(
+      visible: false,
+      visibleWhen: const [Condition.largerThan(name: MOBILE)],
+      child: Builder(builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+          child: TextButton(
+            child: Text(
+              LocalizationService.of(context)?.translate('features_header') ??
+                  '',
+              style: TextStyle(
+                  fontSize: ResponsiveValue(context,
+                      defaultValue: 15.0,
+                      valueWhen: const [
+                        Condition.smallerThan(name: DESKTOP, value: 15.0)
+                      ]).value,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onBackground),
+            ),
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                  builder: (context) => const FeaturesScreen()));
+            },
+          ),
+        );
+      }),
+    );
+  }
+
+  pricingHeader() {
+    return ResponsiveVisibility(
+      visible: false,
+      visibleWhen: const [Condition.largerThan(name: MOBILE)],
+      child: Builder(builder: (context) {
+        return TextButton(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+            child: Text(
+              LocalizationService.of(context)?.translate('pricing_header') ??
+                  '',
+              style: TextStyle(
+                  fontSize: ResponsiveValue(context,
+                      defaultValue: 15.0,
+                      valueWhen: const [
+                        Condition.smallerThan(name: DESKTOP, value: 15.0)
+                      ]).value,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onBackground),
+            ),
+          ),
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).push(
+                MaterialPageRoute(builder: (context) => const PricingScreen()));
+          },
+        );
+      }),
+    );
+  }
+
+  aboutUsHeader() {
+    return ResponsiveVisibility(
+      visible: false,
+      visibleWhen: const [Condition.largerThan(name: MOBILE)],
+      child: Builder(builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+          child: TextButton(
+            child: Text(
+              LocalizationService.of(context)?.translate('about_us_header') ??
+                  '',
+              style: TextStyle(
+                  fontSize: ResponsiveValue(context,
+                      defaultValue: 15.0,
+                      valueWhen: const [
+                        Condition.smallerThan(name: DESKTOP, value: 15.0)
+                      ]).value,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onBackground),
+            ),
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                  builder: (context) => const AboutUsScreen()));
+            },
+          ),
+        );
+      }),
+    );
+  }
+
+  contactUsHeader() {
+    return ResponsiveVisibility(
+      visible: false,
+      visibleWhen: const [Condition.largerThan(name: MOBILE)],
+      child: Builder(builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+          child: TextButton(
+            child: Text(
+              LocalizationService.of(context)?.translate('contact_us_header') ??
+                  '',
+              style: TextStyle(
+                  fontSize: ResponsiveValue(context,
+                      defaultValue: 15.0,
+                      valueWhen: const [
+                        Condition.smallerThan(name: DESKTOP, value: 15.0)
+                      ]).value,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onBackground),
+            ),
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                  builder: (context) => const ContactUsScreen()));
+            },
+          ),
+        );
+      }),
+    );
+  }
+
+  themeSwitcher() {
+    return pv.Consumer<ThemeService>(
+        builder: (context, theme, child) => theme.darkTheme == true
+            ? Padding(
+                padding: EdgeInsets.fromLTRB(
+                    20.0,
+                    10.0,
+                    ResponsiveValue(context,
+                            defaultValue: 50.0,
+                            valueWhen: const [
+                              Condition.smallerThan(name: TABLET, value: 10.0)
+                            ]).value ??
+                        50.0,
+                    0.0),
+                child: IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.sun,
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
+                    onPressed: () => theme.toggleTheme()),
+              )
+            : Padding(
+                padding: EdgeInsets.fromLTRB(
+                    20,
+                    10,
+                    ResponsiveValue(context,
+                            defaultValue: 50.0,
+                            valueWhen: const [
+                              Condition.smallerThan(name: TABLET, value: 10.0)
+                            ]).value ??
+                        50.0,
+                    0),
+                child: IconButton(
+                    icon: Icon(FontAwesomeIcons.moon,
+                        color: Theme.of(context).colorScheme.onBackground),
+                    onPressed: () => theme.toggleTheme()),
+              ));
+  }
+
+  drawer() {
+    return const Drawer(child: Text('Text'));
   }
 
   @override
@@ -617,47 +854,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    ResponsiveVisibility(
-                      visible: false,
-                      visibleWhen: const [Condition.smallerThan(name: TABLET)],
-                      child: Builder(builder: (context) {
-                        return IconButton(
-                          icon: Icon(
-                            FontAwesomeIcons.bars,
-                            color: Theme.of(context).colorScheme.onBackground,
-                          ),
-                          onPressed: () {
-                            Scaffold.of(context).openDrawer();
-                          },
-                        );
-                      }),
-                    ),
-                    ResponsiveVisibility(
-                      visible: true,
-                      hiddenWhen: const [Condition.smallerThan(name: TABLET)],
-                      child: Builder(builder: (context) {
-                        return Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
-                          child: TextButton(
-                            child: Text(
-                              LocalizationService.of(context)
-                                      ?.translate('brand_header') ??
-                                  '',
-                              style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground),
-                            ),
-                            onPressed: () {
-                              Scaffold.of(context).openEndDrawer();
-                            },
-                          ),
-                        );
-                      }),
-                    ),
+                    menuIcon(),
+                    brandHeader(),
                   ],
                 ),
               ),
@@ -665,119 +863,24 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               elevation: 0,
               backgroundColor: Colors.transparent,
               actions: [
-                ResponsiveVisibility(
-                  visible: false,
-                  visibleWhen: const [Condition.largerThan(name: MOBILE)],
-                  child: Builder(builder: (context) {
-                    return TextButton(
-                      child: Text(
-                        LocalizationService.of(context)
-                                ?.translate('about_us_header') ??
-                            '',
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.onBackground),
-                      ),
-                      onPressed: () {},
-                    );
-                  }),
-                ),
-                ResponsiveVisibility(
-                  visible: false,
-                  visibleWhen: const [Condition.largerThan(name: MOBILE)],
-                  child: Builder(builder: (context) {
-                    return TextButton(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                        child: Text(
-                          LocalizationService.of(context)
-                                  ?.translate('pricing_header') ??
-                              '',
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color:
-                                  Theme.of(context).colorScheme.onBackground),
-                        ),
-                      ),
-                      onPressed: () {},
-                    );
-                  }),
-                ),
-                ResponsiveVisibility(
-                  visible: false,
-                  visibleWhen: const [Condition.largerThan(name: MOBILE)],
-                  child: Builder(builder: (context) {
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                      child: TextButton(
-                        child: Text(
-                          LocalizationService.of(context)
-                                  ?.translate('contact_header') ??
-                              '',
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color:
-                                  Theme.of(context).colorScheme.onBackground),
-                        ),
-                        onPressed: () {},
-                      ),
-                    );
-                  }),
-                ),
-                pv.Consumer<ThemeService>(
-                    builder: (context, theme, child) => theme.darkTheme == true
-                        ? Padding(
-                            padding: EdgeInsets.fromLTRB(
-                                20.0,
-                                0.0,
-                                ResponsiveValue(context,
-                                        defaultValue: 50.0,
-                                        valueWhen: const [
-                                          Condition.smallerThan(
-                                              name: TABLET, value: 10.0)
-                                        ]).value ??
-                                    50.0,
-                                0.0),
-                            child: IconButton(
-                                icon: Icon(
-                                  FontAwesomeIcons.sun,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
-                                ),
-                                onPressed: () => theme.toggleTheme()),
-                          )
-                        : Padding(
-                            padding: EdgeInsets.fromLTRB(
-                                20,
-                                0,
-                                ResponsiveValue(context,
-                                        defaultValue: 50.0,
-                                        valueWhen: const [
-                                          Condition.smallerThan(
-                                              name: TABLET, value: 10.0)
-                                        ]).value ??
-                                    50.0,
-                                0),
-                            child: IconButton(
-                                icon: Icon(FontAwesomeIcons.moon,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onBackground),
-                                onPressed: () => theme.toggleTheme()),
-                          )),
+                featuresHeader(),
+                pricingHeader(),
+                aboutUsHeader(),
+                contactUsHeader(),
+                themeSwitcher(),
               ],
             ),
             body: SingleChildScrollView(
               child: Column(
                 children: [
-                  const ResponsiveVisibility(
-                      visible: false,
-                      visibleWhen: [Condition.largerThan(name: TABLET)],
-                      child: SizedBox(height: 20)),
+                  SizedBox(
+                    height: ResponsiveValue(context,
+                            defaultValue: 15.0,
+                            valueWhen: const [
+                              Condition.smallerThan(name: DESKTOP, value: 30.0)
+                            ]).value ??
+                        15.0,
+                  ),
                   ResponsiveRowColumn(
                     layout: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
                         ? ResponsiveRowColumnType.COLUMN
@@ -843,7 +946,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 ],
               ),
             ),
-            drawer: const Drawer(child: Text('Text')),
+            drawer: drawer(),
           );
   }
 }
