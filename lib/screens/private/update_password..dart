@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:starter/utils/go_back.dart';
+import 'package:starter/utils/go_back_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../models/profile.dart';
@@ -290,7 +290,7 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        const GoBackButton(removeAllState: false),
+                        const GoBackButtonUtil(removeAllState: false),
                       ],
                     ),
                   ),

@@ -67,15 +67,15 @@ class StarterApp extends StatelessWidget {
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
               ],
-              localeResolutionCallback: (locale, supportedLocales) {
-                for (var supportedLocale in supportedLocales) {
-                  if (supportedLocale.languageCode == locale?.languageCode &&
-                      supportedLocale.countryCode == locale?.countryCode) {
-                    return supportedLocale;
-                  }
-                }
-                return supportedLocales.first;
-              },
+              // localeResolutionCallback: (locale, supportedLocales) {
+              //   for (var supportedLocale in supportedLocales) {
+              //     if (supportedLocale.languageCode == locale?.languageCode &&
+              //         supportedLocale.countryCode == locale?.countryCode) {
+              //       return supportedLocale;
+              //     }
+              //   }
+              //   return supportedLocales.first;
+              // },
               builder: (context, child) => ResponsiveWrapper.builder(
                       BouncingScrollWrapper.builder(context, child!),
                       minWidth: 450,

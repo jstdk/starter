@@ -10,7 +10,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../models/profile.dart';
 import '../../services/localization.dart';
-import '../../utils/go_back.dart';
+import '../../utils/go_back_button.dart';
 import '../root.dart';
 import 'update_password..dart';
 import 'update_profile.dart';
@@ -189,7 +189,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        const GoBackButton(removeAllState: true),
+                        const GoBackButtonUtil(removeAllState: true),
                       ],
                     ),
                   ),

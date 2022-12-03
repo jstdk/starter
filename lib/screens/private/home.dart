@@ -13,6 +13,7 @@ import '../../services/localization.dart';
 import '../../models/message.dart';
 import '../../models/profile.dart';
 import '../../screens/private/profile.dart';
+import '../../utils/brand_header.dart';
 import '../../utils/loading.dart';
 
 final supabase = Supabase.instance.client;
@@ -235,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (context, theme, child) => SwitchListTile(
               title: Text(
                 LocalizationService.of(context)
-                        ?.translate('dark_mode_switcher') ??
+                        ?.translate('dark_mode_switcher_label') ??
                     '',
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -315,98 +316,82 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  settingsHeaderText() {
+    return ResponsiveVisibility(
+      visible: false,
+      visibleWhen: const [Condition.largerThan(name: MOBILE)],
+      child: Builder(builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+          child: TextButton(
+            child: Text(
+              LocalizationService.of(context)?.translate('settings_header') ??
+                  '',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onBackground),
+            ),
+            onPressed: () {
+              Scaffold.of(context).openEndDrawer();
+            },
+          ),
+        );
+      }),
+    );
+  }
+
+  settingsHeaderIcon() {
+    return ResponsiveVisibility(
+      visible: false,
+      visibleWhen: const [Condition.smallerThan(name: TABLET)],
+      child: Builder(
+        builder: (context) {
+          return IconButton(
+            icon: const Icon(
+              FontAwesomeIcons.gear,
+              size: 20.0,
+            ),
+            onPressed: () {
+              Scaffold.of(context).openEndDrawer();
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  openDrawerIcon() {
+    return ResponsiveVisibility(
+      visible: false,
+      visibleWhen: const [Condition.smallerThan(name: TABLET)],
+      child: Builder(builder: (context) {
+        return IconButton(
+          icon: const Icon(
+            FontAwesomeIcons.chevronRight,
+            size: 20.0,
+          ),
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
+        );
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Padding(
-          padding: const EdgeInsets.fromLTRB(15.0, 0.0, 0.0, 0.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              ResponsiveVisibility(
-                visible: false,
-                visibleWhen: const [Condition.smallerThan(name: TABLET)],
-                child: Builder(builder: (context) {
-                  return IconButton(
-                    icon: const Icon(
-                      FontAwesomeIcons.chevronRight,
-                      size: 20.0,
-                    ),
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                  );
-                }),
-              ),
-              ResponsiveVisibility(
-                visible: true,
-                hiddenWhen: const [Condition.smallerThan(name: TABLET)],
-                child: Builder(builder: (context) {
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
-                    child: TextButton(
-                      child: Text(
-                        LocalizationService.of(context)
-                                ?.translate('brand_header') ??
-                            '',
-                        style:
-                            const TextStyle(fontSize: 15, color: Colors.white),
-                      ),
-                      onPressed: () {
-                        Scaffold.of(context).openEndDrawer();
-                      },
-                    ),
-                  );
-                }),
-              ),
-            ],
-          ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[openDrawerIcon(), const BrandHeaderUtil()],
         ),
         titleSpacing: 0,
         elevation: 0,
         backgroundColor: Colors.transparent,
-        actions: [
-          ResponsiveVisibility(
-            visible: false,
-            visibleWhen: const [Condition.largerThan(name: MOBILE)],
-            child: Builder(builder: (context) {
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: TextButton(
-                  child: Text(
-                    LocalizationService.of(context)
-                            ?.translate('settings_header') ??
-                        '',
-                    style: const TextStyle(fontSize: 15, color: Colors.white),
-                  ),
-                  onPressed: () {
-                    Scaffold.of(context).openEndDrawer();
-                  },
-                ),
-              );
-            }),
-          ),
-          ResponsiveVisibility(
-            visible: false,
-            visibleWhen: const [Condition.smallerThan(name: TABLET)],
-            child: Builder(
-              builder: (context) {
-                return IconButton(
-                  icon: const Icon(
-                    FontAwesomeIcons.gear,
-                    size: 20.0,
-                  ),
-                  onPressed: () {
-                    Scaffold.of(context).openEndDrawer();
-                  },
-                );
-              },
-            ),
-          ),
-        ],
+        actions: [settingsHeaderText(), settingsHeaderIcon()],
       ),
       body: SingleChildScrollView(
         child: Column(

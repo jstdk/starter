@@ -5,15 +5,15 @@ import 'package:responsive_framework/responsive_framework.dart';
 import '../screens/root.dart';
 import '../services/localization.dart';
 
-class GoBackButton extends StatefulWidget {
+class GoBackButtonUtil extends StatefulWidget {
   final bool removeAllState;
-  const GoBackButton({super.key, required this.removeAllState});
+  const GoBackButtonUtil({super.key, required this.removeAllState});
 
   @override
-  State<GoBackButton> createState() => _GoBackButtonState();
+  State<GoBackButtonUtil> createState() => _GoBackButtonUtilState();
 }
 
-class _GoBackButtonState extends State<GoBackButton> {
+class _GoBackButtonUtilState extends State<GoBackButtonUtil> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveVisibility(
@@ -25,7 +25,6 @@ class _GoBackButtonState extends State<GoBackButton> {
             IconButton(
                 icon: const Icon(
                   FontAwesomeIcons.chevronLeft,
-                  color: Colors.black,
                 ),
                 onPressed: () async {
                   if (widget.removeAllState == true) {
@@ -42,8 +41,7 @@ class _GoBackButtonState extends State<GoBackButton> {
               width: 5,
             ),
             Text(
-                LocalizationService.of(context)
-                        ?.translate('invalid_password_again_message') ??
+                LocalizationService.of(context)?.translate('go_back_link') ??
                     '',
                 style: const TextStyle(fontSize: 15))
           ],

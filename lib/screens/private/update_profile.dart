@@ -11,7 +11,7 @@ import 'package:email_validator/email_validator.dart';
 
 import '../../models/profile.dart';
 import '../../services/localization.dart';
-import '../../utils/go_back.dart';
+import '../../utils/go_back_button.dart';
 import '../../utils/loading.dart';
 import '../root.dart';
 import 'profile.dart';
@@ -451,7 +451,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        const GoBackButton(removeAllState: false),
+                        const GoBackButtonUtil(removeAllState: false),
                       ],
                     ),
                   ),

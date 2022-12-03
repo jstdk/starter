@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../services/localization.dart';
-import '../../utils/go_back.dart';
+import '../../utils/go_back_button.dart';
 
 class ContactUsScreen extends StatefulWidget {
   const ContactUsScreen({super.key});
@@ -18,7 +18,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
       children: [
         Text(LocalizationService.of(context)?.translate('contact_us_header') ??
             ''),
-        const GoBackButton(removeAllState: false),
+        const GoBackButtonUtil(removeAllState: false),
       ],
     ));
   }

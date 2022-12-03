@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../services/localization.dart';
-import '../../utils/go_back.dart';
+import '../../utils/go_back_button.dart';
 
 class FeaturesScreen extends StatelessWidget {
   const FeaturesScreen({super.key});
@@ -13,7 +13,7 @@ class FeaturesScreen extends StatelessWidget {
       children: [
         Text(LocalizationService.of(context)?.translate('features_header') ??
             ''),
-        const GoBackButton(removeAllState: false),
+        const GoBackButtonUtil(removeAllState: false),
       ],
     ));
   }

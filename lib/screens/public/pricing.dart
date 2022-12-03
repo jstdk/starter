@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../services/localization.dart';
-import '../../utils/go_back.dart';
+import '../../utils/go_back_button.dart';
 
 class PricingScreen extends StatelessWidget {
   const PricingScreen({super.key});
@@ -13,7 +13,7 @@ class PricingScreen extends StatelessWidget {
       children: [
         Text(
             LocalizationService.of(context)?.translate('pricing_header') ?? ''),
-        const GoBackButton(removeAllState: false),
+        const GoBackButtonUtil(removeAllState: false),
       ],
     ));
   }

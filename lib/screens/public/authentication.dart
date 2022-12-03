@@ -10,6 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../services/localization.dart';
 import '../../services/theme.dart';
+import '../../utils/brand_header.dart';
 import '../../utils/loading.dart';
 import 'about_us.dart';
 import 'contact_us.dart';
@@ -640,34 +641,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     );
   }
 
-  brandHeader() {
-    return ResponsiveVisibility(
-      visible: true,
-      hiddenWhen: const [Condition.smallerThan(name: TABLET)],
-      child: Builder(builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
-          child: TextButton(
-            child: Text(
-              LocalizationService.of(context)?.translate('brand_header') ?? '',
-              style: TextStyle(
-                  fontSize: ResponsiveValue(context,
-                      defaultValue: 30.0,
-                      valueWhen: const [
-                        Condition.smallerThan(name: DESKTOP, value: 30.0),
-                      ]).value,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onBackground),
-            ),
-            onPressed: () {
-              Scaffold.of(context).openEndDrawer();
-            },
-          ),
-        );
-      }),
-    );
-  }
-
   featuresHeader() {
     return ResponsiveVisibility(
       visible: false,
@@ -853,10 +826,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    menuIcon(),
-                    brandHeader(),
-                  ],
+                  children: <Widget>[menuIcon(), const BrandHeaderUtil()],
                 ),
               ),
               titleSpacing: 0,
