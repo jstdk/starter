@@ -195,120 +195,141 @@ class _HomeScreenState extends State<HomeScreen> {
     return const Drawer(child: Text('Text'));
   }
 
+  endDrawerHeader() {
+    return DrawerHeader(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.secondary,
+      ),
+      child: Text(
+          LocalizationService.of(context)?.translate('settings_header') ?? '',
+          style: const TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold)),
+    );
+  }
+
+  profileDrawerTile() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
+      child: Row(children: [
+        Text(LocalizationService.of(context)?.translate('profile_label') ?? '',
+            style: const TextStyle(fontWeight: FontWeight.bold)),
+        const Spacer(),
+        IconButton(
+          icon: const Icon(
+            FontAwesomeIcons.circleChevronRight,
+          ),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => ProfileScreen(profile: profile),
+              ),
+            );
+          },
+        ),
+      ]),
+    );
+  }
+
+  themeDrawerTile() {
+    return Consumer<ThemeService>(
+      builder: (context, theme, child) => SwitchListTile(
+        title: Text(
+          LocalizationService.of(context)
+                  ?.translate('dark_mode_switcher_label') ??
+              '',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        onChanged: (value) {
+          theme.toggleTheme();
+        },
+        value: theme.darkTheme,
+      ),
+    );
+  }
+
+  biometricsDrawerTile() {
+    return defaultTargetPlatform == TargetPlatform.iOS ||
+            defaultTargetPlatform == TargetPlatform.android
+        ? Consumer<LocalAuthenticationService>(
+            builder: (context, localAuthentication, child) => SwitchListTile(
+              title: Text(
+                LocalizationService.of(context)
+                        ?.translate('biometrics_switcher_label') ??
+                    '',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              onChanged: (value) {
+                localAuthentication.toggleBiometrics();
+              },
+              value: localAuthentication.biometrics,
+            ),
+          )
+        : Container();
+  }
+
+  languageDrawerTile() {
+    return Consumer<InternationalizationService>(
+      builder: (context, internationalization, child) => Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 20, 5),
+          child: Row(children: [
+            Text(
+                LocalizationService.of(context)!
+                    .translate('language_dropdown_label')!,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
+            const Spacer(),
+            DropdownButton<String>(
+              underline: Container(color: Colors.transparent),
+              value: internationalization.selectedItem,
+              onChanged: (String? newValue) {
+                internationalization.changeLanguage(Locale(newValue!));
+              },
+              items: internationalization.languages
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            )
+          ])),
+    );
+  }
+
+  signOutDrawerTile() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
+      child: Row(children: [
+        Text(LocalizationService.of(context)?.translate('sign_out_link') ?? '',
+            style: const TextStyle(fontWeight: FontWeight.bold)),
+        const Spacer(),
+        IconButton(
+          icon: const Icon(
+            FontAwesomeIcons.circleChevronRight,
+          ),
+          onPressed: () async {
+            await signOut();
+          },
+        ),
+      ]),
+    );
+  }
+
   endDrawer() {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
-            decoration: const BoxDecoration(
-              color: Colors.grey,
-            ),
-            child: Text(
-                LocalizationService.of(context)?.translate('settings_header') ??
-                    ''),
-          ),
+          endDrawerHeader(),
           const SizedBox(height: 20.0),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
-            child: Row(children: [
-              Text(
-                  LocalizationService.of(context)?.translate('profile_link') ??
-                      '',
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-              const Spacer(),
-              IconButton(
-                icon: const Icon(
-                  FontAwesomeIcons.circleChevronRight,
-                ),
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ProfileScreen(profile: profile),
-                    ),
-                  );
-                },
-              ),
-            ]),
-          ),
+          profileDrawerTile(),
           const SizedBox(height: 5.0),
-          Consumer<ThemeService>(
-            builder: (context, theme, child) => SwitchListTile(
-              title: Text(
-                LocalizationService.of(context)
-                        ?.translate('dark_mode_switcher_label') ??
-                    '',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              onChanged: (value) {
-                theme.toggleTheme();
-              },
-              value: theme.darkTheme,
-            ),
-          ),
-          defaultTargetPlatform == TargetPlatform.iOS ||
-                  defaultTargetPlatform == TargetPlatform.android
-              ? Consumer<LocalAuthenticationService>(
-                  builder: (context, localAuthentication, child) =>
-                      SwitchListTile(
-                    title: Text(
-                      LocalizationService.of(context)
-                              ?.translate('biometrics_switcher') ??
-                          '',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    onChanged: (value) {
-                      localAuthentication.toggleBiometrics();
-                    },
-                    value: localAuthentication.biometrics,
-                  ),
-                )
-              : Container(),
-          Consumer<InternationalizationService>(
-            builder: (context, internationalization, child) => Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 20, 5),
-                child: Row(children: [
-                  Text(
-                      LocalizationService.of(context)!
-                          .translate('language_dropdown_label')!,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const Spacer(),
-                  DropdownButton<String>(
-                    underline: Container(color: Colors.transparent),
-                    value: internationalization.selectedItem,
-                    onChanged: (String? newValue) {
-                      internationalization.changeLanguage(Locale(newValue!));
-                    },
-                    items: internationalization.languages
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  )
-                ])),
-          ),
+          themeDrawerTile(),
+          const SizedBox(height: 5.0),
+          biometricsDrawerTile(),
+          const SizedBox(height: 5.0),
+          languageDrawerTile(),
           const Divider(),
           const SizedBox(height: 50),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
-            child: Row(children: [
-              Text(
-                  LocalizationService.of(context)?.translate('sign_out_link') ??
-                      '',
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-              const Spacer(),
-              IconButton(
-                icon: const Icon(
-                  FontAwesomeIcons.circleChevronRight,
-                ),
-                onPressed: () async {
-                  await signOut();
-                },
-              ),
-            ]),
-          ),
+          signOutDrawerTile()
         ],
       ),
     );

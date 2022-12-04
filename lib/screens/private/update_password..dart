@@ -236,35 +236,43 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
     );
   }
 
+  goBackIcon() {
+    return ResponsiveVisibility(
+      visible: false,
+      visibleWhen: const [Condition.smallerThan(name: TABLET)],
+      child: Builder(builder: (context) {
+        return IconButton(
+          icon: const Icon(
+            FontAwesomeIcons.chevronLeft,
+            size: 20.0,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        );
+      }),
+    );
+  }
+
+  updatePasswordHeader() {
+    return ResponsiveVisibility(
+        visible: false,
+        visibleWhen: const [Condition.smallerThan(name: TABLET)],
+        child: Text(LocalizationService.of(context)
+                ?.translate('update_password_header') ??
+            ''));
+  }
+
   @override
   Widget build(BuildContext context) {
     return loading
         ? const LoadingUtil()
         : Scaffold(
             appBar: AppBar(
-              leading: ResponsiveVisibility(
-                visible: false,
-                visibleWhen: const [Condition.smallerThan(name: TABLET)],
-                child: Builder(builder: (context) {
-                  return IconButton(
-                    icon: const Icon(
-                      FontAwesomeIcons.chevronLeft,
-                      size: 20.0,
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  );
-                }),
-              ),
+              leading: goBackIcon(),
               elevation: 0,
               backgroundColor: Colors.transparent,
-              title: ResponsiveVisibility(
-                  visible: false,
-                  visibleWhen: const [Condition.smallerThan(name: TABLET)],
-                  child: Text(LocalizationService.of(context)
-                          ?.translate('update_password_header') ??
-                      '')),
+              title: updatePasswordHeader(),
               centerTitle: true,
             ),
             body: SingleChildScrollView(

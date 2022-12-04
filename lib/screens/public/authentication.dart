@@ -651,8 +651,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
           child: TextButton(
             child: Text(
-              LocalizationService.of(context)?.translate('features_header') ??
-                  '',
+              LocalizationService.of(context)?.translate('features_link') ?? '',
               style: TextStyle(
                   fontSize: ResponsiveValue(context,
                       defaultValue: 15.0,
@@ -681,8 +680,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
             child: Text(
-              LocalizationService.of(context)?.translate('pricing_header') ??
-                  '',
+              LocalizationService.of(context)?.translate('pricing_link') ?? '',
               style: TextStyle(
                   fontSize: ResponsiveValue(context,
                       defaultValue: 15.0,
@@ -711,8 +709,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
           child: TextButton(
             child: Text(
-              LocalizationService.of(context)?.translate('about_us_header') ??
-                  '',
+              LocalizationService.of(context)?.translate('about_us_link') ?? '',
               style: TextStyle(
                   fontSize: ResponsiveValue(context,
                       defaultValue: 15.0,
@@ -741,7 +738,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           padding: const EdgeInsets.fromLTRB(20, 10, 50, 0),
           child: TextButton(
             child: Text(
-              LocalizationService.of(context)?.translate('contact_us_header') ??
+              LocalizationService.of(context)?.translate('contact_us_link') ??
                   '',
               style: TextStyle(
                   fontSize: ResponsiveValue(context,
@@ -833,46 +830,125 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               ));
   }
 
+  drawerHeader() {
+    return DrawerHeader(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.secondary,
+      ),
+      child: Text(
+          LocalizationService.of(context)?.translate('public_menu_header') ??
+              '',
+          style: const TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold)),
+    );
+  }
+
+  featuresDrawerTile() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
+      child: Row(children: [
+        Text(LocalizationService.of(context)?.translate('features_link') ?? '',
+            style: const TextStyle(fontWeight: FontWeight.bold)),
+        const Spacer(),
+        IconButton(
+          icon: const Icon(
+            FontAwesomeIcons.circleChevronRight,
+          ),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const FeaturesScreen(),
+              ),
+            );
+          },
+        ),
+      ]),
+    );
+  }
+
+  pricingDrawerTile() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
+      child: Row(children: [
+        Text(LocalizationService.of(context)?.translate('pricing_link') ?? '',
+            style: const TextStyle(fontWeight: FontWeight.bold)),
+        const Spacer(),
+        IconButton(
+          icon: const Icon(
+            FontAwesomeIcons.circleChevronRight,
+          ),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const PricingScreen(),
+              ),
+            );
+          },
+        ),
+      ]),
+    );
+  }
+
+  contactUsDrawerTile() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
+      child: Row(children: [
+        Text(
+            LocalizationService.of(context)?.translate('contact_us_link') ?? '',
+            style: const TextStyle(fontWeight: FontWeight.bold)),
+        const Spacer(),
+        IconButton(
+          icon: const Icon(
+            FontAwesomeIcons.circleChevronRight,
+          ),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const ContactUsScreen(),
+              ),
+            );
+          },
+        ),
+      ]),
+    );
+  }
+
+  aboutUsDrawerTile() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
+      child: Row(children: [
+        Text(LocalizationService.of(context)?.translate('about_us_link') ?? '',
+            style: const TextStyle(fontWeight: FontWeight.bold)),
+        const Spacer(),
+        IconButton(
+          icon: const Icon(
+            FontAwesomeIcons.circleChevronRight,
+          ),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const AboutUsScreen(),
+              ),
+            );
+          },
+        ),
+      ]),
+    );
+  }
+
   drawer() {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondary,
-            ),
-            child: Text(
-                LocalizationService.of(context)
-                        ?.translate('public_navigation_header') ??
-                    '',
-                style: const TextStyle(
-                    fontSize: 40.0, fontWeight: FontWeight.bold)),
-          ),
+          drawerHeader(),
           const SizedBox(height: 20.0),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
-            child: Row(children: [
-              Text(
-                  LocalizationService.of(context)?.translate('pricing_link') ??
-                      '',
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-              const Spacer(),
-              IconButton(
-                icon: const Icon(
-                  FontAwesomeIcons.circleChevronRight,
-                ),
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const PricingScreen(),
-                    ),
-                  );
-                },
-              ),
-            ]),
-          ),
+          featuresDrawerTile(),
           const SizedBox(height: 5.0),
+          pricingDrawerTile(),
+          const SizedBox(height: 5.0),
+          contactUsDrawerTile(),
+          const SizedBox(height: 5.0),
+          aboutUsDrawerTile(),
         ],
       ),
     );
