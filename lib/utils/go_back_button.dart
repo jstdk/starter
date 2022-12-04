@@ -24,7 +24,7 @@ class _GoBackButtonUtilState extends State<GoBackButtonUtil> {
           children: [
             IconButton(
                 icon: const Icon(
-                  FontAwesomeIcons.chevronLeft,
+                  FontAwesomeIcons.circleChevronLeft,
                 ),
                 onPressed: () async {
                   if (widget.removeAllState == true) {

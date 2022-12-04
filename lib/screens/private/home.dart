@@ -289,9 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 ])),
           ),
-          const Divider(
-            color: Colors.white,
-          ),
+          const Divider(),
           const SizedBox(height: 50),
           Padding(
             padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),

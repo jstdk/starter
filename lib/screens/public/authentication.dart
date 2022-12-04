@@ -8,6 +8,7 @@ import 'package:provider/provider.dart' as pv;
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../services/internationalization.dart';
 import '../../services/localization.dart';
 import '../../services/theme.dart';
 import '../../utils/brand_header.dart';
@@ -374,7 +375,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                     '',
             style: TextStyle(
                 fontSize: ResponsiveValue(context,
-                    defaultValue: 20.0,
+                    defaultValue: 15.0,
                     valueWhen: const [
                       Condition.smallerThan(name: DESKTOP, value: 15.0),
                     ]).value,
@@ -400,7 +401,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: ResponsiveValue(context,
-                    defaultValue: 20.0,
+                    defaultValue: 15.0,
                     valueWhen: const [
                       Condition.smallerThan(name: DESKTOP, value: 15.0),
                     ]).value,
@@ -454,7 +455,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               Text(LocalizationService.of(context)?.translate('or') ?? '',
                   style: TextStyle(
                     fontSize: ResponsiveValue(context,
-                        defaultValue: 20.0,
+                        defaultValue: 15.0,
                         valueWhen: const [
                           Condition.smallerThan(name: DESKTOP, value: 15.0),
                         ]).value,
@@ -485,7 +486,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               Text(LocalizationService.of(context)?.translate('or') ?? '',
                   style: TextStyle(
                     fontSize: ResponsiveValue(context,
-                        defaultValue: 20.0,
+                        defaultValue: 15.0,
                         valueWhen: const [
                           Condition.smallerThan(name: DESKTOP, value: 15.0),
                         ]).value,
@@ -737,7 +738,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       visibleWhen: const [Condition.largerThan(name: MOBILE)],
       child: Builder(builder: (context) {
         return Padding(
-          padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+          padding: const EdgeInsets.fromLTRB(20, 10, 50, 0),
           child: TextButton(
             child: Text(
               LocalizationService.of(context)?.translate('contact_us_header') ??
@@ -759,6 +760,38 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         );
       }),
     );
+  }
+
+  languageSwitcher() {
+    return ResponsiveVisibility(
+        visible: false,
+        visibleWhen: const [Condition.largerThan(name: MOBILE)],
+        child: pv.Consumer<InternationalizationService>(
+          builder: (context, internationalization, child) => Padding(
+              padding: const EdgeInsets.fromLTRB(25, 10, 0, 0),
+              child: DropdownButton<String>(
+                underline: Container(color: Colors.transparent),
+                value: internationalization.selectedItem,
+                onChanged: (String? newValue) {
+                  internationalization.changeLanguage(Locale(newValue!));
+                },
+                items: internationalization.languages
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value,
+                        style: TextStyle(
+                            fontSize: ResponsiveValue(context,
+                                defaultValue: 15.0,
+                                valueWhen: const [
+                                  Condition.smallerThan(
+                                      name: DESKTOP, value: 15.0)
+                                ]).value,
+                            fontWeight: FontWeight.bold)),
+                  );
+                }).toList(),
+              )),
+        ));
   }
 
   themeSwitcher() {
@@ -801,7 +834,48 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   drawer() {
-    return const Drawer(child: Text('Text'));
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+            child: Text(
+                LocalizationService.of(context)
+                        ?.translate('public_navigation_header') ??
+                    '',
+                style: const TextStyle(
+                    fontSize: 40.0, fontWeight: FontWeight.bold)),
+          ),
+          const SizedBox(height: 20.0),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
+            child: Row(children: [
+              Text(
+                  LocalizationService.of(context)?.translate('pricing_link') ??
+                      '',
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              const Spacer(),
+              IconButton(
+                icon: const Icon(
+                  FontAwesomeIcons.circleChevronRight,
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const PricingScreen(),
+                    ),
+                  );
+                },
+              ),
+            ]),
+          ),
+          const SizedBox(height: 5.0),
+        ],
+      ),
+    );
   }
 
   @override
@@ -837,6 +911,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 pricingHeader(),
                 aboutUsHeader(),
                 contactUsHeader(),
+                languageSwitcher(),
                 themeSwitcher(),
               ],
             ),
