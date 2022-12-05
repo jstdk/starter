@@ -39,6 +39,7 @@ Future<void> main() async {
 // App class
 class StarterApp extends StatelessWidget {
   const StarterApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(

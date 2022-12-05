@@ -1,17 +1,14 @@
-// ignore: file_names
-import 'package:email_validator/email_validator.dart';
-import 'package:flutter/foundation.dart';
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:starter/utils/go_back_button.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../models/profile.dart';
 import '../../services/localization.dart';
+import '../../services/user.dart';
 import '../../utils/loading.dart';
-
-final supabase = Supabase.instance.client;
 
 class UpdatePasswordScreen extends StatefulWidget {
   final ProfileModel? profile;
@@ -29,34 +26,6 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
   String? passwordNew;
   String? passwordNewAgain;
   bool obscureText = true;
-
-  Future updatePassword(id, passwordNew) async {
-    try {
-      if (kDebugMode) {
-        print('Trying to update profile');
-      }
-      UserResponse result = await supabase.auth.updateUser(
-        UserAttributes(
-          password: passwordNew,
-        ),
-      );
-      if (EmailValidator.validate(result.user!.email!)) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      setState(() => {
-            loading = false,
-            error = LocalizationService.of(context)
-                    ?.translate('general_error_message') ??
-                ''
-          });
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-  }
 
   void _toggle() {
     setState(() {
@@ -176,8 +145,8 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
         onPressed: () async {
           if (formKey.currentState!.validate()) {
             setState(() => loading = true);
-            final response =
-                await updatePassword(widget.profile?.id, passwordNew);
+            final response = await UserService()
+                .updatePassword(widget.profile?.id, passwordNew);
             setState(() => loading = false);
             if (response == true) {
               if (!mounted) return;

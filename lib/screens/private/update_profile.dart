@@ -11,6 +11,7 @@ import 'package:email_validator/email_validator.dart';
 
 import '../../models/profile.dart';
 import '../../services/localization.dart';
+import '../../services/user.dart';
 import '../../utils/go_back_button.dart';
 import '../../utils/loading.dart';
 import '../root.dart';
@@ -44,82 +45,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   Uint8List? avatarBytes;
   final ImagePicker _picker = ImagePicker();
 
-  Future updateEmail(id, email) async {
-    try {
-      if (kDebugMode) {
-        print('Trying to update email');
-      }
-      return await supabase.auth.updateUser(
-        UserAttributes(
-          email: email,
-        ),
-      );
-    } catch (e) {
-      setState(() => {
-            loading = false,
-            error = LocalizationService.of(context)
-                    ?.translate('generall_error_message') ??
-                ''
-          });
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-  }
-
-  Future updateProfile(id, fullName, avatar) async {
-    try {
-      if (kDebugMode) {
-        print('Trying to update profile');
-      }
-      return await supabase
-          .from('profiles')
-          .update({'full_name': fullName, 'avatar': avatar}).match({'id': id});
-    } catch (e) {
-      setState(() => {
-            loading = false,
-            error = LocalizationService.of(context)
-                    ?.translate('general_error_message') ??
-                ''
-          });
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-  }
-
-  Future updateProfileProcedure(id, fullName, email, avatar) async {
-    try {
-      if (kDebugMode) {
-        print('Trying to update email and profile procedure');
-      }
-      UserResponse emailUpdate = await updateEmail(id, email);
-      final profileUpdate = await updateProfile(id, fullName, avatar);
-      if (EmailValidator.validate(emailUpdate.user!.email!) &&
-          profileUpdate == null) {
-        return true;
-      } else {
-        setState(() => {
-              loading = false,
-              error = LocalizationService.of(context)
-                      ?.translate('general_error_message') ??
-                  ''
-            });
-        return false;
-      }
-    } catch (e) {
-      setState(() => {
-            loading = false,
-            error = LocalizationService.of(context)
-                    ?.translate('general_error_message') ??
-                ''
-          });
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-  }
-
   Future pickAvatar(camera) async {
     Navigator.pop(context);
     avatarFile = await _picker.pickImage(
@@ -133,16 +58,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     base64Avatar = base64Encode(avatarAsBytes);
     setState(
         () => {loading = false, avatarBytes = base64Decode(base64Avatar!)});
-  }
-
-  Future loadUpdatedProfile() async {
-    return ProfileModel.fromMap(
-        map: await supabase
-            .from('profiles')
-            .select()
-            .eq('id', widget.profile?.id)
-            .single(),
-        emailFromAuth: widget.profile!.email);
   }
 
   avatarFormField() {
@@ -326,10 +241,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           avatar = base64Avatar ?? widget.profile?.avatar;
           if (formKey.currentState!.validate()) {
             setState(() => loading = true);
-            final response = await updateProfileProcedure(
+            final response = await UserService().updateProfileProcedure(
                 widget.profile?.id, fullName, email, avatar);
-            if (response == null) {
-              ProfileModel? newProfile = await loadUpdatedProfile();
+            if (response == true) {
+              ProfileModel? newProfile = await UserService()
+                  .loadProfile(widget.profile?.id, widget.profile!.email);
               if (!mounted) return;
               final snackBar = SnackBar(
                 backgroundColor: Theme.of(context).colorScheme.primary,
@@ -355,6 +271,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     MaterialPageRoute(builder: (context) => const Root()),
                     (route) => false);
               }
+            } else {
+              setState(() {
+                loading = false;
+                error = LocalizationService.of(context)
+                        ?.translate('general_error_message') ??
+                    '';
+              });
             }
           } else {
             setState(() {

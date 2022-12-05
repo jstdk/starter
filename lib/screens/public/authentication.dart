@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:email_validator/email_validator.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart' as pv;
@@ -11,6 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../services/internationalization.dart';
 import '../../services/localization.dart';
 import '../../services/theme.dart';
+import '../../services/user.dart';
 import '../../utils/brand_header.dart';
 import '../../utils/loading.dart';
 import 'about_us.dart';
@@ -38,101 +38,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   bool obscureText = true;
   bool signup = false;
   bool reset = false;
-
-  Future signInUsingEmailAndPassword(email, password) async {
-    try {
-      if (kDebugMode) {
-        print('Trying to sign in');
-      }
-      AuthResponse result = await supabase.auth
-          .signInWithPassword(email: email, password: password);
-      if (EmailValidator.validate(result.user!.email!)) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      setState(() => {
-            loading = false,
-            error = LocalizationService.of(context)
-                    ?.translate('authentication_error_message') ??
-                ''
-          });
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-  }
-
-  Future signUpUsingEmailAndPassword({email, password}) async {
-    try {
-      if (kDebugMode) {
-        print('Trying to sign up');
-      }
-      AuthResponse result =
-          await supabase.auth.signUp(email: email, password: password);
-      if (EmailValidator.validate(result.user!.email!)) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      setState(() => {
-            loading = false,
-            error = LocalizationService.of(context)
-                    ?.translate('general_error_message') ??
-                ''
-          });
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-  }
-
-  Future<void> signInUsingGoogle() async {
-    try {
-      if (kDebugMode) {
-        print('Trying to sign in');
-      }
-      await supabase.auth.signInWithOAuth(
-        Provider.google,
-        redirectTo: kIsWeb ? null : 'io.supabase.starter://login-callback/',
-      );
-    } catch (e) {
-      setState(() => {
-            loading = false,
-            error = LocalizationService.of(context)
-                    ?.translate('authentication_error_message') ??
-                ''
-          });
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-  }
-
-  Future<void> resetPassword(email) async {
-    try {
-      await supabase.auth.resetPasswordForEmail(
-        email,
-        redirectTo: kIsWeb ? null : 'io.supabase.flutter://reset-callback/',
-      );
-      setState(() {
-        reset = false;
-        loading = false;
-      });
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-      setState(() {
-        error = LocalizationService.of(context)
-                ?.translate('general_error_message') ??
-            '';
-        loading = false;
-      });
-    }
-  }
 
   void _toggle() {
     setState(() {
@@ -260,8 +165,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
                   setState(() => loading = true);
-                  bool success =
-                      await signInUsingEmailAndPassword(email, password);
+                  bool success = await UserService()
+                      .signInUsingEmailAndPassword(email, password);
                   if (success == true) {
                     if (!mounted) return;
                     final signInSnackbar = SnackBar(
@@ -276,11 +181,21 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                           )),
                     );
                     ScaffoldMessenger.of(context).showSnackBar(signInSnackbar);
+                  } else {
+                    setState(() => {
+                          loading = false,
+                          error = LocalizationService.of(context)
+                                  ?.translate('authentication_error_message') ??
+                              ''
+                        });
                   }
                 } else {
-                  setState(() {
-                    loading = false;
-                  });
+                  setState(() => {
+                        loading = false,
+                        error = LocalizationService.of(context)
+                                ?.translate('general_error_message') ??
+                            ''
+                      });
                 }
               },
               style: ButtonStyle(
@@ -303,8 +218,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
                   setState(() => loading = true);
-                  bool success = await signUpUsingEmailAndPassword(
-                      email: email, password: password);
+                  bool success = await UserService()
+                      .signUpUsingEmailAndPassword(
+                          email: email, password: password);
                   if (success == true) {
                     if (!mounted) return;
                     setState(() => loading = false);
@@ -391,24 +307,33 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       style: ElevatedButton.styleFrom(
           backgroundColor: Theme.of(context).colorScheme.secondary),
       onPressed: () async {
-        signInUsingGoogle();
-        final snackBarSignIn = SnackBar(
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          content: Text(
-              LocalizationService.of(context)
-                      ?.translate('sign_in_google_snackbar_label') ??
-                  '',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: ResponsiveValue(context,
-                    defaultValue: 15.0,
-                    valueWhen: const [
-                      Condition.smallerThan(name: DESKTOP, value: 15.0),
-                    ]).value,
-                color: Colors.white,
-              )),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackBarSignIn);
+        try {
+          UserService().signInUsingGoogle();
+          final snackBarSignIn = SnackBar(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            content: Text(
+                LocalizationService.of(context)
+                        ?.translate('sign_in_google_snackbar_label') ??
+                    '',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: ResponsiveValue(context,
+                      defaultValue: 15.0,
+                      valueWhen: const [
+                        Condition.smallerThan(name: DESKTOP, value: 15.0),
+                      ]).value,
+                  color: Colors.white,
+                )),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBarSignIn);
+        } catch (e) {
+          setState(() => {
+                loading = false,
+                error = LocalizationService.of(context)
+                        ?.translate('general_error_message') ??
+                    ''
+              });
+        }
       },
       child: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -519,7 +444,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         onPressed: () async {
           if (formKey.currentState!.validate()) {
             setState(() => loading = true);
-            await resetPassword(email);
+            await UserService().resetPassword(email);
             if (!mounted) return;
             final resetPasswordSnackbar = SnackBar(
               backgroundColor: Theme.of(context).colorScheme.primary,

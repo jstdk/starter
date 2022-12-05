@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:provider/provider.dart';
+import 'package:starter/services/message.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../services/theme.dart';
@@ -13,6 +14,7 @@ import '../../services/localization.dart';
 import '../../models/message.dart';
 import '../../models/profile.dart';
 import '../../screens/private/profile.dart';
+import '../../services/user.dart';
 import '../../utils/brand_header.dart';
 import '../../utils/loading.dart';
 
@@ -41,23 +43,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    loadMessages(supabase.auth.currentUser!.id);
     loadProfile(
         supabase.auth.currentUser!.id, supabase.auth.currentUser!.email!);
-    messages = supabase
-        .from('messages')
-        .stream(primaryKey: ['id'])
-        .order('created')
-        .map((maps) => maps
-            .map((map) => MessageModel.fromMap(
-                map: map, uid: supabase.auth.currentUser!.id))
-            .toList());
     super.initState();
   }
 
+  loadMessages(String id) {
+    messages = MessageService().loadMessages(id);
+  }
+
   Future loadProfile(String id, String email) async {
-    profile = ProfileModel.fromMap(
-        map: await supabase.from('profiles').select().eq('id', id).single(),
-        emailFromAuth: email);
+    profile = await UserService().loadProfile(id, email);
   }
 
   @override

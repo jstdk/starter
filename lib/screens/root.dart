@@ -34,6 +34,8 @@ class _RootState extends State<Root> {
     super.initState();
   }
 
+  
+
   @override
   void dispose() {
     _authSubscription.cancel();
