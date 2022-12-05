@@ -21,6 +21,7 @@ class _GoBackButtonUtilState extends State<GoBackButtonUtil> {
       visibleWhen: const [Condition.largerThan(name: MOBILE)],
       child: Builder(builder: (context) {
         return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
                 icon: const Icon(

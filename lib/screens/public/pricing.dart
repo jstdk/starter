@@ -42,14 +42,42 @@ class PricingScreen extends StatelessWidget {
         child: ResponsiveVisibility(
       //hiddenWhen: const [Condition.smallerThan(name: TABLET)],
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(10.0, 0, 0, 0),
+            padding: const EdgeInsets.all(15.0),
             child: Row(
-              children: [
-                const Text('Open'),
+              children: const [
+                Card(
+                    child: Padding(
+                  padding: EdgeInsets.all(15.0),
+                  child: Text('This is a big block of information'),
+                )),
+              ],
+            ),
+          )
+        ],
+      ),
+    ));
+  }
+
+  middleSection() {
+    return ResponsiveRowColumnItem(
+        child: ResponsiveVisibility(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Row(
+              children: const [
+                Card(
+                    child: Padding(
+                  padding: EdgeInsets.all(15.0),
+                  child: Text('This is a big block of information'),
+                )),
               ],
             ),
           )
@@ -61,16 +89,19 @@ class PricingScreen extends StatelessWidget {
   rightSection() {
     return ResponsiveRowColumnItem(
         child: ResponsiveVisibility(
-      //hiddenWhen: const [Condition.smallerThan(name: TABLET)],
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(10.0, 0, 0, 0),
+            padding: const EdgeInsets.all(15.0),
             child: Row(
-              children: [
-                Card(child: const Text('Open')),
+              children: const [
+                Card(
+                    child: Padding(
+                  padding: EdgeInsets.all(15.0),
+                  child: Text('This is a big block of information'),
+                )),
               ],
             ),
           )
@@ -111,9 +142,10 @@ class PricingScreen extends StatelessWidget {
                 columnPadding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
                 children: [
                   leftSection(),
+                  middleSection(),
                   rightSection(),
                 ]),
-            const GoBackButtonUtil(removeAllState: false),
+            const Center(child: GoBackButtonUtil(removeAllState: false)),
           ],
         ));
   }
