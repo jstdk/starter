@@ -15,8 +15,8 @@ import '../../models/message.dart';
 import '../../models/profile.dart';
 import '../../screens/private/profile.dart';
 import '../../services/user.dart';
-import '../../utils/brand_header.dart';
-import '../../utils/loading.dart';
+import '../../components/logo_link.dart';
+import '../../components/loading.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -155,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
           snapshot,
         ) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const LoadingUtil();
+            return const LoadingSpinnerComponent();
           } else if (snapshot.connectionState == ConnectionState.active ||
               snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasError) {
@@ -402,7 +402,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[openDrawerIcon(), const BrandHeaderUtil()],
+          children: <Widget>[openDrawerIcon(), const LogoLinkComponent()],
         ),
         titleSpacing: 0,
         elevation: 0,

@@ -12,8 +12,8 @@ import 'package:email_validator/email_validator.dart';
 import '../../models/profile.dart';
 import '../../services/localization.dart';
 import '../../services/user.dart';
-import '../../utils/go_back_button.dart';
-import '../../utils/loading.dart';
+import '../../components/go_back_button.dart';
+import '../../components/loading.dart';
 import '../root.dart';
 import 'profile.dart';
 
@@ -328,7 +328,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const LoadingUtil()
+        ? const LoadingSpinnerComponent()
         : Scaffold(
             appBar: AppBar(
               leading: ResponsiveVisibility(
@@ -374,7 +374,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        const GoBackButtonUtil(removeAllState: false),
+                        const GoBackButtonComponent(removeAllState: false),
                       ],
                     ),
                   ),

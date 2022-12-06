@@ -5,15 +5,15 @@ import 'package:responsive_framework/responsive_framework.dart';
 import '../screens/root.dart';
 import '../services/localization.dart';
 
-class GoBackButtonUtil extends StatefulWidget {
+class GoBackButtonComponent extends StatefulWidget {
   final bool removeAllState;
-  const GoBackButtonUtil({super.key, required this.removeAllState});
+  const GoBackButtonComponent({super.key, required this.removeAllState});
 
   @override
-  State<GoBackButtonUtil> createState() => _GoBackButtonUtilState();
+  State<GoBackButtonComponent> createState() => _GoBackButtonComponentState();
 }
 
-class _GoBackButtonUtilState extends State<GoBackButtonUtil> {
+class _GoBackButtonComponentState extends State<GoBackButtonComponent> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveVisibility(

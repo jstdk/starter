@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../services/localization.dart';
-import '../../utils/go_back_button.dart';
+import '../../components/go_back_button.dart';
 
 class ContactUsScreen extends StatefulWidget {
   const ContactUsScreen({super.key});
@@ -151,7 +151,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                   middleSection(),
                   rightSection(),
                 ]),
-            const Center(child: GoBackButtonUtil(removeAllState: false)),
+            const Center(child: GoBackButtonComponent(removeAllState: false)),
           ],
         ));
   }

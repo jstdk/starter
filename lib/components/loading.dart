@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class LoadingUtil extends StatelessWidget {
-  const LoadingUtil({Key? key}) : super(key: key);
+class LoadingSpinnerComponent extends StatelessWidget {
+  const LoadingSpinnerComponent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

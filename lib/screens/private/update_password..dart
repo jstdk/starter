@@ -3,12 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:starter/utils/go_back_button.dart';
+import 'package:starter/components/go_back_button.dart';
 
 import '../../models/profile.dart';
 import '../../services/localization.dart';
 import '../../services/user.dart';
-import '../../utils/loading.dart';
+import '../../components/loading.dart';
 
 class UpdatePasswordScreen extends StatefulWidget {
   final ProfileModel? profile;
@@ -235,7 +235,7 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const LoadingUtil()
+        ? const LoadingSpinnerComponent()
         : Scaffold(
             appBar: AppBar(
               leading: goBackIcon(),
@@ -267,7 +267,7 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        const GoBackButtonUtil(removeAllState: false),
+                        const GoBackButtonComponent(removeAllState: false),
                       ],
                     ),
                   ),

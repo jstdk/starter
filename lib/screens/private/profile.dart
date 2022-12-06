@@ -4,13 +4,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:starter/utils/loading.dart';
+import 'package:starter/components/loading.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../models/profile.dart';
 import '../../services/localization.dart';
-import '../../utils/go_back_button.dart';
+import '../../components/go_back_button.dart';
 import '../root.dart';
 import 'update_password..dart';
 import 'update_profile.dart';
@@ -128,7 +128,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     avatarBytes = base64Decode(widget.profile!.avatar);
 
     return loading
-        ? const LoadingUtil()
+        ? const LoadingSpinnerComponent()
         : Scaffold(
             appBar: AppBar(
               leading: ResponsiveVisibility(
@@ -189,7 +189,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        const GoBackButtonUtil(removeAllState: true),
+                        const GoBackButtonComponent(removeAllState: true),
                       ],
                     ),
                   ),

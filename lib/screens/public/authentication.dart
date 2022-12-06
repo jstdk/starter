@@ -1,18 +1,19 @@
-import 'dart:async';
-
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart' as pv;
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../services/internationalization.dart';
+import '../../components/about_us_link.dart';
+import '../../components/contact_us_link.dart';
+import '../../components/language_dropdown.dart';
+import '../../components/pricing_link.dart';
+import '../../components/theme_switcher.dart';
 import '../../services/localization.dart';
-import '../../services/theme.dart';
 import '../../services/user.dart';
-import '../../utils/brand_header.dart';
-import '../../utils/loading.dart';
+import '../../components/logo_link.dart';
+import '../../components/features_link.dart';
+import '../../components/loading.dart';
 import 'about_us.dart';
 import 'contact_us.dart';
 import 'features.dart';
@@ -567,194 +568,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     );
   }
 
-  featuresHeader() {
-    return ResponsiveVisibility(
-      visible: false,
-      visibleWhen: const [Condition.largerThan(name: MOBILE)],
-      child: Builder(builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
-          child: TextButton(
-            child: Text(
-              LocalizationService.of(context)?.translate('features_link') ?? '',
-              style: TextStyle(
-                  fontSize: ResponsiveValue(context,
-                      defaultValue: 15.0,
-                      valueWhen: const [
-                        Condition.smallerThan(name: DESKTOP, value: 15.0)
-                      ]).value,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onBackground),
-            ),
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                  builder: (context) => const FeaturesScreen()));
-            },
-          ),
-        );
-      }),
-    );
-  }
-
-  pricingHeader() {
-    return ResponsiveVisibility(
-      visible: false,
-      visibleWhen: const [Condition.largerThan(name: MOBILE)],
-      child: Builder(builder: (context) {
-        return TextButton(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
-            child: Text(
-              LocalizationService.of(context)?.translate('pricing_link') ?? '',
-              style: TextStyle(
-                  fontSize: ResponsiveValue(context,
-                      defaultValue: 15.0,
-                      valueWhen: const [
-                        Condition.smallerThan(name: DESKTOP, value: 15.0)
-                      ]).value,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onBackground),
-            ),
-          ),
-          onPressed: () {
-            Navigator.of(context, rootNavigator: true).push(
-                MaterialPageRoute(builder: (context) => const PricingScreen()));
-          },
-        );
-      }),
-    );
-  }
-
-  aboutUsHeader() {
-    return ResponsiveVisibility(
-      visible: false,
-      visibleWhen: const [Condition.largerThan(name: MOBILE)],
-      child: Builder(builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
-          child: TextButton(
-            child: Text(
-              LocalizationService.of(context)?.translate('about_us_link') ?? '',
-              style: TextStyle(
-                  fontSize: ResponsiveValue(context,
-                      defaultValue: 15.0,
-                      valueWhen: const [
-                        Condition.smallerThan(name: DESKTOP, value: 15.0)
-                      ]).value,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onBackground),
-            ),
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                  builder: (context) => const AboutUsScreen()));
-            },
-          ),
-        );
-      }),
-    );
-  }
-
-  contactUsHeader() {
-    return ResponsiveVisibility(
-      visible: false,
-      visibleWhen: const [Condition.largerThan(name: MOBILE)],
-      child: Builder(builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(20, 10, 50, 0),
-          child: TextButton(
-            child: Text(
-              LocalizationService.of(context)?.translate('contact_us_link') ??
-                  '',
-              style: TextStyle(
-                  fontSize: ResponsiveValue(context,
-                      defaultValue: 15.0,
-                      valueWhen: const [
-                        Condition.smallerThan(name: DESKTOP, value: 15.0)
-                      ]).value,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onBackground),
-            ),
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                  builder: (context) => const ContactUsScreen()));
-            },
-          ),
-        );
-      }),
-    );
-  }
-
-  languageSwitcher() {
-    return ResponsiveVisibility(
-        visible: false,
-        visibleWhen: const [Condition.largerThan(name: MOBILE)],
-        child: pv.Consumer<InternationalizationService>(
-          builder: (context, internationalization, child) => Padding(
-              padding: const EdgeInsets.fromLTRB(25, 10, 0, 0),
-              child: DropdownButton<String>(
-                underline: Container(color: Colors.transparent),
-                value: internationalization.selectedItem,
-                onChanged: (String? newValue) {
-                  internationalization.changeLanguage(Locale(newValue!));
-                },
-                items: internationalization.languages
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value,
-                        style: TextStyle(
-                            fontSize: ResponsiveValue(context,
-                                defaultValue: 15.0,
-                                valueWhen: const [
-                                  Condition.smallerThan(
-                                      name: DESKTOP, value: 15.0)
-                                ]).value,
-                            fontWeight: FontWeight.bold)),
-                  );
-                }).toList(),
-              )),
-        ));
-  }
-
-  themeSwitcher() {
-    return pv.Consumer<ThemeService>(
-        builder: (context, theme, child) => theme.darkTheme == true
-            ? Padding(
-                padding: EdgeInsets.fromLTRB(
-                    20.0,
-                    10.0,
-                    ResponsiveValue(context,
-                            defaultValue: 50.0,
-                            valueWhen: const [
-                              Condition.smallerThan(name: TABLET, value: 10.0)
-                            ]).value ??
-                        50.0,
-                    0.0),
-                child: IconButton(
-                    icon: Icon(
-                      FontAwesomeIcons.sun,
-                      color: Theme.of(context).colorScheme.onBackground,
-                    ),
-                    onPressed: () => theme.toggleTheme()),
-              )
-            : Padding(
-                padding: EdgeInsets.fromLTRB(
-                    20,
-                    10,
-                    ResponsiveValue(context,
-                            defaultValue: 50.0,
-                            valueWhen: const [
-                              Condition.smallerThan(name: TABLET, value: 10.0)
-                            ]).value ??
-                        50.0,
-                    0),
-                child: IconButton(
-                    icon: Icon(FontAwesomeIcons.moon,
-                        color: Theme.of(context).colorScheme.onBackground),
-                    onPressed: () => theme.toggleTheme()),
-              ));
-  }
-
   drawerHeader() {
     return DrawerHeader(
       decoration: BoxDecoration(
@@ -882,7 +695,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const LoadingUtil()
+        ? const LoadingSpinnerComponent()
         : Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
@@ -901,19 +714,19 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[menuIcon(), const BrandHeaderUtil()],
+                  children: <Widget>[menuIcon(), const LogoLinkComponent()],
                 ),
               ),
               titleSpacing: 0,
               elevation: 0,
               backgroundColor: Colors.transparent,
-              actions: [
-                featuresHeader(),
-                pricingHeader(),
-                aboutUsHeader(),
-                contactUsHeader(),
-                languageSwitcher(),
-                themeSwitcher(),
+              actions: const [
+                FeaturesLinkComponent(),
+                PricingLinkComponent(),
+                AboutUsLinkComponent(),
+                ContactUsLinkComponent(),
+                LanguageDropdownComponent(),
+                ThemeSwitcherComponent(),
               ],
             ),
             body: SingleChildScrollView(

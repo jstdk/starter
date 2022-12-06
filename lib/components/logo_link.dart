@@ -3,14 +3,14 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 import '../services/localization.dart';
 
-class BrandHeaderUtil extends StatefulWidget {
-  const BrandHeaderUtil({super.key});
+class LogoLinkComponent extends StatefulWidget {
+  const LogoLinkComponent({super.key});
 
   @override
-  State<BrandHeaderUtil> createState() => _BrandHeaderUtilState();
+  State<LogoLinkComponent> createState() => _LogoLinkComponentState();
 }
 
-class _BrandHeaderUtilState extends State<BrandHeaderUtil> {
+class _LogoLinkComponentState extends State<LogoLinkComponent> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveVisibility(
