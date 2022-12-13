@@ -30,7 +30,7 @@ class _ResetPasswordFormComponentState
             const ResetPassswordHeaderComponent(),
             const SizedBox(height: 40.0),
             const EmailFormFieldComponent(email: ''),
-            const SizedBox(height: 10.0),
+            const SizedBox(height: 20.0),
             ResetPasswordButtonComponent(
                 formKey: formKey, email: FormService.email),
             const SizedBox(height: 30.0),

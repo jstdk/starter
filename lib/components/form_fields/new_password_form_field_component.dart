@@ -62,13 +62,16 @@ class _NewPasswordFormFieldComponentState
                 padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
                 child: Icon(FontAwesomeIcons.unlockKeyhole),
               ),
-              suffixIcon: InkWell(
-                onTap: _toggle,
-                child: Icon(
-                  obscureText
-                      ? FontAwesomeIcons.eye
-                      : FontAwesomeIcons.eyeSlash,
-                  size: 20.0,
+              suffixIcon: Padding(
+                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                child: InkWell(
+                  onTap: _toggle,
+                  child: Icon(
+                    obscureText
+                        ? FontAwesomeIcons.eye
+                        : FontAwesomeIcons.eyeSlash,
+                    size: 20.0,
+                  ),
                 ),
               ),
             ),

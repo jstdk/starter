@@ -90,7 +90,7 @@ class _UpdateProfileButtonComponentState
                 backgroundColor: Theme.of(context).colorScheme.error,
                 content: Text(
                     LocalizationService.of(context)
-                            ?.translate('authentication_error_message') ??
+                            ?.translate('general_error_message') ??
                         '',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
@@ -102,9 +102,6 @@ class _UpdateProfileButtonComponentState
           } else {
             setState(() {
               loader = false;
-              // error = LocalizationService.of(context)
-              //         ?.translate('general_error_message') ??
-              //     '';
             });
           }
         },

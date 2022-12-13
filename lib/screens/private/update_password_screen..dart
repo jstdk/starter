@@ -49,8 +49,8 @@ class UpdatePasswordScreen extends StatelessWidget {
                         const SizedBox(height: 10),
                         GoBackLinkComponent(
                             removeState: false,
-                            label: LocalizationService.of(context)
-                                    ?.translate('go_back_home_profile_label') ??
+                            label: LocalizationService.of(context)?.translate(
+                                    'go_back_home_profile_link_label') ??
                                 ''),
                       ],
                     ),

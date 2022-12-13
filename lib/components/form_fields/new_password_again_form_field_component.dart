@@ -32,6 +32,8 @@ class _NewPasswordAgainFormFieldComponentState
       ]).value,
       child: TextFormField(
           style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+
+          // style: TextStyle(color: Theme.of(context).colorScheme.secondary),
           obscureText: obscureText,
           decoration: InputDecoration(
             hintText: LocalizationService.of(context)
@@ -66,16 +68,21 @@ class _NewPasswordAgainFormFieldComponentState
               padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
               child: Icon(FontAwesomeIcons.unlockKeyhole),
             ),
-            suffixIcon: InkWell(
-              onTap: _toggle,
-              child: Icon(
-                obscureText ? FontAwesomeIcons.eye : FontAwesomeIcons.eyeSlash,
-                size: 20.0,
+            suffixIcon: Padding(
+              padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+              child: InkWell(
+                onTap: _toggle,
+                child: Icon(
+                  obscureText
+                      ? FontAwesomeIcons.eye
+                      : FontAwesomeIcons.eyeSlash,
+                  size: 20.0,
+                ),
               ),
             ),
           ),
           textAlign: TextAlign.left,
-          autofocus: true,
+          autofocus: false,
           validator: (String? value) {
             return (value != FormService.newPassword)
                 ? LocalizationService.of(context)
