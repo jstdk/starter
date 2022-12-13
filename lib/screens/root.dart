@@ -4,8 +4,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'public/authentication.dart';
-import 'private/home.dart';
+import '../components/loaders/loader_spinner_component.dart';
+import '../models/profile.dart';
+import '../services/localization_service.dart';
+import '../services/user_service.dart';
+import 'public/index_screen.dart';
+import 'private/home_screen.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -17,16 +21,16 @@ class Root extends StatefulWidget {
 }
 
 class _RootState extends State<Root> {
-  late final StreamSubscription<AuthState> _authSubscription;
+  late final StreamSubscription<AuthState> authSubscription;
   User? user;
 
   @override
   void initState() {
-    _authSubscription = supabase.auth.onAuthStateChange.listen((data) {
+    authSubscription = supabase.auth.onAuthStateChange.listen((data) {
       final Session? session = data.session;
       setState(() {
         if (kDebugMode) {
-          print('User auth change event occured');
+          print('User auth change event!');
         }
         user = session?.user;
       });
@@ -34,12 +38,15 @@ class _RootState extends State<Root> {
     super.initState();
   }
 
-  
-
   @override
   void dispose() {
-    _authSubscription.cancel();
+    authSubscription.cancel();
     super.dispose();
+  }
+
+  Future<ProfileModel> loadProfile() async {
+    return await UserService().loadProfile(
+        supabase.auth.currentUser!.id, supabase.auth.currentUser!.email!);
   }
 
   @override
@@ -49,11 +56,33 @@ class _RootState extends State<Root> {
       if (kDebugMode) {
         print('Navigating to HomeScreen');
       }
+      return Scaffold(
+          body: FutureBuilder(
+        builder: (ctx, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return Center(
+                  child: Text(
+                      LocalizationService.of(context)
+                              ?.translate('general_error_message') ??
+                          '',
+                      style: TextStyle(
+                          fontSize: 30,
+                          color: Theme.of(context).colorScheme.onBackground)));
+            } else if (snapshot.hasData) {
+              return HomeScreen(profile: snapshot.data);
+            }
+          }
+          return const LoaderSpinnerComponent();
+        },
+        future: loadProfile(),
+      ));
     } else {
       if (kDebugMode) {
         print('Navigating to AuthenticationScreen');
       }
+      return const IndexScreen();
     }
-    return user == null ? const AuthenticationScreen() : const HomeScreen();
+    //return user == null ? const IndexScreen() : const HomeScreen();
   }
 }

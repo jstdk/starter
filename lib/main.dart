@@ -6,37 +6,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:responsive_framework/utils/scroll_behavior.dart';
+import 'package:starter/services/form_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import './screens/root.dart';
-import './services/theme.dart';
-import './services/local_authentication.dart';
-import './services/internationalization.dart';
-import './services/localization.dart';
-import './screens/public/local_authentication.dart';
+import 'screens/root.dart';
+import 'services/theme_service.dart';
+import 'services/local_authentication_service.dart';
+import 'services/internationalization_service.dart';
+import 'services/localization_service.dart';
+import 'screens/public/local_authentication_screen.dart';
 
-// * Initialize app
 Future<void> main() async {
-  // Initial setup
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load .envv
   await dotenv.load(fileName: ".env");
 
-  // Initiate Supabase using .env
   HiveLocalStorage.encryptionKey = dotenv.env["SUPABASE_SECURE_KEY"];
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_KEY']!,
-    storageRetryAttempts: 25,
   );
 
-  // Run the app
   runApp(const StarterApp());
 }
 
-// App class
 class StarterApp extends StatelessWidget {
   const StarterApp({Key? key}) : super(key: key);
 
@@ -47,6 +41,7 @@ class StarterApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => ThemeService()),
           ChangeNotifierProvider(create: (_) => LocalAuthenticationService()),
           ChangeNotifierProvider(create: (_) => InternationalizationService()),
+          ChangeNotifierProvider(create: (_) => FormService()),
         ],
         child: Consumer3<ThemeService, InternationalizationService,
                 LocalAuthenticationService>(
@@ -78,14 +73,17 @@ class StarterApp extends StatelessWidget {
               //   return supportedLocales.first;
               // },
               builder: (context, child) => ResponsiveWrapper.builder(
-                      BouncingScrollWrapper.builder(context, child!),
-                      minWidth: 450,
-                      defaultScale: true,
-                      breakpoints: [
-                        const ResponsiveBreakpoint.resize(450, name: MOBILE),
-                        const ResponsiveBreakpoint.resize(800, name: TABLET),
-                        const ResponsiveBreakpoint.resize(1200, name: DESKTOP),
-                      ]),
+                    BouncingScrollWrapper.builder(context, child!),
+                    maxWidth: 1200,
+                    minWidth: 450,
+                    breakpoints: [
+                      const ResponsiveBreakpoint.resize(450, name: MOBILE),
+                      const ResponsiveBreakpoint.resize(800, name: TABLET),
+                      const ResponsiveBreakpoint.resize(1200, name: DESKTOP),
+                    ],
+                    background: Container(
+                        color: Theme.of(context).scaffoldBackgroundColor),
+                  ),
               home: SafeArea(
                 child: Scaffold(
                     body: (defaultTargetPlatform == TargetPlatform.iOS ||
