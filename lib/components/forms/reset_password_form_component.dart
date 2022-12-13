@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:starter/components/buttons/reset_password_button_component.dart';
-import 'package:starter/components/formfields/email_formfield_component.dart';
+import 'package:starter/components/form_fields/email_form_field_component.dart';
 import 'package:starter/components/links/undo_password_reset_link_component.dart';
 import 'package:starter/services/form_service.dart';
 
@@ -29,8 +29,8 @@ class _ResetPasswordFormComponentState
           children: <Widget>[
             const ResetPassswordHeaderComponent(),
             const SizedBox(height: 40.0),
-            const EmailFormfieldComponent(),
-            const SizedBox(height: 20.0),
+            const EmailFormFieldComponent(email: ''),
+            const SizedBox(height: 10.0),
             ResetPasswordButtonComponent(
                 formKey: formKey, email: FormService.email),
             const SizedBox(height: 30.0),

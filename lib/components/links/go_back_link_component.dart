@@ -20,9 +20,8 @@ class GoBackLinkComponent extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
-                icon: const Icon(
-                  FontAwesomeIcons.circleChevronLeft,
-                ),
+                icon: Icon(FontAwesomeIcons.circleChevronLeft,
+                    color: Theme.of(context).colorScheme.onBackground),
                 onPressed: () async {
                   if (removeState == true) {
                     Navigator.of(context, rootNavigator: true)

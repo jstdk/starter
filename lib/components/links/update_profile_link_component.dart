@@ -14,8 +14,8 @@ class UpdateProfileLinkComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        width: ResponsiveValue(context, defaultValue: 450.0, valueWhen: const [
-          Condition.largerThan(name: MOBILE, value: 450.0),
+        width: ResponsiveValue(context, defaultValue: 300.0, valueWhen: const [
+          Condition.largerThan(name: MOBILE, value: 300.0),
           Condition.smallerThan(name: TABLET, value: double.infinity)
         ]).value,
         child: ElevatedButton(

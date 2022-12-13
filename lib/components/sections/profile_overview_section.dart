@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:starter/components/headers/profile_header_component.dart';
 
 import '../../models/profile.dart';
 
@@ -16,6 +17,8 @@ class ProfileOverviewSectionComponent extends StatelessWidget {
     return Column(
       children: <Widget>[
         const SizedBox(height: 30.0),
+        const ProfileHeaderComponent(),
+        const SizedBox(height: 40.0),
         SizedBox(
             height: ResponsiveValue(context,
                 defaultValue: 200.0,

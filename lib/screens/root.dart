@@ -45,8 +45,7 @@ class _RootState extends State<Root> {
   }
 
   Future<ProfileModel> loadProfile() async {
-    return await UserService().loadProfile(
-        supabase.auth.currentUser!.id, supabase.auth.currentUser!.email!);
+    return await UserService().loadProfile();
   }
 
   @override

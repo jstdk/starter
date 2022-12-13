@@ -6,15 +6,16 @@ import 'package:responsive_framework/responsive_framework.dart';
 import '../../services/form_service.dart';
 import '../../services/localization_service.dart';
 
-class EmailFormfieldComponent extends StatefulWidget {
-  const EmailFormfieldComponent({super.key});
+class EmailFormFieldComponent extends StatefulWidget {
+  final String email;
+  const EmailFormFieldComponent({super.key, required this.email});
 
   @override
-  State<EmailFormfieldComponent> createState() =>
+  State<EmailFormFieldComponent> createState() =>
       _EmailFormfieldComponentState();
 }
 
-class _EmailFormfieldComponentState extends State<EmailFormfieldComponent> {
+class _EmailFormfieldComponentState extends State<EmailFormFieldComponent> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -51,6 +52,8 @@ class _EmailFormfieldComponentState extends State<EmailFormfieldComponent> {
                 padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
                 child: Icon(FontAwesomeIcons.envelope),
               )),
+          textAlign: TextAlign.left,
+          initialValue: widget.email,
           autofocus: true,
           validator: (String? value) {
             return !EmailValidator.validate(value!)

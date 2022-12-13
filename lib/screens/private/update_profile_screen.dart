@@ -61,7 +61,6 @@ class UpdateProfileScreen extends StatelessWidget {
                         Column(
                           children: [
                             const SizedBox(height: 20),
-                            const UpdateProfileHeaderComponent(),
                             UpdateProfileFormComponent(
                                 profile: profile, avatarBytes: avatarBytes)
                           ],

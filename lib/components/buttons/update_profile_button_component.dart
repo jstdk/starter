@@ -25,8 +25,8 @@ class _UpdateProfileButtonComponentState
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: ResponsiveValue(context, defaultValue: 450.0, valueWhen: const [
-        Condition.largerThan(name: MOBILE, value: 450.0),
+      width: ResponsiveValue(context, defaultValue: 300.0, valueWhen: const [
+        Condition.largerThan(name: MOBILE, value: 300.0),
         Condition.smallerThan(name: TABLET, value: double.infinity)
       ]).value,
       child: ElevatedButton(
@@ -41,7 +41,7 @@ class _UpdateProfileButtonComponentState
                         ?.translate('update_profile_button_label') ??
                     '',
             style: TextStyle(
-                color: Theme.of(context).colorScheme.onBackground,
+                color: Theme.of(context).colorScheme.onPrimary,
                 fontWeight: FontWeight.bold),
           ),
         ),
@@ -83,10 +83,21 @@ class _UpdateProfileButtonComponentState
             } else {
               setState(() {
                 loader = false;
-                // error = LocalizationService.of(context)
-                //         ?.translate('general_error_message') ??
-                //     '';
               });
+              if (!mounted) return;
+              setState(() => {loader = false});
+              final errorSnackbar = SnackBar(
+                backgroundColor: Theme.of(context).colorScheme.error,
+                content: Text(
+                    LocalizationService.of(context)
+                            ?.translate('authentication_error_message') ??
+                        '',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                    )),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(errorSnackbar);
             }
           } else {
             setState(() {

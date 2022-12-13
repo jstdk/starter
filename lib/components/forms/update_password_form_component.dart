@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
-
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 import 'package:starter/components/buttons/update_password_button_component.dart';
-import 'package:starter/components/formfields/new_password_again_form_field_component.dart';
-import 'package:starter/components/formfields/new_password_form_field_component.dart';
+import 'package:starter/components/form_fields/new_password_again_form_field_component.dart';
+import 'package:starter/components/form_fields/new_password_form_field_component.dart';
 import 'package:starter/components/headers/update_password_header_component.dart';
-import 'package:starter/services/form_service.dart';
 
 import '../../models/profile.dart';
-import '../../services/localization_service.dart';
-import '../../services/user_service.dart';
 
 class UpdatePasswordFormComponent extends StatefulWidget {
   final ProfileModel? profile;
@@ -42,7 +36,7 @@ class _UpdatePasswordFormComponentState
                 const NewPasswordFormFieldComponent(),
                 const SizedBox(height: 20.0),
                 const NewPasswordAgainFormFieldComponent(),
-                const SizedBox(height: 5),
+                const SizedBox(height: 10.0),
                 UpdatePasswordButtonComponent(formKey: formKey),
               ],
             )),

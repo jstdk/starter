@@ -12,11 +12,9 @@ class FormService extends ChangeNotifier {
 
   late bool _signup;
   late bool _reset;
-  late String _error;
 
   bool get signup => _signup;
   bool get reset => _reset;
-  String get error => _error;
 
   FormService() {
     _signup = false;
@@ -30,11 +28,6 @@ class FormService extends ChangeNotifier {
 
   toggleReset() {
     _reset = !_reset;
-    notifyListeners();
-  }
-
-  setError(error) {
-    _error = error;
     notifyListeners();
   }
 }
