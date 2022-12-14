@@ -9,7 +9,19 @@ import '../models/profile.dart';
 final supabase = Supabase.instance.client;
 
 class UserService extends ChangeNotifier {
-  static ProfileModel? profile;
+  Session? session;
+  StreamSubscription<AuthState>? authSubscription;
+
+  UserService() {
+    authSubscription = supabase.auth.onAuthStateChange.listen((data) {
+      session = data.session;
+      if (kDebugMode) {
+        print('AuthEvent recorded');
+      }
+      notifyListeners();
+    });
+    //authSubscription?.cancel();
+  }
 
   Future signInUsingEmailAndPassword(email, password) async {
     try {
@@ -70,6 +82,8 @@ class UserService extends ChangeNotifier {
   Future<void> signOut() async {
     try {
       await supabase.auth.signOut();
+      session = null;
+      notifyListeners();
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -171,13 +185,12 @@ class UserService extends ChangeNotifier {
   }
 
   Future loadProfile() async {
-    profile = ProfileModel.fromMap(
+    return ProfileModel.fromMap(
         map: await supabase
             .from('profiles')
             .select()
             .eq('id', supabase.auth.currentUser!.id)
             .single(),
         emailFromAuth: supabase.auth.currentUser!.email!);
-    return profile;
   }
 }

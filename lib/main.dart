@@ -10,12 +10,15 @@ import 'package:starter/services/form_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'screens/private/home_screen.dart';
+import 'screens/public/index_screen.dart';
 import 'screens/root.dart';
 import 'services/theme_service.dart';
 import 'services/local_authentication_service.dart';
 import 'services/internationalization_service.dart';
 import 'services/localization_service.dart';
 import 'screens/public/local_authentication_screen.dart';
+import 'services/user_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,13 +45,15 @@ class StarterApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => LocalAuthenticationService()),
           ChangeNotifierProvider(create: (_) => InternationalizationService()),
           ChangeNotifierProvider(create: (_) => FormService()),
+          ChangeNotifierProvider(create: (_) => UserService()),
         ],
-        child: Consumer3<ThemeService, InternationalizationService,
-                LocalAuthenticationService>(
+        child: Consumer4<ThemeService, InternationalizationService,
+                LocalAuthenticationService, UserService>(
             builder: (context,
                 ThemeService theme,
                 InternationalizationService internationalization,
                 LocalAuthenticationService localAuthentication,
+                UserService user,
                 child) {
           return MaterialApp(
               theme: theme.darkTheme == true ? dark : light,
@@ -63,15 +68,6 @@ class StarterApp extends StatelessWidget {
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
               ],
-              // localeResolutionCallback: (locale, supportedLocales) {
-              //   for (var supportedLocale in supportedLocales) {
-              //     if (supportedLocale.languageCode == locale?.languageCode &&
-              //         supportedLocale.countryCode == locale?.countryCode) {
-              //       return supportedLocale;
-              //     }
-              //   }
-              //   return supportedLocales.first;
-              // },
               builder: (context, child) => ResponsiveWrapper.builder(
                     BouncingScrollWrapper.builder(context, child!),
                     maxWidth: 1200,
@@ -90,8 +86,12 @@ class StarterApp extends StatelessWidget {
                             defaultTargetPlatform == TargetPlatform.android)
                         ? localAuthentication.biometrics == true
                             ? const LocalAuthenticationScreen()
-                            : const Root()
-                        : const Root()),
+                            : user.session == null
+                                ? const IndexScreen()
+                                : const HomeScreen()
+                        : user.session == null
+                            ? const IndexScreen()
+                            : const HomeScreen()),
               ));
         }));
   }

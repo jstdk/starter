@@ -24,8 +24,9 @@ import '../../components/loaders/loader_spinner_component.dart';
 final supabase = Supabase.instance.client;
 
 class HomeScreen extends StatefulWidget {
-  final ProfileModel? profile;
-  const HomeScreen({Key? key, required this.profile}) : super(key: key);
+  //final ProfileModel? profile;
+  //const HomeScreen({Key? key, required this.profile}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -188,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           const PrivateEndDrawerHeaderComponent(),
           const SizedBox(height: 20.0),
-          ProfileDrawerLinkComponent(profile: widget.profile),
+          //ProfileDrawerLinkComponent(profile: widget.profile),
           const SizedBox(height: 5.0),
           const LanguageDrawerDropdownComponent(),
           const ThemeDrawerSwitcherComponent(),
