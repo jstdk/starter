@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:responsive_framework/utils/scroll_behavior.dart';
+import 'package:starter/components/builders/home_screen_future_builder_component.dart';
 import 'package:starter/services/form_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -89,61 +90,10 @@ class StarterApp extends StatelessWidget {
                               ? const LocalAuthenticationScreen()
                               : user.session == null
                                   ? const IndexScreen()
-                                  : FutureBuilder(
-                                      builder: (ctx, snapshot) {
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.done) {
-                                          if (snapshot.hasError) {
-                                            return Center(
-                                                child: Text(
-                                                    LocalizationService.of(
-                                                                context)
-                                                            ?.translate(
-                                                                'general_error_snackbar_label') ??
-                                                        '',
-                                                    style: TextStyle(
-                                                        fontSize: 30,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .onBackground)));
-                                          } else if (snapshot.hasData) {
-                                            final ProfileModel profile =
-                                                snapshot.data!;
-                                            return HomeScreen(profile: profile);
-                                          }
-                                        }
-                                        return const LoaderSpinnerComponent();
-                                      },
-                                      future: UserService().loadProfile(),
-                                    )
+                                  : const HomeScreenFutureBuilderComponent()
                           : user.session == null
                               ? const IndexScreen()
-                              : FutureBuilder(
-                                  builder: (ctx, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.done) {
-                                      if (snapshot.hasError) {
-                                        return Center(
-                                            child: Text(
-                                                LocalizationService.of(context)
-                                                        ?.translate(
-                                                            'general_error_snackbar_label') ??
-                                                    '',
-                                                style: TextStyle(
-                                                    fontSize: 30,
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .onBackground)));
-                                      } else if (snapshot.hasData) {
-                                        final ProfileModel profile =
-                                            snapshot.data!;
-                                        return HomeScreen(profile: profile);
-                                      }
-                                    }
-                                    return const LoaderSpinnerComponent();
-                                  },
-                                  future: UserService().loadProfile(),
-                                ))));
+                              : const HomeScreenFutureBuilderComponent())));
         }));
   }
 }

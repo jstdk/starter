@@ -101,7 +101,7 @@ class _UpdateProfileFormComponentState
                 EmailFormFieldComponent(email: widget.profile!.email),
                 const SizedBox(height: 20),
                 NameFormFieldComponent(fullName: widget.profile!.fullName),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 15.0),
                 UpdateProfileButtonComponent(formKey: formKey)
               ],
             )),

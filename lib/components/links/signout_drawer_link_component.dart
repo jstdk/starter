@@ -22,7 +22,7 @@ class SignOutDrawerLink extends StatelessWidget {
               color: Theme.of(context).colorScheme.onBackground),
           onPressed: () async {
             final signOutSnackbar = SnackBar(
-              backgroundColor: Theme.of(context).colorScheme.error,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               content: Text(
                   LocalizationService.of(context)
                           ?.translate('sign_out_snackbar_label') ??

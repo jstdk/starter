@@ -36,7 +36,7 @@ class _UpdatePasswordFormComponentState
                 const NewPasswordFormFieldComponent(),
                 const SizedBox(height: 20.0),
                 const NewPasswordAgainFormFieldComponent(),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 15.0),
                 UpdatePasswordButtonComponent(formKey: formKey),
               ],
             )),

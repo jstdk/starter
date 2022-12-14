@@ -29,7 +29,7 @@ class SignInUpFormsComponent extends StatelessWidget {
             const EmailFormFieldComponent(email: ''),
             const SizedBox(height: 15.0),
             const PasswordFormFieldComponent(),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 15.0),
             SignInUpButtonComponent(formKey: formKey),
             const SizedBox(height: 20.0),
             const ResetPasswordLinkComponent(),
