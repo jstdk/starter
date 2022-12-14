@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-import '../../screens/root.dart';
+import '../../main.dart';
 import '../../services/localization_service.dart';
 
 class LogoHeaderLinkComponent extends StatelessWidget {
@@ -29,7 +29,7 @@ class LogoHeaderLinkComponent extends StatelessWidget {
             ),
             onPressed: () {
               Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const Root()),
+                  MaterialPageRoute(builder: (context) => const StarterApp()),
                   (route) => false);
             },
           ),

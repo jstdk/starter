@@ -2,9 +2,9 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+import '../../main.dart';
 import '../../models/profile.dart';
 import '../../screens/private/profile_screen.dart';
-import '../../screens/root.dart';
 import '../../services/form_service.dart';
 import '../../services/localization_service.dart';
 import '../../services/user_service.dart';
@@ -77,7 +77,7 @@ class _UpdateProfileButtonComponentState
                     (route) => false);
               } else {
                 Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => const Root()),
+                    MaterialPageRoute(builder: (context) => const StarterApp()),
                     (route) => false);
               }
             } else {
@@ -90,7 +90,7 @@ class _UpdateProfileButtonComponentState
                 backgroundColor: Theme.of(context).colorScheme.error,
                 content: Text(
                     LocalizationService.of(context)
-                            ?.translate('general_error_message') ??
+                            ?.translate('general_error_snackbar_label') ??
                         '',
                     textAlign: TextAlign.center,
                     style: const TextStyle(

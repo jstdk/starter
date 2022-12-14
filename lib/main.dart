@@ -10,9 +10,10 @@ import 'package:starter/services/form_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'components/loaders/loader_spinner_component.dart';
+import 'models/profile.dart';
 import 'screens/private/home_screen.dart';
 import 'screens/public/index_screen.dart';
-import 'screens/root.dart';
 import 'services/theme_service.dart';
 import 'services/local_authentication_service.dart';
 import 'services/internationalization_service.dart';
@@ -81,18 +82,68 @@ class StarterApp extends StatelessWidget {
                         color: Theme.of(context).scaffoldBackgroundColor),
                   ),
               home: SafeArea(
-                child: Scaffold(
-                    body: (defaultTargetPlatform == TargetPlatform.iOS ||
-                            defaultTargetPlatform == TargetPlatform.android)
-                        ? localAuthentication.biometrics == true
-                            ? const LocalAuthenticationScreen()
-                            : user.session == null
-                                ? const IndexScreen()
-                                : const HomeScreen()
-                        : user.session == null
-                            ? const IndexScreen()
-                            : const HomeScreen()),
-              ));
+                  child: Scaffold(
+                      body: (defaultTargetPlatform == TargetPlatform.iOS ||
+                              defaultTargetPlatform == TargetPlatform.android)
+                          ? localAuthentication.biometrics == true
+                              ? const LocalAuthenticationScreen()
+                              : user.session == null
+                                  ? const IndexScreen()
+                                  : FutureBuilder(
+                                      builder: (ctx, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.done) {
+                                          if (snapshot.hasError) {
+                                            return Center(
+                                                child: Text(
+                                                    LocalizationService.of(
+                                                                context)
+                                                            ?.translate(
+                                                                'general_error_snackbar_label') ??
+                                                        '',
+                                                    style: TextStyle(
+                                                        fontSize: 30,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .onBackground)));
+                                          } else if (snapshot.hasData) {
+                                            final ProfileModel profile =
+                                                snapshot.data!;
+                                            return HomeScreen(profile: profile);
+                                          }
+                                        }
+                                        return const LoaderSpinnerComponent();
+                                      },
+                                      future: UserService().loadProfile(),
+                                    )
+                          : user.session == null
+                              ? const IndexScreen()
+                              : FutureBuilder(
+                                  builder: (ctx, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.done) {
+                                      if (snapshot.hasError) {
+                                        return Center(
+                                            child: Text(
+                                                LocalizationService.of(context)
+                                                        ?.translate(
+                                                            'general_error_snackbar_label') ??
+                                                    '',
+                                                style: TextStyle(
+                                                    fontSize: 30,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onBackground)));
+                                      } else if (snapshot.hasData) {
+                                        final ProfileModel profile =
+                                            snapshot.data!;
+                                        return HomeScreen(profile: profile);
+                                      }
+                                    }
+                                    return const LoaderSpinnerComponent();
+                                  },
+                                  future: UserService().loadProfile(),
+                                ))));
         }));
   }
 }

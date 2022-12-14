@@ -38,12 +38,18 @@ class SignInWithGoogleButtonComponent extends StatelessWidget {
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBarSignIn);
           } catch (e) {
-            // setState(() => {
-            //       loading = false,
-            //       error = LocalizationService.of(context)
-            //               ?.translate('general_error_message') ??
-            //           ''
-            //     });
+            final errorSnackbar = SnackBar(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              content: Text(
+                  LocalizationService.of(context)
+                          ?.translate('general_error_snackbar_label') ??
+                      '',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.white,
+                  )),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(errorSnackbar);
           }
         },
         child: Padding(

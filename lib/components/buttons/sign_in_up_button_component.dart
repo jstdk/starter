@@ -57,7 +57,7 @@ class _SignInUpButtonComponentState extends State<SignInUpButtonComponent> {
                           backgroundColor: Theme.of(context).colorScheme.error,
                           content: Text(
                               LocalizationService.of(context)?.translate(
-                                      'authentication_error_message') ??
+                                      'authentication_error_snackbar_label') ??
                                   '',
                               textAlign: TextAlign.center,
                               style: const TextStyle(

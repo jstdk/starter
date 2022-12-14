@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-import '../../screens/root.dart';
+import '../../main.dart';
 
 class GoBackLinkComponent extends StatelessWidget {
   final bool removeState;
@@ -27,7 +27,7 @@ class GoBackLinkComponent extends StatelessWidget {
                     Navigator.of(context, rootNavigator: true)
                         .pushAndRemoveUntil(
                             MaterialPageRoute(
-                                builder: (context) => const Root()),
+                                builder: (context) => const StarterApp()),
                             (route) => false);
                   } else {
                     Navigator.pop(context);

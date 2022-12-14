@@ -21,6 +21,18 @@ class SignOutDrawerLink extends StatelessWidget {
           icon: Icon(FontAwesomeIcons.circleChevronRight,
               color: Theme.of(context).colorScheme.onBackground),
           onPressed: () async {
+            final signOutSnackbar = SnackBar(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              content: Text(
+                  LocalizationService.of(context)
+                          ?.translate('sign_out_snackbar_label') ??
+                      '',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.white,
+                  )),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(signOutSnackbar);
             await UserService().signOut();
           },
         ),

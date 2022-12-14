@@ -72,7 +72,7 @@ class _UpdatePasswordButtonComponentState
                 backgroundColor: Theme.of(context).colorScheme.error,
                 content: Text(
                     LocalizationService.of(context)
-                            ?.translate('general_error_message') ??
+                            ?.translate('general_error_snackbar_label') ??
                         '',
                     textAlign: TextAlign.center,
                     style: const TextStyle(

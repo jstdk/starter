@@ -13,8 +13,9 @@ class UserService extends ChangeNotifier {
   StreamSubscription<AuthState>? authSubscription;
 
   UserService() {
-    authSubscription = supabase.auth.onAuthStateChange.listen((data) {
-      session = data.session;
+    session = supabase.auth.currentSession;
+    authSubscription = supabase.auth.onAuthStateChange.listen((response) {
+      session = response.session;
       if (kDebugMode) {
         print('AuthEvent recorded');
       }
@@ -82,8 +83,6 @@ class UserService extends ChangeNotifier {
   Future<void> signOut() async {
     try {
       await supabase.auth.signOut();
-      session = null;
-      notifyListeners();
     } catch (e) {
       if (kDebugMode) {
         print(e);

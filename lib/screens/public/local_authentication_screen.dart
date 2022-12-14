@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../../main.dart';
 import '../../services/local_authentication_service.dart';
-import '../../screens/root.dart';
 
 class LocalAuthenticationScreen extends StatefulWidget {
   const LocalAuthenticationScreen({Key? key}) : super(key: key);
@@ -41,7 +41,7 @@ class _LocalAuthenticationScreenState extends State<LocalAuthenticationScreen> {
               if (kDebugMode) {
                 print('The user is already authenticated using biometrics');
               }
-              return const Root();
+              return const StarterApp();
             } else {
               if (kDebugMode) {
                 print('The user is not yet authenticated using biometrics');
@@ -55,7 +55,7 @@ class _LocalAuthenticationScreenState extends State<LocalAuthenticationScreen> {
                   if (kDebugMode) {
                     print('The user is now authenticated using biometrics');
                   }
-                  return const Root();
+                  return const StarterApp();
                 } else {
                   if (kDebugMode) {
                     print(
@@ -67,7 +67,7 @@ class _LocalAuthenticationScreenState extends State<LocalAuthenticationScreen> {
                 if (kDebugMode) {
                   print('User can NOT use local auth');
                 }
-                return const Root();
+                return const StarterApp();
               }
             }
           }

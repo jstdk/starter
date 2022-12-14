@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:starter/components/headers/update_profile_header_component.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../components/forms/update_profile_form_component.dart';

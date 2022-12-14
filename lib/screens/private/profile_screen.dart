@@ -11,10 +11,10 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../components/links/update_password_link_component.dart';
 import '../../components/sections/profile_overview_section.dart';
+import '../../main.dart';
 import '../../models/profile.dart';
 import '../../services/localization_service.dart';
 import '../../components/links/go_back_link_component.dart';
-import '../root.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -52,7 +52,7 @@ class ProfileScreen extends StatelessWidget {
                         Navigator.of(context, rootNavigator: true)
                             .pushAndRemoveUntil(
                                 MaterialPageRoute(
-                                    builder: (context) => const Root()),
+                                    builder: (context) => const StarterApp()),
                                 (route) => false);
                       },
                     );

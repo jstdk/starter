@@ -20,13 +20,14 @@ import '../../models/message.dart';
 import '../../models/profile.dart';
 import '../../components/links/logo_header_link_component.dart';
 import '../../components/loaders/loader_spinner_component.dart';
+import '../../services/user_service.dart';
 
 final supabase = Supabase.instance.client;
 
 class HomeScreen extends StatefulWidget {
-  //final ProfileModel? profile;
-  //const HomeScreen({Key? key, required this.profile}) : super(key: key);
-  const HomeScreen({Key? key}) : super(key: key);
+  final ProfileModel? profile;
+  const HomeScreen({Key? key, required this.profile}) : super(key: key);
+  //const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -189,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           const PrivateEndDrawerHeaderComponent(),
           const SizedBox(height: 20.0),
-          //ProfileDrawerLinkComponent(profile: widget.profile),
+          ProfileDrawerLinkComponent(profile: widget.profile),
           const SizedBox(height: 5.0),
           const LanguageDrawerDropdownComponent(),
           const ThemeDrawerSwitcherComponent(),
@@ -199,6 +200,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
+  }
+
+  Future<ProfileModel> loadProfile() async {
+    return await UserService().loadProfile();
   }
 
   @override
@@ -220,9 +225,10 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: const [PrivateEndDrawerComponent()],
       ),
       body: SingleChildScrollView(
-          child: Column(
-        children: [mainSection()],
-      )),
+        child: Column(
+          children: [mainSection()],
+        ),
+      ),
       drawer: drawer(),
       endDrawer: endDrawer(),
     );
