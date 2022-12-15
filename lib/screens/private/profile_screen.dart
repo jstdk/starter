@@ -12,7 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../components/links/update_password_link_component.dart';
 import '../../components/sections/profile_overview_section.dart';
 import '../../main.dart';
-import '../../models/profile.dart';
+import '../../models/profile_model.dart';
 import '../../services/localization_service.dart';
 import '../../components/links/go_back_link_component.dart';
 
@@ -77,7 +77,7 @@ class ProfileScreen extends StatelessWidget {
                         Card(
                           color: Theme.of(context).colorScheme.onSurface,
                           child: Padding(
-                            padding: const EdgeInsets.all(20.0),
+                            padding: const EdgeInsets.all(40.0),
                             child: Column(
                               children: [
                                 ProfileOverviewSectionComponent(
@@ -93,7 +93,7 @@ class ProfileScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 20),
                         GoBackLinkComponent(
                             removeState: true,
                             label: LocalizationService.of(context)

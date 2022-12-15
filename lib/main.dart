@@ -6,21 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:responsive_framework/utils/scroll_behavior.dart';
-import 'package:starter/components/builders/home_screen_future_builder_component.dart';
 import 'package:starter/services/form_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'components/loaders/loader_spinner_component.dart';
-import 'models/profile.dart';
-import 'screens/private/home_screen.dart';
-import 'screens/public/index_screen.dart';
+import 'screens/bouncer.dart';
 import 'services/theme_service.dart';
 import 'services/local_authentication_service.dart';
 import 'services/internationalization_service.dart';
 import 'services/localization_service.dart';
 import 'screens/public/local_authentication_screen.dart';
-import 'services/user_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,15 +42,13 @@ class StarterApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => LocalAuthenticationService()),
           ChangeNotifierProvider(create: (_) => InternationalizationService()),
           ChangeNotifierProvider(create: (_) => FormService()),
-          ChangeNotifierProvider(create: (_) => UserService()),
         ],
-        child: Consumer4<ThemeService, InternationalizationService,
-                LocalAuthenticationService, UserService>(
+        child: Consumer3<ThemeService, InternationalizationService,
+                LocalAuthenticationService>(
             builder: (context,
                 ThemeService theme,
                 InternationalizationService internationalization,
                 LocalAuthenticationService localAuthentication,
-                UserService user,
                 child) {
           return MaterialApp(
               theme: theme.darkTheme == true ? dark : light,
@@ -88,12 +81,8 @@ class StarterApp extends StatelessWidget {
                               defaultTargetPlatform == TargetPlatform.android)
                           ? localAuthentication.biometrics == true
                               ? const LocalAuthenticationScreen()
-                              : user.session == null
-                                  ? const IndexScreen()
-                                  : const HomeScreenFutureBuilderComponent()
-                          : user.session == null
-                              ? const IndexScreen()
-                              : const HomeScreenFutureBuilderComponent())));
+                              : const Bouncer()
+                          : const Bouncer())));
         }));
   }
 }

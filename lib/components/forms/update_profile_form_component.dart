@@ -8,7 +8,7 @@ import 'package:starter/components/form_fields/avatar_form_field_component.dart'
 import 'package:starter/components/form_fields/name_form_field_component.dart';
 import 'package:starter/components/headers/profile_header_component.dart';
 
-import '../../models/profile.dart';
+import '../../models/profile_model.dart';
 import '../../services/form_service.dart';
 import '../../services/localization_service.dart';
 import '../form_fields/email_form_field_component.dart';
@@ -99,7 +99,7 @@ class _UpdateProfileFormComponentState
                 AvatarFormFieldComponent(avatarBytes: widget.avatarBytes),
                 const SizedBox(height: 50.0),
                 EmailFormFieldComponent(email: widget.profile!.email),
-                const SizedBox(height: 20),
+                const SizedBox(height: 15),
                 NameFormFieldComponent(fullName: widget.profile!.fullName),
                 const SizedBox(height: 15.0),
                 UpdateProfileButtonComponent(formKey: formKey)

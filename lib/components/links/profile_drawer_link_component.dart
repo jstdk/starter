@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../models/profile.dart';
+import '../../models/profile_model.dart';
 import '../../screens/private/profile_screen.dart';
 import '../../services/localization_service.dart';
 

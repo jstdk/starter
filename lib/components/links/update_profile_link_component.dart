@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-import '../../models/profile.dart';
+import '../../models/profile_model.dart';
 import '../../screens/private/update_profile_screen.dart';
 import '../../services/localization_service.dart';
 

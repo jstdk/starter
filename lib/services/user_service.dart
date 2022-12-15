@@ -4,7 +4,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../models/profile.dart';
+import '../models/profile_model.dart';
 
 final supabase = Supabase.instance.client;
 

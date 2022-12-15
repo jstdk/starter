@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/profile.dart';
+import '../../models/profile_model.dart';
 import '../../screens/private/home_screen.dart';
 import '../../services/localization_service.dart';
 import '../../services/user_service.dart';

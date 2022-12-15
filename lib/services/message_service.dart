@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../models/message.dart';
+import '../models/message_model.dart';
 
 final supabase = Supabase.instance.client;
 

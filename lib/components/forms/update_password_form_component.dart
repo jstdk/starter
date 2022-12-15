@@ -4,7 +4,7 @@ import 'package:starter/components/form_fields/new_password_again_form_field_com
 import 'package:starter/components/form_fields/new_password_form_field_component.dart';
 import 'package:starter/components/headers/update_password_header_component.dart';
 
-import '../../models/profile.dart';
+import '../../models/profile_model.dart';
 
 class UpdatePasswordFormComponent extends StatefulWidget {
   final ProfileModel? profile;
@@ -34,7 +34,7 @@ class _UpdatePasswordFormComponentState
                 const UpdatePasswordHeaderComponent(),
                 const SizedBox(height: 40.0),
                 const NewPasswordFormFieldComponent(),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 15.0),
                 const NewPasswordAgainFormFieldComponent(),
                 const SizedBox(height: 15.0),
                 UpdatePasswordButtonComponent(formKey: formKey),

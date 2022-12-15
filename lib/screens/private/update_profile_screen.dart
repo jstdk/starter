@@ -5,7 +5,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../components/forms/update_profile_form_component.dart';
-import '../../models/profile.dart';
+import '../../models/profile_model.dart';
 import '../../services/localization_service.dart';
 import '../../components/links/go_back_link_component.dart';
 import '../../components/loaders/loader_spinner_component.dart';
@@ -45,7 +45,7 @@ class UpdateProfileScreen extends StatelessWidget {
             ),
             body: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(15.0),
+                padding: const EdgeInsets.all(20.0),
                 child: Center(
                   child: SizedBox(
                     width: ResponsiveValue(context,

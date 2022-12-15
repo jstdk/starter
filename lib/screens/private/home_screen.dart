@@ -16,8 +16,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../services/localization_service.dart';
 
-import '../../models/message.dart';
-import '../../models/profile.dart';
+import '../../models/message_model.dart';
+import '../../models/profile_model.dart';
 import '../../components/links/logo_header_link_component.dart';
 import '../../components/loaders/loader_spinner_component.dart';
 import '../../services/user_service.dart';
@@ -27,7 +27,6 @@ final supabase = Supabase.instance.client;
 class HomeScreen extends StatefulWidget {
   final ProfileModel? profile;
   const HomeScreen({Key? key, required this.profile}) : super(key: key);
-  //const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -40,13 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     messages = MessageService().loadMessages();
-    //loadMessages();
     super.initState();
   }
-
-  // loadMessages() {
-  //   messages = MessageService().loadMessages();
-  // }
 
   @override
   void dispose() {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../main.dart';
-import '../../models/profile.dart';
+import '../../models/profile_model.dart';
 import '../../screens/private/profile_screen.dart';
 import '../../services/form_service.dart';
 import '../../services/localization_service.dart';

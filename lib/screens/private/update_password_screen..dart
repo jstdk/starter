@@ -6,7 +6,7 @@ import 'package:starter/components/forms/update_password_form_component.dart';
 import 'package:starter/components/icons/go_back_icon_component.dart';
 import 'package:starter/components/links/go_back_link_component.dart';
 
-import '../../models/profile.dart';
+import '../../models/profile_model.dart';
 import '../../components/loaders/loader_spinner_component.dart';
 import '../../services/localization_service.dart';
 
@@ -29,7 +29,7 @@ class UpdatePasswordScreen extends StatelessWidget {
             ),
             body: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(15.0),
+                padding: const EdgeInsets.all(40.0),
                 child: Center(
                   child: SizedBox(
                     width: ResponsiveValue(context,
@@ -46,11 +46,11 @@ class UpdatePasswordScreen extends StatelessWidget {
                             UpdatePasswordFormComponent(profile: profile)
                           ],
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 20),
                         GoBackLinkComponent(
                             removeState: false,
-                            label: LocalizationService.of(context)?.translate(
-                                    'go_back_home_profile_link_label') ??
+                            label: LocalizationService.of(context)
+                                    ?.translate('go_back_profile_link_label') ??
                                 ''),
                       ],
                     ),
