@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../services/form_service.dart';
 import '../../services/localization_service.dart';
 
 class AvatarFormFieldComponent extends StatefulWidget {
@@ -38,31 +39,29 @@ class _AvatarFormFieldComponentState extends State<AvatarFormFieldComponent> {
     }
     avatarAsBytes = await avatarFile!.readAsBytes();
     base64Avatar = base64Encode(avatarAsBytes);
-    setState(
-        () => {loading = false, avatarBytes = base64Decode(base64Avatar!)});
+    setState(() => {
+          loading = false,
+          FormService.avatarBytes = base64Decode(base64Avatar!)
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 200.0,
-      width: 200.0,
-      child: Stack(
-        clipBehavior: Clip.none,
-        fit: StackFit.expand,
-        children: [
-          avatarBytes != null
+    return Column(
+      children: [
+        SizedBox(
+          width: 200.0,
+          child: avatarBytes != null
               ? ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.memory(avatarBytes!))
               : ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.memory(widget.avatarBytes!)),
-          Positioned(
-              bottom: -15,
-              right: -15,
-              child: RawMaterialButton(
-                onPressed: () => {
+        ),
+        const SizedBox(height: 20),
+        TextButton(
+            onPressed: () => {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -110,17 +109,13 @@ class _AvatarFormFieldComponentState extends State<AvatarFormFieldComponent> {
                     },
                   )
                 },
-                elevation: 2.0,
-                fillColor: Theme.of(context).colorScheme.onBackground,
-                padding: const EdgeInsets.all(8.0),
-                shape: const CircleBorder(),
-                child: Icon(
-                  FontAwesomeIcons.camera,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              )),
-        ],
-      ),
+            child: Text(
+                LocalizationService.of(context)
+                        ?.translate('change_avatar_button_label') ??
+                    '',
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onBackground)))
+      ],
     );
   }
 }

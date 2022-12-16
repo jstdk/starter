@@ -9,6 +9,7 @@ class FormService extends ChangeNotifier {
   static String? password;
   static String? newPassword;
   static String? newPasswordAgain;
+  static Uint8List? avatarBytes;
 
   late bool _signup;
   late bool _reset;

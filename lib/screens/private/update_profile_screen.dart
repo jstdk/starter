@@ -64,7 +64,7 @@ class UpdateProfileScreen extends StatelessWidget {
                                 profile: profile, avatarBytes: avatarBytes)
                           ],
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 20),
                         GoBackLinkComponent(
                             removeState: false,
                             label: LocalizationService.of(context)
