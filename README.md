@@ -17,3 +17,6 @@ This starter is created to limit the time between having a good idea and bringin
 
 ## Who can use it
 Everyone for usage in an open source project
+
+## Support
+Please raise an issue of you can't figure something out or create a PR  want to improve the template.
