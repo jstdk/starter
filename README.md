@@ -16,7 +16,7 @@ This starter is created to limit the time between having a good idea and bringin
 - Secure storage for secrets like salts
 
 ## Make the backend work
-Create a .env file in the project root to and your Supabase key & url. The starter uses the following schema
+Create a .env file in the project root to and your Supabase key & url. The starter uses the following schema that needs to be injected in the SQL menu in your Supabase account
 
 ```
 create table if not exists public.profiles (
