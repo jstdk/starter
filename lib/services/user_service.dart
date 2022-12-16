@@ -9,21 +9,6 @@ import '../models/profile_model.dart';
 final supabase = Supabase.instance.client;
 
 class UserService extends ChangeNotifier {
-  Session? session;
-  StreamSubscription<AuthState>? authSubscription;
-
-  UserService() {
-    session = supabase.auth.currentSession;
-    authSubscription = supabase.auth.onAuthStateChange.listen((response) {
-      session = response.session;
-      if (kDebugMode) {
-        print('AuthEvent recorded');
-      }
-      notifyListeners();
-    });
-    //authSubscription?.cancel();
-  }
-
   Future signInUsingEmailAndPassword(email, password) async {
     try {
       if (kDebugMode) {
