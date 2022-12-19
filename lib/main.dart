@@ -10,12 +10,12 @@ import 'package:starter/services/form_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'screens/bouncer.dart';
 import 'services/theme_service.dart';
 import 'services/local_authentication_service.dart';
 import 'services/internationalization_service.dart';
 import 'services/localization_service.dart';
-import 'screens/public/local_authentication_screen.dart';
+import 'widgets/screens/bouncer_widget.dart';
+import 'widgets/screens/public/local_authentication_screen_widget.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,11 +28,11 @@ Future<void> main() async {
     anonKey: dotenv.env['SUPABASE_KEY']!,
   );
 
-  runApp(const StarterApp());
+  runApp(const App());
 }
 
-class StarterApp extends StatelessWidget {
-  const StarterApp({Key? key}) : super(key: key);
+class App extends StatelessWidget {
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -80,9 +80,9 @@ class StarterApp extends StatelessWidget {
                       body: (defaultTargetPlatform == TargetPlatform.iOS ||
                               defaultTargetPlatform == TargetPlatform.android)
                           ? localAuthentication.biometrics == true
-                              ? const LocalAuthenticationScreen()
-                              : const Bouncer()
-                          : const Bouncer())));
+                              ? const LocalAuthenticationScreenWidget()
+                              : const BouncerWidget()
+                          : const BouncerWidget())));
         }));
   }
 }
