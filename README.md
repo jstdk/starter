@@ -9,8 +9,8 @@ This starter is created to limit the time between having a good idea and bringin
 - Includes data & user management
 - Prepared for dynamic data and streams
 - Only open-source ingredients
-  - Flutter as the UI framework
-  - Supabase for the database and authentication
+  - [Flutter](https://www.flutter.dev) as the UI framework
+  - [Supabase](https://www.supabase.com) for the database and authentication
   - OpenSans fonts
 - Fully responsive for mobile, web, desktop (Linux, Mac & Windows), all with one codebase
 - Secure storage for secrets like salts
@@ -19,7 +19,7 @@ This starter is created to limit the time between having a good idea and bringin
 - Includes modular widgets for clean code
 
 ## Make the backend work
-Create a .env file in the project root to and your Supabase key & url. The starter uses the following schema that needs to be injected in the SQL menu in your Supabase account
+Create an .env file in the project root to and your Supabase key & url. The starter uses the following schema that needs to be injected in the SQL menu in your Supabase account
 
 ```
 create table if not exists public.profiles (
@@ -27,7 +27,7 @@ create table if not exists public.profiles (
     fullName varchar(24) not null unique,
     created_at timestamp with time zone default timezone('utc' :: text, now()) not null,
 
-    -- username should be 3 to 24 characters long containing alphabets, numbers and underscores
+    -- fullNames should be 3 to 24 characters long containing alphabets, numbers and underscores
     constraint fullName_validation check (fullName ~* '^[A-Za-z0-9_]{3,24}$')
 );
 comment on table public.profiles is 'Holds all of users profile information';
