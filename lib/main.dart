@@ -11,11 +11,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'services/theme_service.dart';
-import 'services/local_authentication_service.dart';
+import 'services/biometric_service.dart';
 import 'services/internationalization_service.dart';
 import 'services/localization_service.dart';
 import 'widgets/screens/bouncer_widget.dart';
-import 'widgets/screens/public/local_authentication_screen_widget.dart';
+import 'widgets/screens/public/biometric_screen_widget.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,16 +39,16 @@ class App extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => ThemeService()),
-          ChangeNotifierProvider(create: (_) => LocalAuthenticationService()),
+          ChangeNotifierProvider(create: (_) => BiometricService()),
           ChangeNotifierProvider(create: (_) => InternationalizationService()),
           ChangeNotifierProvider(create: (_) => FormService()),
         ],
         child: Consumer3<ThemeService, InternationalizationService,
-                LocalAuthenticationService>(
+                BiometricService>(
             builder: (context,
                 ThemeService theme,
                 InternationalizationService internationalization,
-                LocalAuthenticationService localAuthentication,
+                BiometricService localAuthentication,
                 child) {
           return MaterialApp(
               theme: theme.darkTheme == true ? dark : light,
@@ -77,10 +77,12 @@ class App extends StatelessWidget {
                   ),
               home: SafeArea(
                   child: Scaffold(
-                      body: (defaultTargetPlatform == TargetPlatform.iOS ||
-                              defaultTargetPlatform == TargetPlatform.android)
+                      body: ((defaultTargetPlatform == TargetPlatform.iOS ||
+                                  defaultTargetPlatform ==
+                                      TargetPlatform.android) &&
+                              (kDebugMode == false))
                           ? localAuthentication.biometrics == true
-                              ? const LocalAuthenticationScreenWidget()
+                              ? const BiometricScreenWidget()
                               : const BouncerWidget()
                           : const BouncerWidget())));
         }));

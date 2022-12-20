@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LocalAuthenticationService extends ChangeNotifier {
+class BiometricService extends ChangeNotifier {
   final LocalAuthentication localAuthentication = LocalAuthentication();
 
   final String key = "biometrics";
@@ -34,9 +34,10 @@ class LocalAuthenticationService extends ChangeNotifier {
     bool authenticated = false;
     try {
       authenticated = await localAuthentication.authenticate(
-          localizedReason: 'Let OS determine authentication method');
-      //useErrorDialogs: true,
-      //stickyAuth: true);
+          localizedReason: 'OS determines best authentication method',
+          options: const AuthenticationOptions(
+            stickyAuth: true,
+          ));
       if (authenticated == true) {
         return true;
       } else {
@@ -50,7 +51,7 @@ class LocalAuthenticationService extends ChangeNotifier {
     }
   }
 
-  LocalAuthenticationService() {
+  BiometricService() {
     _biometrics = false;
     loadFromPrefs();
   }

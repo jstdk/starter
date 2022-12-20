@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../services/local_authentication_service.dart';
+import '../../services/biometric_service.dart';
 import '../../services/localization_service.dart';
 
 class BiometricsDrawerSwitcherWidget extends StatelessWidget {
@@ -12,7 +12,7 @@ class BiometricsDrawerSwitcherWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return defaultTargetPlatform == TargetPlatform.iOS ||
             defaultTargetPlatform == TargetPlatform.android
-        ? Consumer<LocalAuthenticationService>(
+        ? Consumer<BiometricService>(
             builder: (context, localAuthentication, child) => SwitchListTile(
               title: Text(
                 LocalizationService.of(context)

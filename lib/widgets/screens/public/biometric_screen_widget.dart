@@ -2,22 +2,20 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../main.dart';
-import '../../../services/local_authentication_service.dart';
+import '../../../services/biometric_service.dart';
 
-class LocalAuthenticationScreenWidget extends StatefulWidget {
-  const LocalAuthenticationScreenWidget({Key? key}) : super(key: key);
+class BiometricScreenWidget extends StatefulWidget {
+  const BiometricScreenWidget({Key? key}) : super(key: key);
 
   @override
-  State<LocalAuthenticationScreenWidget> createState() =>
-      _LocalAuthenticationScreenWidgetState();
+  State<BiometricScreenWidget> createState() => _BiometricScreenWidgetState();
 }
 
-class _LocalAuthenticationScreenWidgetState
-    extends State<LocalAuthenticationScreenWidget> {
+class _BiometricScreenWidgetState extends State<BiometricScreenWidget> {
   bool hasAuthenticated = false;
 
   Future<dynamic> checkBiometrics() async {
-    final isAvailable = LocalAuthenticationService().checkBiometrics();
+    final isAvailable = BiometricService().checkBiometrics();
     return isAvailable;
   }
 
@@ -49,8 +47,8 @@ class _LocalAuthenticationScreenWidgetState
                 print('The user is not yet authenticated using biometrics');
               }
               if (snapshot.data == true) {
-                LocalAuthenticationService().authenticate().then((result) =>
-                    setState(() => result == true
+                BiometricService().authenticate().then((result) => setState(
+                    () => result == true
                         ? hasAuthenticated = true
                         : hasAuthenticated = false));
                 if (hasAuthenticated == true) {

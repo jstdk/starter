@@ -3,7 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  app_links_windows
+  app_links
   local_auth_windows
   system_theme
   url_launcher_windows
