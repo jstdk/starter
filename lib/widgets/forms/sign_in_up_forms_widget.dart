@@ -7,7 +7,7 @@ import '../form_fields/password_form_field_widget.dart';
 import '../headers/sign_in_up_header_widget.dart';
 import '../links/reset_password_link_widget.dart';
 import '../sections/or_section_widget.dart';
-import '../switchers/sign_in_up_switcher_widget.dart';
+import '../buttons/sign_in_up_switcher_button_widget.dart';
 
 class SignInUpFormsWidget extends StatelessWidget {
   SignInUpFormsWidget({super.key});
@@ -36,7 +36,7 @@ class SignInUpFormsWidget extends StatelessWidget {
             const SizedBox(height: 30.0),
             const OrSectionWidget(),
             const SizedBox(height: 30.0),
-            const SignInUpSwitcherWidget(),
+            const SignInUpSwitcherButtonWidget(),
           ],
         ));
   }
