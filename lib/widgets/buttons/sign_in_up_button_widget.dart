@@ -76,8 +76,9 @@ class _SignInUpButtonWidgetState extends State<SignInUpButtonWidget> {
                               });
                         }
                       },
+                      color: Theme.of(context).colorScheme.primary,
                       child: Padding(
-                        padding: const EdgeInsets.all(15.0),
+                        padding: const EdgeInsets.all(5.0),
                         child: Text(
                           loader == true
                               ? LocalizationService.of(context)
