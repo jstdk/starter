@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -26,72 +28,135 @@ class _SignInUpButtonWidgetState extends State<SignInUpButtonWidget> {
         ]).value,
         child: Consumer<FormService>(
           builder: (context, form, child) => form.signup == false
-              ? ElevatedButton(
-                  onPressed: () async {
-                    if (widget.formKey.currentState!.validate()) {
-                      setState(() => loader = true);
-                      bool success = await UserService()
-                          .signInUsingEmailAndPassword(
-                              FormService.email, FormService.password);
-                      if (success == true) {
-                        if (!mounted) return;
-                        final signInSnackbar = SnackBar(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                          content: Text(
-                              LocalizationService.of(context)
-                                      ?.translate('sign_in_snackbar_label') ??
+              ? defaultTargetPlatform == TargetPlatform.iOS
+                  ? CupertinoButton(
+                      onPressed: () async {
+                        if (widget.formKey.currentState!.validate()) {
+                          setState(() => loader = true);
+                          bool success = await UserService()
+                              .signInUsingEmailAndPassword(
+                                  FormService.email, FormService.password);
+                          if (success == true) {
+                            if (!mounted) return;
+                            final signInSnackbar = SnackBar(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              content: Text(
+                                  LocalizationService.of(context)?.translate(
+                                          'sign_in_snackbar_label') ??
+                                      '',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  )),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(signInSnackbar);
+                          } else {
+                            if (!mounted) return;
+                            setState(() => {loader = false});
+                            final errorSnackbar = SnackBar(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.error,
+                              content: Text(
+                                  LocalizationService.of(context)?.translate(
+                                          'authentication_error_snackbar_label') ??
+                                      '',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  )),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(errorSnackbar);
+                          }
+                        } else {
+                          setState(() => {
+                                loader = false,
+                              });
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Text(
+                          loader == true
+                              ? LocalizationService.of(context)
+                                      ?.translate('loader_button_label') ??
+                                  ''
+                              : LocalizationService.of(context)
+                                      ?.translate('sign_in_button_label') ??
                                   '',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Colors.white,
-                              )),
-                        );
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(signInSnackbar);
-                      } else {
-                        if (!mounted) return;
-                        setState(() => {loader = false});
-                        final errorSnackbar = SnackBar(
-                          backgroundColor: Theme.of(context).colorScheme.error,
-                          content: Text(
-                              LocalizationService.of(context)?.translate(
-                                      'authentication_error_snackbar_label') ??
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    )
+                  : ElevatedButton(
+                      onPressed: () async {
+                        if (widget.formKey.currentState!.validate()) {
+                          setState(() => loader = true);
+                          bool success = await UserService()
+                              .signInUsingEmailAndPassword(
+                                  FormService.email, FormService.password);
+                          if (success == true) {
+                            if (!mounted) return;
+                            final signInSnackbar = SnackBar(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              content: Text(
+                                  LocalizationService.of(context)?.translate(
+                                          'sign_in_snackbar_label') ??
+                                      '',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  )),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(signInSnackbar);
+                          } else {
+                            if (!mounted) return;
+                            setState(() => {loader = false});
+                            final errorSnackbar = SnackBar(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.error,
+                              content: Text(
+                                  LocalizationService.of(context)?.translate(
+                                          'authentication_error_snackbar_label') ??
+                                      '',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  )),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(errorSnackbar);
+                          }
+                        } else {
+                          setState(() => {
+                                loader = false,
+                              });
+                        }
+                      },
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      )),
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Text(
+                          loader == true
+                              ? LocalizationService.of(context)
+                                      ?.translate('loader_button_label') ??
+                                  ''
+                              : LocalizationService.of(context)
+                                      ?.translate('sign_in_button_label') ??
                                   '',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Colors.white,
-                              )),
-                        );
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(errorSnackbar);
-                      }
-                    } else {
-                      setState(() => {
-                            loader = false,
-                          });
-                    }
-                  },
-                  style: ButtonStyle(
-                      shape: MaterialStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  )),
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Text(
-                      loader == true
-                          ? LocalizationService.of(context)
-                                  ?.translate('loader_button_label') ??
-                              ''
-                          : LocalizationService.of(context)
-                                  ?.translate('sign_in_button_label') ??
-                              '',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                )
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    )
               : ElevatedButton(
                   onPressed: () async {
                     if (widget.formKey.currentState!.validate()) {
