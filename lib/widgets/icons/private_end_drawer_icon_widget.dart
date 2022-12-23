@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,7 +15,10 @@ class PrivateEndDrawerWidget extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
           child: IconButton(
             icon: Icon(
-              FontAwesomeIcons.ellipsisVertical,
+              (defaultTargetPlatform == TargetPlatform.iOS ||
+                      defaultTargetPlatform == TargetPlatform.macOS)
+                  ? CupertinoIcons.ellipsis_vertical
+                  : FontAwesomeIcons.ellipsisVertical,
               color: Theme.of(context).colorScheme.onBackground,
             ),
             onPressed: () {

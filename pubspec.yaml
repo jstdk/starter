@@ -45,6 +45,7 @@ dependencies:
   email_validator: ^2.1.16
   system_theme: ^2.0.0
   flutter_native_splash: ^2.2.16
+  cupertino_icons: ^1.0.5
 
 dev_dependencies:
   flutter_test:

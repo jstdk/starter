@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -12,9 +14,11 @@ class GoBackIconWidget extends StatelessWidget {
       visibleWhen: const [Condition.smallerThan(name: TABLET)],
       child: Builder(builder: (context) {
         return IconButton(
-          icon: const Icon(
-            FontAwesomeIcons.chevronLeft,
-            size: 20.0,
+          icon: Icon(
+            (defaultTargetPlatform == TargetPlatform.iOS ||
+                    defaultTargetPlatform == TargetPlatform.macOS)
+                ? CupertinoIcons.chevron_left
+                : FontAwesomeIcons.chevronLeft,
           ),
           onPressed: () {
             Navigator.pop(context);

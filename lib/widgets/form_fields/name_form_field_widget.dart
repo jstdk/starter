@@ -4,6 +4,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../services/form_service.dart';
 import '../../services/localization_service.dart';
+import '../icons/name_face_icon_widget.dart';
 
 class NameFormFieldWidget extends StatefulWidget {
   final String fullName;
@@ -30,10 +31,7 @@ class _NameFormFieldWidgetState extends State<NameFormFieldWidget> {
             labelStyle: const TextStyle(
               fontSize: 15,
             ), //label style
-            prefixIcon: const Padding(
-              padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-              child: Icon(FontAwesomeIcons.faceLaugh),
-            ),
+            prefixIcon: const NameFaceIconWidget(),
             hintText: "Full name",
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5.0),
