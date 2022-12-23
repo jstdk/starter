@@ -46,8 +46,9 @@ class _SignInUpButtonWidgetState extends State<SignInUpButtonWidget> {
                                           'sign_in_snackbar_label') ??
                                       '',
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
                                   )),
                             );
                             ScaffoldMessenger.of(context)
@@ -63,8 +64,9 @@ class _SignInUpButtonWidgetState extends State<SignInUpButtonWidget> {
                                           'authentication_error_snackbar_label') ??
                                       '',
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.onError,
                                   )),
                             );
                             ScaffoldMessenger.of(context)
@@ -108,8 +110,9 @@ class _SignInUpButtonWidgetState extends State<SignInUpButtonWidget> {
                                           'sign_in_snackbar_label') ??
                                       '',
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
                                   )),
                             );
                             ScaffoldMessenger.of(context)
@@ -125,8 +128,9 @@ class _SignInUpButtonWidgetState extends State<SignInUpButtonWidget> {
                                           'authentication_error_snackbar_label') ??
                                       '',
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.onError,
                                   )),
                             );
                             ScaffoldMessenger.of(context)
