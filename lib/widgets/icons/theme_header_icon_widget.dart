@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart' as pv;
@@ -25,7 +27,10 @@ class ThemeHeaderIconWidget extends StatelessWidget {
                     0.0),
                 child: IconButton(
                     icon: Icon(
-                      FontAwesomeIcons.sun,
+                      (defaultTargetPlatform == TargetPlatform.iOS ||
+                              defaultTargetPlatform == TargetPlatform.macOS)
+                          ? CupertinoIcons.sun_max
+                          : FontAwesomeIcons.sun,
                       color: Theme.of(context).colorScheme.onBackground,
                     ),
                     onPressed: () => theme.toggleTheme()),
@@ -42,7 +47,11 @@ class ThemeHeaderIconWidget extends StatelessWidget {
                         50.0,
                     0),
                 child: IconButton(
-                    icon: Icon(FontAwesomeIcons.moon,
+                    icon: Icon(
+                        (defaultTargetPlatform == TargetPlatform.iOS ||
+                                defaultTargetPlatform == TargetPlatform.macOS)
+                            ? CupertinoIcons.moon
+                            : FontAwesomeIcons.moon,
                         color: Theme.of(context).colorScheme.onBackground),
                     onPressed: () => theme.toggleTheme()),
               ));

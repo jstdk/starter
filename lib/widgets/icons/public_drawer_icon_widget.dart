@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -13,7 +15,10 @@ class PublicDrawerIconWidget extends StatelessWidget {
       child: Builder(builder: (context) {
         return IconButton(
           icon: Icon(
-            FontAwesomeIcons.bars,
+            (defaultTargetPlatform == TargetPlatform.iOS ||
+                    defaultTargetPlatform == TargetPlatform.macOS)
+                ? CupertinoIcons.bars
+                : FontAwesomeIcons.bars,
             color: Theme.of(context).colorScheme.onBackground,
           ),
           onPressed: () {

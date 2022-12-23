@@ -10,7 +10,7 @@ import '../../../models/message_model.dart';
 import '../../../models/profile_model.dart';
 import '../../../services/localization_service.dart';
 import '../../../services/user_service.dart';
-import '../../dropdowns/language_drawer_dropdown_widget.dart';
+import '../../drop_downs/language_drawer_dropdown_widget.dart';
 import '../../headers/private_end_drawer_header_widget.dart';
 import '../../icons/private_drawer_icon_widget.dart';
 import '../../icons/private_end_drawer_icon_widget.dart';

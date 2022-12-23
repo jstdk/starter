@@ -13,13 +13,16 @@ class FormService extends ChangeNotifier {
 
   late bool _signup;
   late bool _reset;
+  late bool _obscureText;
 
   bool get signup => _signup;
   bool get reset => _reset;
+  bool get obscureText => _obscureText;
 
   FormService() {
     _signup = false;
     _reset = false;
+    _obscureText = true;
   }
 
   toggleSignUp() {
@@ -29,6 +32,11 @@ class FormService extends ChangeNotifier {
 
   toggleReset() {
     _reset = !_reset;
+    notifyListeners();
+  }
+
+  toggleObscure() {
+    _obscureText = !_obscureText;
     notifyListeners();
   }
 }
