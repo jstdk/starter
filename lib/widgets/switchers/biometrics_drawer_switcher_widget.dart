@@ -14,6 +14,7 @@ class BiometricsDrawerSwitcherWidget extends StatelessWidget {
             defaultTargetPlatform == TargetPlatform.android
         ? Consumer<BiometricService>(
             builder: (context, localAuthentication, child) => SwitchListTile(
+              activeColor: Theme.of(context).colorScheme.primary,
               title: Text(
                 LocalizationService.of(context)
                         ?.translate('biometrics_switcher_label') ??

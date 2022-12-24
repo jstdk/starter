@@ -29,8 +29,6 @@
                     android:scheme="io.supabase.starter"
                     android:host="login-callback" />
             </intent-filter>
-            <!-- Deep linking -->
-            <meta-data android:name="flutter_deeplinking_enabled" android:value="true" />
         </activity>
         <meta-data
             android:name="flutterEmbedding"
