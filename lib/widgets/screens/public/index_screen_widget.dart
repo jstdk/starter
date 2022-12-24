@@ -90,69 +90,68 @@ class _IndexScreenWidgetState extends State<IndexScreenWidget> {
                 ThemeHeaderIconWidget(),
               ],
             ),
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: ResponsiveValue(context,
-                            defaultValue: 30.0,
-                            valueWhen: const [
-                              Condition.smallerThan(name: DESKTOP, value: 15.0),
-                            ]).value ??
-                        30.0,
-                  ),
-                  ResponsiveRowColumn(
-                    layout: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
-                        ? ResponsiveRowColumnType.COLUMN
-                        : ResponsiveRowColumnType.ROW,
-                    rowMainAxisAlignment: MainAxisAlignment.center,
-                    columnCrossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ResponsiveRowColumnItem(
-                          rowFlex: 1,
-                          child: ResponsiveVisibility(
-                            hiddenWhen: const [
-                              Condition.smallerThan(name: TABLET)
-                            ],
-                            child: Column(
-                              children: const [
-                                JumbotronIndexSectionWidget(),
+            body: Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ResponsiveRowColumn(
+                      layout:
+                          ResponsiveWrapper.of(context).isSmallerThan(TABLET)
+                              ? ResponsiveRowColumnType.COLUMN
+                              : ResponsiveRowColumnType.ROW,
+                      rowMainAxisAlignment: MainAxisAlignment.center,
+                      columnCrossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ResponsiveRowColumnItem(
+                            rowFlex: 1,
+                            child: ResponsiveVisibility(
+                              hiddenWhen: const [
+                                Condition.smallerThan(name: TABLET)
                               ],
-                            ),
-                          )),
-                      ResponsiveRowColumnItem(
-                          rowFlex: 1,
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                width: ResponsiveValue(context,
-                                    defaultValue: 450.0,
-                                    valueWhen: const [
-                                      Condition.largerThan(
-                                          name: MOBILE, value: 450.0),
-                                      Condition.smallerThan(
-                                          name: TABLET, value: double.infinity)
-                                    ]).value,
-                                child: Padding(
-                                    padding: EdgeInsets.fromLTRB(
-                                        8.0,
-                                        30.0,
-                                        ResponsiveValue(context,
-                                                defaultValue: 40.0,
-                                                valueWhen: const [
-                                                  Condition.smallerThan(
-                                                      name: TABLET, value: 8.0)
-                                                ]).value ??
-                                            40.0,
-                                        8.0),
-                                    child:
-                                        const AuthenticationSectionOverviewWidget()),
+                              child: Column(
+                                children: const [
+                                  JumbotronIndexSectionWidget(),
+                                ],
                               ),
-                            ],
-                          ))
-                    ],
-                  ),
-                ],
+                            )),
+                        ResponsiveRowColumnItem(
+                            rowFlex: 1,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  width: ResponsiveValue(context,
+                                      defaultValue: 450.0,
+                                      valueWhen: const [
+                                        Condition.largerThan(
+                                            name: MOBILE, value: 450.0),
+                                        Condition.smallerThan(
+                                            name: TABLET,
+                                            value: double.infinity)
+                                      ]).value,
+                                  child: Padding(
+                                      padding: EdgeInsets.fromLTRB(
+                                          8.0,
+                                          30.0,
+                                          ResponsiveValue(context,
+                                                  defaultValue: 40.0,
+                                                  valueWhen: const [
+                                                    Condition.smallerThan(
+                                                        name: TABLET,
+                                                        value: 8.0)
+                                                  ]).value ??
+                                              40.0,
+                                          8.0),
+                                      child:
+                                          const AuthenticationSectionOverviewWidget()),
+                                ),
+                              ],
+                            ))
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
             drawer: drawer(),
