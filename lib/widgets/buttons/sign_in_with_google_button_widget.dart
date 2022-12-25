@@ -56,16 +56,14 @@ class SignInWithGoogleButtonWidget extends StatelessWidget {
                 }
               },
               color: Theme.of(context).colorScheme.secondary,
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Text(
-                  LocalizationService.of(context)
-                          ?.translate('sign_in_google_button_label') ??
-                      '',
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSecondary,
-                      fontWeight: FontWeight.bold),
-                ),
+              child: Text(
+                LocalizationService.of(context)
+                        ?.translate('sign_in_google_button_label') ??
+                    '',
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSecondary,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold),
               ),
             )
           : ElevatedButton(

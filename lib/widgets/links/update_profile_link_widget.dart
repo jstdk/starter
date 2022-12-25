@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -18,18 +19,37 @@ class UpdateProfileLinkWidget extends StatelessWidget {
           Condition.largerThan(name: MOBILE, value: 300.0),
           Condition.smallerThan(name: TABLET, value: double.infinity)
         ]).value,
-        child: ElevatedButton(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Text(LocalizationService.of(context)
-                      ?.translate('update_profile_button_label') ??
-                  ''),
-            ),
-            onPressed: () => {
+        child: (defaultTargetPlatform == TargetPlatform.iOS ||
+                defaultTargetPlatform == TargetPlatform.macOS)
+            ? CupertinoButton(
+                onPressed: () => {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => UpdateProfileScreenWidget(
                         profile: profile, avatarBytes: avatarBytes),
                   ))
-                }));
+                },
+                color: Theme.of(context).colorScheme.primary,
+                child: Text(
+                    LocalizationService.of(context)
+                            ?.translate('update_profile_button_label') ??
+                        '',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold)),
+              )
+            : ElevatedButton(
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Text(LocalizationService.of(context)
+                          ?.translate('update_profile_button_label') ??
+                      ''),
+                ),
+                onPressed: () => {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => UpdateProfileScreenWidget(
+                            profile: profile, avatarBytes: avatarBytes),
+                      ))
+                    }));
   }
 }

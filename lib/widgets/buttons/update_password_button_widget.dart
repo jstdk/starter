@@ -77,20 +77,18 @@ class _UpdatePasswordButtonWidgetState
                 }
               },
               color: Theme.of(context).colorScheme.primary,
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Text(
-                  loader == true
-                      ? LocalizationService.of(context)
-                              ?.translate('loader_button_label') ??
-                          ''
-                      : LocalizationService.of(context)
-                              ?.translate('update_password_button_label') ??
-                          '',
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      fontWeight: FontWeight.bold),
-                ),
+              child: Text(
+                loader == true
+                    ? LocalizationService.of(context)
+                            ?.translate('loader_button_label') ??
+                        ''
+                    : LocalizationService.of(context)
+                            ?.translate('update_password_button_label') ??
+                        '',
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold),
               ),
             )
           : ElevatedButton(

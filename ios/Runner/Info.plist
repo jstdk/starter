@@ -53,5 +53,18 @@
     <string>Access is need to the photo library to change your avatar</string>
 	<key>NSCameraUsageDescription</key>
     <string>Access is need to the camera to change your avatar</string>
+	<key>CFBundleURLTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleTypeRole</key>
+                <string>Editor</string>
+                <key>CFBundleURLName</key>
+                <string>login-callback</string>
+                <key>CFBundleURLSchemes</key>
+                <array>
+                    <string>io.supabase.starter</string>
+                </array>
+            </dict>
+        </array>
 </dict>
 </plist>

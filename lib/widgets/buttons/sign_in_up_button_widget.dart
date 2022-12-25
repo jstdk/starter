@@ -80,18 +80,18 @@ class _SignInUpButtonWidgetState extends State<SignInUpButtonWidget> {
                         }
                       },
                       color: Theme.of(context).colorScheme.primary,
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text(
-                          loader == true
-                              ? LocalizationService.of(context)
-                                      ?.translate('loader_button_label') ??
-                                  ''
-                              : LocalizationService.of(context)
-                                      ?.translate('sign_in_button_label') ??
-                                  '',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                      child: Text(
+                        loader == true
+                            ? LocalizationService.of(context)
+                                    ?.translate('loader_button_label') ??
+                                ''
+                            : LocalizationService.of(context)
+                                    ?.translate('sign_in_button_label') ??
+                                '',
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
                       ),
                     )
                   : ElevatedButton(

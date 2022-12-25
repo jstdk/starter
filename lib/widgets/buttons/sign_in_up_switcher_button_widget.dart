@@ -36,26 +36,18 @@ class _SignInUpSwitcherButtonWidgetState
                         form.toggleSignUp();
                       },
                       color: Theme.of(context).colorScheme.secondary,
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text(
-                          form.signup == false
-                              ? LocalizationService.of(context)?.translate(
-                                      'sign_up_switcher_link_label') ??
-                                  ''
-                              : LocalizationService.of(context)?.translate(
-                                      'sign_in_switcher_link_label') ??
-                                  '',
-                          style: TextStyle(
-                              fontSize: ResponsiveValue(context,
-                                  defaultValue: 15.0,
-                                  valueWhen: const [
-                                    Condition.smallerThan(
-                                        name: DESKTOP, value: 15.0),
-                                  ]).value,
-                              color: Theme.of(context).colorScheme.onSecondary,
-                              fontWeight: FontWeight.bold),
-                        ),
+                      child: Text(
+                        form.signup == false
+                            ? LocalizationService.of(context)?.translate(
+                                    'sign_up_switcher_link_label') ??
+                                ''
+                            : LocalizationService.of(context)?.translate(
+                                    'sign_in_switcher_link_label') ??
+                                '',
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSecondary,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
                       ),
                     )
                   : ElevatedButton(
