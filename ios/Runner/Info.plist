@@ -53,6 +53,8 @@
 		<string>Access is need to the photo library to change your avatar</string>
 		<key>NSCameraUsageDescription</key>
 		<string>Access is need to the camera to change your avatar</string>
+		<key>FlutterDeepLinkingEnabled</key>
+		<true />
 		<key>CFBundleURLTypes</key>
 		<array>
 			<dict>
